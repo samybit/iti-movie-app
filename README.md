@@ -1,12 +1,33 @@
-# React + Vite
+# Quick Start
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 1. Clone & Install
 
-Currently, two official plugins are available:
+```bash
+git clone https://github.com/samybit/movie-app.git
+cd iti-movie-app
+npm install
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 2. Set Up Environment
 
-## Expanding the ESLint configuration
+Create a `.env` file in the root folder and add your TMDB API key:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```env
+VITE_TMDB_API_KEY=your_api_key_here
+```
+
+### 3. Run Development Server
+
+```bash
+npm run dev
+```
+
+## The Team
+- **Lead / DevOps & Data Lead:** [Name]
+(Handles the Git/Cloudflare setup + Authentication and LocalStorage logic).
+- **Discovery Lead:** [Name]
+(Handles the Home Page and Movie Grids).
+- **Details Lead:** [Name]
+(Handles the Movie Details page and Dynamic Routing).
+- **UI/UX Lead:** [Name]
+(Handles the Design System, Shadcn components, and Dark Mode).

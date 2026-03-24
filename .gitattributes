@@ -1,27 +1,2 @@
-cat << 'EOF' > .gitattributes
 # Handle line endings automatically for files detected as text
-# and leave binary files untouched.
-* text=auto
-
-# Standardize all text files to LF (Linux style) on check-in
-*.js text eol=lf
-*.jsx text eol=lf
-*.ts text eol=lf
-*.tsx text eol=lf
-*.json text eol=lf
-*.css text eol=lf
-*.html text eol=lf
-*.md text eol=lf
-
-# Ensure shell scripts always use LF (so they run in WSL)
-*.sh text eol=lf
-
-# Denote all files that are truly binary and should not be modified.
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.ico binary
-*.svg text eol=lf
-*.pdf binary
-EOF
+* text=auto eol=lf
