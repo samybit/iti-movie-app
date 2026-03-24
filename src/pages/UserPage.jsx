@@ -3,12 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
 const UserPage = () => {
-  const { id } = useParams();
-  
+	const { id } = useParams();
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  
+	const [error, setError] = useState(null);
+
 	useEffect(() => {
 		(async function fetchUser() {
 			try {

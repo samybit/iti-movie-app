@@ -12,7 +12,7 @@ export default function MainLayout() {
 			{/* Navbar UI */}
 			<header className='sticky top-0 z-10 w-full border-b bg-white shadow-sm p-4'>
 				<div className='container mx-auto flex justify-between items-center'>
-					<h1 className='text-xl font-bold'>Platzi Store</h1>
+					<h1 className='text-xl font-bold'>Movie App</h1>
 					<NavigationMenu>
 						<NavigationMenuList className='flex gap-4'>
 							<NavigationMenuItem>
@@ -21,8 +21,18 @@ export default function MainLayout() {
 								</Link>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
-								<Link to='/products' className='font-medium hover:text-blue-600'>
-									Products
+								<Link to='/search' className='font-medium hover:text-blue-600'>
+									Search
+								</Link>
+							</NavigationMenuItem>
+							<NavigationMenuItem>
+								<Link to='/wishlist' className='font-medium hover:text-blue-600'>
+									Wishlist
+								</Link>
+							</NavigationMenuItem>
+							<NavigationMenuItem>
+								<Link to='/login' className='font-medium hover:text-blue-600'>
+									Login
 								</Link>
 							</NavigationMenuItem>
 						</NavigationMenuList>
