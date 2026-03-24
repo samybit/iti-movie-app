@@ -23,11 +23,20 @@ npm run dev
 ```
 
 ## The Team
-- **Lead / DevOps & Data Lead:** [Name]
-(Handles the Git/Cloudflare setup + Authentication and LocalStorage logic).
-- **Discovery Lead:** [Name]
-(Handles the Home Page and Movie Grids).
-- **Details Lead:** [Name]
-(Handles the Movie Details page and Dynamic Routing).
-- **UI/UX Lead:** [Name]
-(Handles the Design System, Shadcn components, and Dark Mode).
+
+- **[Name]** — Lead / DevOps & Data
+  - Git/Cloudflare setup
+  - Authentication & LocalStorage logic
+
+- **[Name]** — Discovery Lead
+  - Home Page
+  - Movie Grids
+
+- **[Name]** — Details Lead
+  - Movie Details page
+  - Dynamic Routing
+
+- **[Name]** — UI/UX Lead
+  - Design System
+  - Shadcn components
+  - Dark Mode
