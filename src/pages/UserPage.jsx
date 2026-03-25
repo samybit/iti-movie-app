@@ -1,37 +1,19 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+// import axios from 'axios';
+// import React, { useEffect, useState } from 'react';
+// import { useParams } from 'react-router';
 
-const UserPage = () => {
-	const { id } = useParams();
-	const [user, setUser] = useState(null);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-
-	useEffect(() => {
-		(async function fetchUser() {
-			try {
-				setLoading(true);
-				const response = await axios.get(`https://api.escuelajs.co/api/v1/users/${id}`);
-				setUser(response.data);
-			} catch (error) {
-				console.error('Error fetching', error);
-				setError(error);
-			} finally {
-				setLoading(false);
-			}
-		})();
-	}, [id]);
+export default function UserPage() {
 	return (
-		<>
-			<div>{loading && <p>Loading.....</p>}</div>
-			<div>{user && <p>{user.name}</p>}</div>
-			<div>{error && <p>{error}</p>}</div>
-		</>
+		<div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4 fade-in animate-in duration-500">
+			<h2 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
+				Welcome to MovieApp 🎬
+			</h2>
+			<p className="text-xl text-muted-foreground max-w-[600px]">
+				Discover new releases, search for your favorites, and build your ultimate watchlist.
+			</p>
+		</div>
 	);
-};
-
-export default UserPage;
+}
 
 // Loading ...
 // Error

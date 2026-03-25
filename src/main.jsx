@@ -1,11 +1,13 @@
 import './index.css';
+import './App.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router';
-import { ThemeProvider } from './components/theme-provider';
-import App from './App';
+import { createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router';
+import { ThemeProvider } from '@/components/theme-provider';
+import App from './App.jsx';
 import MainLayout from './layouts/MainLayout';
 import NotFound404 from './pages/NotFound404';
+
 
 const router = createBrowserRouter([
 	{
@@ -30,8 +32,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
-			<RouterProvider router={router} />
+		<ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
+			<App />
 		</ThemeProvider>
-	</StrictMode>,
+	</StrictMode>
 );
