@@ -42,7 +42,7 @@ export default function MainLayout() {
 										</Link>
 									</NavigationMenuItem>
 									<NavigationMenuItem>
-										<Link to='/login' className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary whitespace-nowrap'>
+										<Link to='/register' className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary whitespace-nowrap'>
 											Login
 										</Link>
 									</NavigationMenuItem>

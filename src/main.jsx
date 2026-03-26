@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router
 import { ThemeProvider } from '@/components/theme-provider';
 import App from './App.jsx';
 import MainLayout from './layouts/MainLayout';
+import Register from './pages/Register';
 import NotFound404 from './pages/NotFound404';
 
 
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
 			{
 				index: true,
 				element: <App />,
+			},
+			{
+				path:'register',
+				element: <Register />,
 			},
 			// Dynamic route
 		],
