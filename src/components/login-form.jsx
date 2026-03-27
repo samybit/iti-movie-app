@@ -34,36 +34,50 @@ const handleLogin = async (e) => {
   setIsSubmitting(true)
 
   try {
-    await signInWithEmailAndPassword(auth, email, password)
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    )
+
+    const user = userCredential.user
+
+    // verification
+    if (!user.emailVerified) {
+      toast.error("Please verify your email first ")
+      return
+    }
+
     toast.success("Logged in successfully ✅")
+
   } catch (error) {
 
-   switch (error.code) {
+    switch (error.code) {
 
-  case "auth/user-not-found":
-    toast.error("No account found with this email ❌")
-    break
+      case "auth/user-not-found":
+        toast.error("No account found with this email ❌")
+        break
 
-  case "auth/wrong-password":
-  case "auth/invalid-credential":
-    toast.error("Incorrect email or password ❌")
-    break
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        toast.error("Incorrect email or password ❌")
+        break
 
-  case "auth/invalid-email":
-    toast.error("Invalid email format ❌")
-    break
+      case "auth/invalid-email":
+        toast.error("Invalid email format ❌")
+        break
 
-  case "auth/network-request-failed":
-    toast.error("Check your internet connection 🌐")
-    break
+      case "auth/network-request-failed":
+        toast.error("Check your internet connection 🌐")
+        break
 
-  case "auth/too-many-requests":
-    toast.error("Too many attempts. Try again later ⏳")
-    break
+      case "auth/too-many-requests":
+        toast.error("Too many attempts. Try again later ⏳")
+        break
 
-  default:
-    toast.error("Login failed. Please try again ❌")
-}
+      default:
+        toast.error("Login failed. Please try again ❌")
+    }
 
   } finally {
     setIsSubmitting(false)

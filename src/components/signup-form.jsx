@@ -23,6 +23,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth"
+// send email verification
+import { sendEmailVerification } from "firebase/auth"
 
 import { doc, setDoc } from "firebase/firestore"
 import { auth, db } from "../lib/firebase"
@@ -70,26 +72,50 @@ function SignupForm(props) {
   /////////////////////////////
 
   const submitLogic = async (data) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      )
+  try {
+    // create user
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      data.email,
+      data.password
+    )
 
-      const user = userCredential.user
+    const user = userCredential.user
 
-      await setDoc(doc(db, "users", user.uid), {
-        name: data.name,
-        email: data.email,
-        wishlist: [],
-      })
+    // save data in firebase
+    await setDoc(doc(db, "users", user.uid), {
+      name: data.name,
+      email: data.email,
+      wishlist: [],
+    })
 
-      toast.success("Account created successfully ✅")
-    } catch (error) {
-      toast.error(error.message)
+    // send verification email
+    await sendEmailVerification(user)
+
+    toast.success("Account created successfully ✅ Please verify your email 📩")
+
+  } catch (error) {
+
+    switch (error.code) {
+
+      case "auth/email-already-in-use":
+        toast.error("This email is already registered ❌")
+        break
+
+      case "auth/invalid-email":
+        toast.error("Invalid email format ❌")
+        break
+
+      case "auth/weak-password":
+        toast.error("Password should be at least 6 characters ❌")
+        break
+
+      default:
+        toast.error("Something went wrong. Try again later ❌")
+
     }
   }
+}
 
   /////////////////////////////
   // Google Signup
