@@ -1,86 +1,72 @@
-import { useState } from 'react';
 import { useMovies } from '@/hooks/useMovies';
-import MovieList from '@/components/MovieList';
-import GenreFilter from '@/components/GenreFilter';
-import SortSelect from '@/components/SortSelect';
-import PaginationControls from '@/components/PaginationControls';
-import EmptyState from '@/components/EmptyState';
+import HorizontalScroll from '@/components/HorizontalScroll';
+import TrailerSection from '@/components/TrailerSection';
+import HomeStats from '@/components/HomeStats';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import usePageTitle from '@/hooks/usePageTitle';
 
 function App() {
-	const [selectedGenre, setSelectedGenre] = useState('');
-	const [sortBy, setSortBy] = useState('popularity.desc');
-	const [page, setPage] = useState(1);
-
-	// Determine type: if filters are applied, use 'discover', otherwise 'now_playing'
-	const fetchType = (selectedGenre || sortBy !== 'popularity.desc') ? 'discover' : 'now_playing';
-
-	const { movies, totalPages, loading, error } = useMovies({
-		type: fetchType,
-		page,
-		sort_by: sortBy,
-		with_genres: selectedGenre,
+	usePageTitle('Home');
+	const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useMovies({
+		type: 'trending',
+		mediaType: 'movie'
 	});
 
-	const handleGenreSelect = (genreId) => {
-		setSelectedGenre(genreId);
-		setPage(1); // Reset to first page when filtering
-	};
+	const { data: trendingTV, loading: tvLoading } = useMovies({
+		type: 'trending',
+		mediaType: 'tv'
+	});
 
-	const handleSortChange = (value) => {
-		setSortBy(value);
-		setPage(1); // Reset to first page when sorting
-	};
-
-	const handlePageChange = (newPage) => {
-		setPage(newPage);
-		window.scrollTo({ top: 0, behavior: 'smooth' });
-	};
+	const { data: freeMovies, loading: freeLoading } = useMovies({
+		type: 'discover',
+		mediaType: 'movie',
+		// Ideally we'd filter by free providers, but for demo discover is fine
+		sort_by: 'vote_count.desc' 
+	});
 
 	return (
-		<div className='space-y-8'>
-			<section className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
-				<div>
-					<h2 className='text-3xl font-bold tracking-tight'>
-						{fetchType === 'now_playing' ? 'Now Playing' : 'Discovery'}
-					</h2>
-					<p className='text-slate-500'>
-						Browse through the latest and most popular movies.
-					</p>
-				</div>
-				<SortSelect value={sortBy} onValueChange={handleSortChange} />
+		<div className='space-y-12 pb-20'>
+			{/* Hero / Welcome Section can be added here if needed, but HomeStats has a CTA */}
+			
+			<section>
+				{trendingError && (
+					<Alert variant='destructive' className='mb-6'>
+						<AlertCircle className='h-4 w-4' />
+						<AlertTitle>Error</AlertTitle>
+						<AlertDescription>
+							Failed to load trending content. Check your API key.
+						</AlertDescription>
+					</Alert>
+				)}
+				
+				<HorizontalScroll 
+					title='Trending Movies' 
+					data={trendingMovies} 
+					isLoading={trendingLoading} 
+				/>
+			</section>
+
+			<TrailerSection />
+
+			<section>
+				<HorizontalScroll 
+					title='Trending TV Shows' 
+					data={trendingTV} 
+					isLoading={tvLoading} 
+					mediaType='tv'
+				/>
 			</section>
 
 			<section>
-				<h3 className='text-sm font-semibold uppercase tracking-wider text-slate-400 mb-2'>
-					Filter by Genre
-				</h3>
-				<GenreFilter selectedGenre={selectedGenre} onSelectGenre={handleGenreSelect} />
+				<HorizontalScroll 
+					title='Free to Watch' 
+					data={freeMovies} 
+					isLoading={freeLoading} 
+				/>
 			</section>
 
-			{error && (
-				<Alert variant='destructive'>
-					<AlertCircle className='h-4 w-4' />
-					<AlertTitle>Error</AlertTitle>
-					<AlertDescription>
-						{error}. Please try again later.
-					</AlertDescription>
-				</Alert>
-			)}
-
-			{!loading && movies.length === 0 ? (
-				<EmptyState />
-			) : (
-				<>
-					<MovieList movies={movies} isLoading={loading} />
-					<PaginationControls
-						currentPage={page}
-						totalPages={totalPages}
-						onPageChange={handlePageChange}
-					/>
-				</>
-			)}
+			<HomeStats />
 		</div>
 	);
 }

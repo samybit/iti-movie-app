@@ -6,6 +6,7 @@ import {
 	NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import BackToTop from '@/components/BackToTop';
+import CommunityFooter from '@/components/CommunityFooter';
 
 export default function MainLayout() {
 	return (
@@ -19,6 +20,11 @@ export default function MainLayout() {
 							<NavigationMenuItem>
 								<Link to='/' className='font-medium hover:text-blue-600'>
 									Home
+								</Link>
+							</NavigationMenuItem>
+							<NavigationMenuItem>
+								<Link to='/browse' className='font-medium hover:text-blue-600'>
+									Browse
 								</Link>
 							</NavigationMenuItem>
 							<NavigationMenuItem>
@@ -48,10 +54,7 @@ export default function MainLayout() {
 
 			<BackToTop />
 
-			{/* Footer UI */}
-			<footer className='border-t bg-white p-6 text-center text-sm text-slate-500'>
-				<p>© 2026 ITI by ELDash with 💖</p>
-			</footer>
+			<CommunityFooter />
 		</div>
 	);
 }

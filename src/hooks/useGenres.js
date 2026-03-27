@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
-import api from '@/lib/api';
+import { movieService } from '../services/movieService';
+import { tvService } from '../services/tvService';
 
-export function useGenres() {
+export function useGenres(type = 'movie') {
 	const [genres, setGenres] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		const fetchGenres = async () => {
+			setLoading(true);
 			try {
-				const response = await api.get('/genre/movie/list');
+				const service = type === 'tv' ? tvService : movieService;
+				const response = await service.getGenres();
 				setGenres(response.data.genres);
 			} catch (err) {
 				setError(err.message || 'Failed to fetch genres');
@@ -19,7 +22,7 @@ export function useGenres() {
 		};
 
 		fetchGenres();
-	}, []);
+	}, [type]);
 
 	return { genres, loading, error };
 }
