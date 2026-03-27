@@ -1,6 +1,7 @@
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Users, Film, Tv, Layout, Zap, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router';
 
 const HomeStats = () => {
 	const stats = [
@@ -44,11 +45,11 @@ const HomeStats = () => {
 						Get access to maintain your own custom personal lists, track what you've seen and search and filter for what to watch next.
 					</p>
 					<div className='flex flex-wrap gap-4 pt-4 justify-center'>
-						<Button size='lg' className='rounded-full px-8 bg-white text-blue-600 hover:bg-slate-100 font-bold shadow-xl gap-2'>
-							Sign Up Now <ArrowRight size={16} />
+						<Button asChild size='lg' className='rounded-full px-8 bg-white text-blue-600 hover:bg-slate-100 font-bold shadow-xl gap-2'>
+							<Link to='/register'>Sign Up Now <ArrowRight size={16} /></Link>
 						</Button>
-						<Button size='lg' variant='ghost' className='rounded-full px-8 text-white hover:bg-white/10 border border-white/20 font-bold'>
-							Learn More
+						<Button asChild size='lg' variant='ghost' className='rounded-full px-8 text-white hover:bg-white/10 border border-white/20 font-bold'>
+							<Link to='/browse'>Learn More</Link>
 						</Button>
 					</div>
 				</div>
