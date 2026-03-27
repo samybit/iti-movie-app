@@ -5,6 +5,7 @@ import {
 	NavigationMenuLink,
 	NavigationMenuList,
 } from '@/components/ui/navigation-menu';
+import BackToTop from '@/components/BackToTop';
 
 export default function MainLayout() {
 	return (
@@ -44,6 +45,8 @@ export default function MainLayout() {
 			<main className='flex-grow container mx-auto p-4'>
 				<Outlet />
 			</main>
+
+			<BackToTop />
 
 			{/* Footer UI */}
 			<footer className='border-t bg-white p-6 text-center text-sm text-slate-500'>
