@@ -43,11 +43,10 @@ import toast, { Toaster } from "react-hot-toast"
 
 const signupSchema = z
   .object({
-    name: z.string().min(3, "Name must be at least 3 characters"),
+name: z.string().min(7, "Full name must be at least two words").regex(/^[A-Za-z]{3,}\s[A-Za-z]{3,}/,"Enter first and last name (each at least 4 letters)"),  
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    confirm: z.string(),
-  })
+    confirm: z.string(), })
   .refine((data) => data.password === data.confirm, {
     message: "Passwords do not match",
     path: ["confirm"],
