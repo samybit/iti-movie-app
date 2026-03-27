@@ -1,5 +1,5 @@
-import { Heart, Star } from 'lucide-react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Heart, Star, Calendar } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router';
@@ -8,84 +8,93 @@ import { Link } from 'react-router';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist }) => {
-	// Safely extract TMDB data with fallbacks for both Movies and Series
-	const id = movie?.id;
-	const title = movie?.title || movie?.name || 'Unknown Title';
-	const releaseYear = (movie?.release_date || movie?.first_air_date) 
-		? new Date(movie.release_date || movie.first_air_date).getFullYear() 
-		: 'N/A';
-	const rating = movie?.vote_average ? movie.vote_average.toFixed(1) : 'NR';
-	const posterUrl = movie?.poster_path
-		? `${IMAGE_BASE_URL}${movie.poster_path}`
-		: 'https://placehold.co/500x750/1f2937/ffffff?text=No+Poster';
+	const { id, title, name, poster_path, vote_average, release_date, first_air_date } = movie;
+	const displayTitle = title || name || 'Unknown';
+	const displayDate = release_date || first_air_date;
+	const mediaType = title ? 'movie' : 'tv';
+	const imageUrl = poster_path
+		? `https://image.tmdb.org/t/p/w500${poster_path}`
+		: 'https://placehold.co/500x750?text=No+Image';
+	const isComingSoon = displayDate && new Date(displayDate) > new Date();
 
-	const mediaType = movie?.title ? 'movie' : 'tv';
+	// Color-coded rating
+	const ratingColor =
+		vote_average >= 7 ? 'bg-green-500 text-white' :
+		vote_average >= 5 ? 'bg-yellow-400 text-yellow-950' :
+		'bg-red-500 text-white';
 
 	return (
-		<Card className='group relative overflow-hidden flex flex-col h-full border-slate-200 bg-white hover:shadow-2xl hover:border-blue-200 transition-all duration-300 rounded-2xl'>
-			{/* Poster Image Container */}
-			<div className='relative aspect-[2/3] overflow-hidden bg-slate-100'>
-				<img
-					src={posterUrl}
-					alt={`${title} poster`}
-					className='object-cover w-full h-full transition-transform duration-500 group-hover:scale-110'
-					loading='lazy'
-				/>
+		<Card className='overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col h-full group rounded-2xl bg-white'>
+			<div className='relative aspect-[2/3] overflow-hidden rounded-t-2xl'>
+				<Link to={`/${mediaType}/${id}`} className='block w-full h-full'>
+					<img
+						src={imageUrl}
+						alt={displayTitle}
+						className='w-full h-full object-cover transition-transform duration-700 group-hover:scale-110'
+						loading='lazy'
+					/>
+					{/* Gradient overlay for readability */}
+					<div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
+				</Link>
 
-				{/* Rating Badge Overlay */}
-				<div className='absolute top-3 left-3'>
-					<Badge className='flex items-center gap-1 bg-black/60 text-white border-none backdrop-blur-md px-2 py-1'>
-						<Star className='w-3 h-3 text-yellow-400 fill-yellow-400' />
-						<span className='font-bold text-xs'>{rating}</span>
-					</Badge>
-				</div>
+				{/* Coming Soon badge */}
+				{isComingSoon && (
+					<div className='absolute top-3 left-3'>
+						<Badge className='bg-amber-500/90 backdrop-blur-sm text-white border-none shadow-lg font-bold text-[10px] px-2.5 py-1 animate-pulse'>
+							Coming Soon
+						</Badge>
+					</div>
+				)}
 
-				{/* Wishlist Button Overlay */}
+				{/* Wishlist heart */}
 				<div className='absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
 					<Button
 						variant='ghost'
 						size='icon'
-						className={`w-9 h-9 rounded-full backdrop-blur-md shadow-lg transition-transform active:scale-90 ${
-							isWishlisted ? 'bg-red-500/20 text-red-500' : 'bg-black/40 text-white hover:bg-black/60'
+						className={`rounded-full bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 shadow-lg ${
+							isWishlisted ? 'text-red-400 opacity-100' : 'text-white'
 						}`}
 						onClick={(e) => {
 							e.preventDefault();
 							onToggleWishlist?.(movie);
 						}}
 					>
-						<Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
-						<span className='sr-only'>Toggle wishlist</span>
+						<Heart className={isWishlisted ? 'fill-current' : ''} size={18} />
 					</Button>
+				</div>
+
+				{/* Rating badge */}
+				<div className='absolute bottom-3 left-3'>
+					<div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-black shadow-lg backdrop-blur-sm ${ratingColor}`}>
+						<Star size={12} className='fill-current' />
+						{vote_average?.toFixed(1)}
+					</div>
+				</div>
+
+				{/* View details on hover */}
+				<div className='absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300'>
+					<Link to={`/${mediaType}/${id}`}>
+						<Button size='sm' className='rounded-xl bg-white/90 text-slate-900 hover:bg-white text-xs font-bold shadow-lg backdrop-blur-sm h-8 px-3'>
+							Details →
+						</Button>
+					</Link>
 				</div>
 			</div>
 
-			{/* Card Body */}
-			<CardHeader className='p-4 pb-0'>
+			{/* Card body */}
+			<CardHeader className='p-3 pb-0'>
 				<Link to={`/${mediaType}/${id}`} className='hover:no-underline'>
-					<CardTitle className='text-base font-bold line-clamp-1 group-hover:text-blue-600 transition-colors' title={title}>
-						{title}
+					<CardTitle className='text-sm font-bold line-clamp-1 hover:text-blue-600 transition-colors'>
+						{displayTitle}
 					</CardTitle>
 				</Link>
 			</CardHeader>
-			
-			<CardContent className='p-4 pt-1 flex-grow flex flex-col justify-between'>
-				<div className='flex items-center justify-between'>
-					<p className='text-xs font-medium text-slate-500 uppercase tracking-tighter'>
-						{mediaType === 'movie' ? 'Movie' : 'TV Series'}
-					</p>
-					<p className='text-xs font-bold text-slate-400'>
-						{releaseYear}
-					</p>
-				</div>
+			<CardContent className='p-3 pt-1 flex-grow'>
+				<p className='text-[11px] text-slate-400 flex items-center gap-1'>
+					<Calendar size={10} />
+					{displayDate ? new Date(displayDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBA'}
+				</p>
 			</CardContent>
-
-			<CardFooter className='p-4 pt-0'>
-				<Button asChild variant='outline' className='w-full rounded-xl border-slate-200 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all group/btn'>
-					<Link to={`/${mediaType}/${id}`} className='flex items-center justify-center gap-2'>
-						<span>View Details</span>
-					</Link>
-				</Button>
-			</CardFooter>
 		</Card>
 	);
 };

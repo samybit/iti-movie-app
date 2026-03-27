@@ -1,2 +1,46 @@
 @import "tailwindcss";
 
+<<<<<<< HEAD
+=======
+/* ── Custom Scrollbar ──────────────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* ── Hide scrollbar for carousels ──────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Date inputs ────────────────────────────────────────────── */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: opacity(0.5);
+}
+
+/* ── Smooth page transitions ────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Focus ring override ────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+>>>>>>> belal

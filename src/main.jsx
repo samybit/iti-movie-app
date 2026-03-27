@@ -34,8 +34,22 @@ const router = createBrowserRouter([
 				element: <Register />,
 			},
 			{
-				path: 'login', // Re-using register for login for now or common UI
+				path: 'login',
 				element: <Register />,
+			},
+			{
+				path: 'movie/:id',
+				lazy: async () => {
+					const MediaDetail = (await import('./pages/MediaDetail')).default;
+					return { element: <MediaDetail type='movie' /> };
+				},
+			},
+			{
+				path: 'tv/:id',
+				lazy: async () => {
+					const MediaDetail = (await import('./pages/MediaDetail')).default;
+					return { element: <MediaDetail type='tv' /> };
+				},
 			},
 		],
 	},
