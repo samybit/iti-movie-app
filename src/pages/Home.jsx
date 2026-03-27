@@ -8,7 +8,7 @@ import usePageTitle from '@/hooks/usePageTitle';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 
-export default function App() {
+const Home = () => {
 	usePageTitle('Home');
 	
 	const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useMovies({
@@ -133,4 +133,6 @@ export default function App() {
 			<HomeStats />
 		</div>
 	);
-}
+};
+
+export default Home;
