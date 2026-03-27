@@ -10,6 +10,7 @@ import Search from './pages/Search';
 import Browse from './pages/Browse';
 import MainLayout from './layouts/MainLayout';
 import Register from './pages/Register';
+import Login from './pages/Login';
 import Wishlist from './pages/Wishlist';
 import MediaDetail from './pages/MediaDetail';
 import NotFound404 from './pages/NotFound404';
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'login',
-				element: <Register />,
+				element: <Login />,
 			},
 			{
 				path: 'movie/:id',

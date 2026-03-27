@@ -1,8 +1,11 @@
 import SignupForm from "@/components/signup-form";
-export default function Register(){
-return(
-    <>
-    <SignupForm/>
-    </>
-)
+import usePageTitle from "@/hooks/usePageTitle";
+
+export default function Register() {
+	usePageTitle("Register");
+	return (
+		<>
+			<SignupForm />
+		</>
+	);
 }
