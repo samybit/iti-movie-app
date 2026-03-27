@@ -10,6 +10,8 @@ import Search from './pages/Search';
 import Browse from './pages/Browse';
 import MainLayout from './layouts/MainLayout';
 import Register from './pages/Register';
+import Wishlist from './pages/Wishlist';
+import MediaDetail from './pages/MediaDetail';
 import NotFound404 from './pages/NotFound404';
 
 const router = createBrowserRouter([
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
 				element: <Search />,
 			},
 			{
+				path: 'wishlist',
+				element: <Wishlist />,
+			},
+			{
 				path: 'register',
 				element: <Register />,
 			},
@@ -39,17 +45,11 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'movie/:id',
-				lazy: async () => {
-					const MediaDetail = (await import('./pages/MediaDetail')).default;
-					return { element: <MediaDetail type='movie' /> };
-				},
+				element: <MediaDetail type='movie' />,
 			},
 			{
 				path: 'tv/:id',
-				lazy: async () => {
-					const MediaDetail = (await import('./pages/MediaDetail')).default;
-					return { element: <MediaDetail type='tv' /> };
-				},
+				element: <MediaDetail type='tv' />,
 			},
 		],
 	},

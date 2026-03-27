@@ -1,7 +1,10 @@
 import MovieCard from './MovieCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useWishlist } from '../hooks/useWishlist';
 
-const MovieList = ({ movies, isLoading, totalPages }) => {
+const MovieList = ({ movies, isLoading }) => {
+	const { isWishlisted, toggleWishlist } = useWishlist();
+
 	if (isLoading) {
 		return (
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
@@ -21,7 +24,12 @@ const MovieList = ({ movies, isLoading, totalPages }) => {
 	return (
 		<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
 			{movies.map((movie) => (
-				<MovieCard key={movie.id} movie={movie} />
+				<MovieCard 
+					key={movie.id} 
+					movie={movie} 
+					isWishlisted={isWishlisted(movie.id)}
+					onToggleWishlist={() => toggleWishlist(movie)}
+				/>
 			))}
 		</div>
 	);

@@ -2,8 +2,10 @@ import { useRef, useState } from 'react';
 import MovieCard from './MovieCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useWishlist } from '../hooks/useWishlist';
 
-const HorizontalScroll = ({ title, data, isLoading, mediaType = 'movie' }) => {
+const HorizontalScroll = ({ title, data, isLoading }) => {
+	const { isWishlisted, toggleWishlist } = useWishlist();
 	const scrollRef = useRef(null);
 	const [canScrollLeft, setCanScrollLeft] = useState(false);
 	const [canScrollRight, setCanScrollRight] = useState(true);
@@ -78,7 +80,11 @@ const HorizontalScroll = ({ title, data, isLoading, mediaType = 'movie' }) => {
 				>
 					{data.map((item) => (
 						<div key={item.id} className='min-w-[180px] max-w-[180px] snap-start'>
-							<MovieCard movie={item} />
+							<MovieCard 
+								movie={item} 
+								isWishlisted={isWishlisted(item.id)}
+								onToggleWishlist={() => toggleWishlist(item)}
+							/>
 						</div>
 					))}
 				</div>
