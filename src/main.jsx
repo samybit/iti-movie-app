@@ -2,35 +2,45 @@ import './index.css';
 import './App.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ThemeProvider } from '@/components/theme-provider';
-import App from './App.jsx';
+import { Toaster } from '@/components/ui/sonner';
+import App from './App';
+import Search from './pages/Search';
+import Browse from './pages/Browse';
 import MainLayout from './layouts/MainLayout';
 import Register from './pages/Register';
 import NotFound404 from './pages/NotFound404';
-
 
 const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <MainLayout />,
 		children: [
-			// Root Route
 			{
 				index: true,
 				element: <App />,
 			},
 			{
-				path:'register',
+				path: 'browse',
+				element: <Browse />,
+			},
+			{
+				path: 'search',
+				element: <Search />,
+			},
+			{
+				path: 'register',
 				element: <Register />,
 			},
-			// Dynamic route
+			{
+				path: 'login', // Re-using register for login for now or common UI
+				element: <Register />,
+			},
 		],
 	},
-
-	// Wildcard Route 404
 	{
-		path: '*', // Wildcard Route 404: match all unknown urls
+		path: '*',
 		element: <NotFound404 />,
 	},
 ]);
@@ -38,7 +48,8 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
 		<ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
-			<App />
+			<RouterProvider router={router} />
+			<Toaster position="top-center" richColors />
 		</ThemeProvider>
 	</StrictMode>
 );
