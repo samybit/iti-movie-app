@@ -115,9 +115,16 @@
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
 }
+body{
+  background-color: var(--accent);
+}
 button{
   cursor: pointer;
 }
+.login-button{
+  background-color: var(--sidebar-primary);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

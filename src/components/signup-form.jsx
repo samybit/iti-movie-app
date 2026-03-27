@@ -1,130 +1,276 @@
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth"
+
 import { doc, setDoc } from "firebase/firestore"
 import { auth, db } from "../lib/firebase"
-import registerImage from "../assets/registerImage.png"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGoogle } from "@fortawesome/free-brands-svg-icons"
 
+import { Link } from "react-router-dom"
+
+import registerImage from "../assets/registerImage.webp"
+
+// Toast
+import toast, { Toaster } from "react-hot-toast"
+
+/////////////////////////////
 // Validation Schema
-const schema = z
+/////////////////////////////
+
+const signupSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
+    confirm: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.confirm, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["confirm"],
   })
 
-export default function SignupPage() {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
-    resolver: zodResolver(schema),
+/////////////////////////////
+// Component
+/////////////////////////////
+
+function SignupForm(props) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(signupSchema),
   })
 
-  const onSubmit = async (data) => {
+  /////////////////////////////
+  // Email Signup
+  /////////////////////////////
+
+  const submitLogic = async (data) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      )
+
       const user = userCredential.user
+
       await setDoc(doc(db, "users", user.uid), {
         name: data.name,
         email: data.email,
         wishlist: [],
       })
-      alert("Account created successfully ✅")
+
+      toast.success("Account created successfully ✅")
     } catch (error) {
-      alert(error.message)
+      toast.error(error.message)
     }
   }
 
-  const handleGoogleSignUp = async () => {
+  /////////////////////////////
+  // Google Signup
+  /////////////////////////////
+
+  const handleGoogleSignup = async () => {
     try {
       const provider = new GoogleAuthProvider()
+
       const result = await signInWithPopup(auth, provider)
+
       const user = result.user
-      await setDoc(doc(db, "users", user.uid), {
-        name: user.displayName || "Guest",
-        email: user.email,
-        wishlist: [],
-      }, { merge: true })
-      alert("Signed in with Google ✅")
+
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          name: user.displayName || "Guest",
+          email: user.email,
+          wishlist: [],
+        },
+        { merge: true }
+      )
+
+      toast.success("Signed in with Google ✅")
     } catch (error) {
-      alert(error.message)
+      toast.error(error.message)
     }
   }
 
+  /////////////////////////////
+  // UI
+  /////////////////////////////
+
   return (
-    <div className="flex min-h-screen">
-     
-      <div className="hidden md:flex w-1/2 bg-cover bg-center" style={{ backgroundImage: `url(${registerImage})` }}>
-      
-      </div>
+    <div className="flex min-h-screen items-center justify-center">
 
-      <div className="flex w-full md:w-1/2 justify-center items-center bg-gray-50 p-8">
-        <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-center mb-2">Create Account</h2>
-          <p className="text-center text-gray-500 mb-6">Get started with MovieApp today.</p>
+      {/* Toast Container */}
+      <Toaster position="top-center" reverseOrder={false} />
 
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gy-4">
-            <input
-              type="text"
-              placeholder="Full Name"
-              {...register("name")}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <p className="text-red-500 text-sm h-4">{errors.name?.message}</p>
+      {/* Main Container */}
+      <div className="flex w-full max-w-5xl overflow-hidden rounded-2xl shadow-2xl">
 
-            <input
-              type="email"
-              placeholder="Email Address"
-              {...register("email")}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <p className="text-red-500 text-sm h-4">{errors.email?.message}</p>
+        {/* Left Image */}
+        <div
+          className="hidden md:block w-1/2 bg-cover bg-center"
+          style={{ backgroundImage: `url(${registerImage})` }}
+        />
 
-            <input
-              type="password"
-              placeholder="Create a password"
-              {...register("password")}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <p className="text-red-500 text-sm h-4">{errors.password?.message}</p>
+        {/* Right Form */}
+        <div className="flex w-full md:w-1/2 items-center justify-center p-10 bg-white dark:bg-gray-900">
 
-            <input
-              type="password"
-              placeholder="Confirm your password"
-              {...register("confirmPassword")}
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <p className="text-red-500 text-sm h-4">{errors.confirmPassword?.message}</p>
+          <Card className="w-full max-w-md border-0 shadow-none bg-transparent">
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="mt-2 bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 disabled:bg-indigo-400"
-            >
-              {isSubmitting ? "Creating..." : "Sign Up"}
-            </button>
+            <CardHeader>
+              <CardTitle>Create an account</CardTitle>
 
-            <button
-              type="button"
-              onClick={handleGoogleSignUp}
-              
-              className="mt-2 bg-white border border-gray-300 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2">
-                <FontAwesomeIcon icon={faGoogle} className="text-[#DB4437]" />
-              Sign up with Google
-            </button>
+              <CardDescription>
+                Enter your information below to create your account
+              </CardDescription>
+            </CardHeader>
 
-            <p className="text-center text-gray-600 mt-2">
-              Already have an account? <a href="/login" className="text-indigo-600 hover:underline">Sign in</a>
-            </p>
-          </form>
+            <CardContent>
+              <form onSubmit={handleSubmit(submitLogic)}>
+
+                <FieldGroup>
+
+                  {/* Name */}
+                  <Field>
+                    <FieldLabel>Full Name</FieldLabel>
+
+                    <Input
+                      placeholder="Your name"
+                      {...register("name")}
+                    />
+
+                    {errors.name && (
+                      <FieldDescription className="text-red-600">
+                        {errors.name.message}
+                      </FieldDescription>
+                    )}
+                  </Field>
+
+                  {/* Email */}
+                  <Field>
+                    <FieldLabel>Email</FieldLabel>
+
+                    <Input
+                      type="email"
+                      placeholder="m@example.com"
+                      {...register("email")}
+                    />
+
+                    {errors.email && (
+                      <FieldDescription className="text-red-600">
+                        {errors.email.message}
+                      </FieldDescription>
+                    )}
+                  </Field>
+
+                  {/* Password */}
+                  <Field>
+                    <FieldLabel>Password</FieldLabel>
+
+                    <Input
+                      type="password"
+                      {...register("password")}
+                    />
+
+                    {errors.password && (
+                      <FieldDescription className="text-red-600">
+                        {errors.password.message}
+                      </FieldDescription>
+                    )}
+                  </Field>
+
+                  {/* Confirm Password */}
+                  <Field>
+                    <FieldLabel>Confirm Password</FieldLabel>
+
+                    <Input
+                      type="password"
+                      {...register("confirm")}
+                    />
+
+                    {errors.confirm && (
+                      <FieldDescription className="text-red-600">
+                        {errors.confirm.message}
+                      </FieldDescription>
+                    )}
+                  </Field>
+
+                  {/* Submit Button */}
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full"
+                  >
+                    {isSubmitting
+                      ? "Creating Account..."
+                      : "Create Account"}
+                  </Button>
+
+                  {/* Google Button */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full flex gap-2"
+                    onClick={handleGoogleSignup}
+                  >
+                    <FontAwesomeIcon
+                      icon={faGoogle}
+                      className="text-[#DB4437]"
+                    />
+                    Sign up with Google
+                  </Button>
+
+                  {/* Login Link */}
+                  <p className="text-center text-sm text-gray-500 dark:text-gray-300">
+                    Already have an account?{" "}
+                    <Link
+                      to="/login"
+                      className="text-indigo-600 hover:underline"
+                    >
+                      Sign in
+                    </Link>
+                  </p>
+
+                </FieldGroup>
+
+              </form>
+            </CardContent>
+
+          </Card>
+
         </div>
+
       </div>
+
     </div>
   )
 }
+
+export default SignupForm

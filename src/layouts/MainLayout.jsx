@@ -6,6 +6,7 @@ import {
 	NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Button } from '@/components/ui/button';
 
 export default function MainLayout() {
 	return (
@@ -42,8 +43,11 @@ export default function MainLayout() {
 										</Link>
 									</NavigationMenuItem>
 									<NavigationMenuItem>
-										<Link to='/register' className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary whitespace-nowrap'>
-											Login
+										<Link to="/register">
+											<Button
+												className="bg-gray-800 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors hover:bg-gray-700 whitespace-nowrap login-button">
+												Login
+											</Button>
 										</Link>
 									</NavigationMenuItem>
 								</NavigationMenuList>

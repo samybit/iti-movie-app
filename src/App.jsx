@@ -6,6 +6,7 @@ import UserPage from "./pages/UserPage";
 import SearchPage from "./pages/SearchPage";
 import { ThemeProvider } from "@/components/theme-provider";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route index element={<UserPage />} />
             <Route path="search" element={<SearchPage />} /> {/* The Search Route */}
             <Route path="register" element={<Register/>}/>
+            <Route path="login" element={<Login/>}/>
             <Route path="*" element={<NotFound404 />} />
           </Route>
         </Routes>
