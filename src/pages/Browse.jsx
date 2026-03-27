@@ -115,7 +115,7 @@ const Browse = () => {
 
 			{/* Sidebar Desktop */}
 			<aside className='hidden lg:block w-72 flex-shrink-0'>
-				<div className='sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto pr-4 custom-scrollbar bg-white rounded-xl border p-4 shadow-sm'>
+				<div className='sticky top-20 bg-white rounded-xl border p-4 shadow-sm'>
 					<AdvancedSidebar 
 						filters={pendingFilters} 
 						setFilters={setPendingFilters} 

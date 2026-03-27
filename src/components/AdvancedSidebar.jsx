@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { ChevronRight, Search, SlidersHorizontal, Tv, Film } from 'lucide-react';
+import { ChevronRight, Search, SlidersHorizontal, Tv, Film, X } from 'lucide-react';
 
 // ── Reusable sub-heading ────────────────────────────────────────────────────
 const SectionLabel = ({ children }) => (
@@ -91,25 +91,7 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 
 				{/* SORT ─────────────────────────────────────────────────────── */}
 				<AccordionItem value='sort' className='border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden'>
-					<AccordionTrigger className='font-bold hover:no-underline px-5 py-3 text-sm data-[state=open]:border-b border-slate-100'>
-						Sort
-					</AccordionTrigger>
-					<AccordionContent className='px-5 pb-5 pt-4'>
-						<Label className='text-[11px] text-slate-400 uppercase tracking-wider font-bold mb-2 block'>Sort Results By</Label>
-						<Select value={filters.sort_by} onValueChange={(v) => update({ sort_by: v })}>
-							<SelectTrigger className='w-full bg-slate-50/80 border-slate-200 rounded-xl text-sm'>
-								<SelectValue placeholder='Select' />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value='popularity.desc'>Popularity Descending</SelectItem>
-								<SelectItem value='popularity.asc'>Popularity Ascending</SelectItem>
-								<SelectItem value='vote_average.desc'>Rating Descending</SelectItem>
-								<SelectItem value='vote_average.asc'>Rating Ascending</SelectItem>
-								<SelectItem value='primary_release_date.desc'>Release Date Desc.</SelectItem>
-								<SelectItem value='primary_release_date.asc'>Release Date Asc.</SelectItem>
-							</SelectContent>
-						</Select>
-					</AccordionContent>
+					
 				</AccordionItem>
 
 				{/* WHERE TO WATCH ───────────────────────────────────────────── */}
@@ -120,8 +102,69 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 							<span className='text-[10px] font-extrabold bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full border border-blue-100'>41</span>
 						</div>
 					</AccordionTrigger>
-					<AccordionContent className='px-5 py-8 text-center'>
-						<p className='text-xs text-slate-300 italic'>Streaming providers coming soon</p>
+					<AccordionContent className='px-5 pb-5 pt-4 space-y-5'>
+						{/* My Services */}
+						<div className='space-y-3'>
+							<SectionLabel>My Services</SectionLabel>
+							<label className='flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 rounded-lg py-1.5 px-2 -mx-2 transition-colors'>
+								<Checkbox id='restrict-services' />
+								<span className='text-[12px] text-slate-600 leading-tight'>Restrict searches to my subscribed services?</span>
+							</label>
+						</div>
+
+						{/* Country */}
+						<div className='space-y-3 border-t border-dashed border-slate-100 pt-4'>
+							<SectionLabel>Country</SectionLabel>
+							<Select value={filters.with_origin_country} onValueChange={(v) => update({ with_origin_country: v })}>
+								<SelectTrigger className='w-full bg-slate-50/80 border-slate-200 rounded-xl text-[13px]'>
+									<SelectValue placeholder='Select Country' />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value='US'>🇺🇸 United States</SelectItem>
+									<SelectItem value='GB'>🇬🇧 United Kingdom</SelectItem>
+									<SelectItem value='DE'>🇩🇪 Germany</SelectItem>
+									<SelectItem value='FR'>🇫🇷 France</SelectItem>
+									<SelectItem value='TR'>🇹🇷 Turkey</SelectItem>
+									<SelectItem value='EG'>🇪🇬 Egypt</SelectItem>
+									<SelectItem value='SA'>🇸🇦 Saudi Arabia</SelectItem>
+									<SelectItem value='IN'>🇮🇳 India</SelectItem>
+									<SelectItem value='JP'>🇯🇵 Japan</SelectItem>
+									<SelectItem value='KR'>🇰🇷 South Korea</SelectItem>
+									{countries.filter(c => !['US','GB','DE','FR','TR','EG','SA','IN','JP','KR'].includes(c.iso_3166_1)).map(c => (
+										<SelectItem key={c.iso_3166_1} value={c.iso_3166_1}>{c.english_name}</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+
+						{/* Streaming Platforms */}
+						<div className='space-y-3 border-t border-dashed border-slate-100 pt-4'>
+							<SectionLabel>Available Platforms</SectionLabel>
+							<div className='grid grid-cols-3 gap-2'>
+								{[
+									{ name: 'Netflix', color: 'bg-red-600', text: 'N' },
+									{ name: 'Disney+', color: 'bg-blue-700', text: 'D+' },
+									{ name: 'Amazon', color: 'bg-sky-500', text: 'P' },
+									{ name: 'HBO Max', color: 'bg-purple-700', text: 'H' },
+									{ name: 'Apple TV+', color: 'bg-slate-800', text: '🍎' },
+									{ name: 'Hulu', color: 'bg-green-500', text: 'h' },
+									{ name: 'Paramount+', color: 'bg-blue-500', text: 'P+' },
+									{ name: 'Peacock', color: 'bg-yellow-500', text: '🦚' },
+									{ name: 'Crunchyroll', color: 'bg-orange-500', text: 'CR' },
+								].map(({ name, color, text }) => (
+									<button
+										key={name}
+										className='flex flex-col items-center gap-1.5 p-2 rounded-xl border border-slate-100 hover:border-blue-300 hover:shadow-md transition-all group cursor-pointer'
+										title={name}
+									>
+										<div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center text-white text-xs font-black shadow-sm group-hover:scale-110 transition-transform`}>
+											{text}
+										</div>
+										<span className='text-[9px] text-slate-400 font-semibold truncate w-full text-center'>{name}</span>
+									</button>
+								))}
+							</div>
+						</div>
 					</AccordionContent>
 				</AccordionItem>
 
@@ -169,19 +212,25 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 								<span className='text-[13px] text-slate-600'>Search all releases?</span>
 							</label>
 							<div className='grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 pt-1'>
-								<span className='text-[11px] text-slate-400 font-medium'>from</span>
+								<span className='text-[11px] text-slate-400 font-medium whitespace-nowrap'>from</span>
 								<Input
-									type='date'
+									type='number'
+									placeholder='Year (e.g. 2020)'
+									min={1900}
+									max={2100}
 									value={filters.release_date_gte}
 									onChange={(e) => update({ release_date_gte: e.target.value })}
-									className='h-8 text-xs rounded-lg bg-slate-50/80 border-slate-200'
+									className='h-8 text-xs rounded-lg bg-slate-50/80 border-slate-200 focus-visible:ring-blue-500'
 								/>
-								<span className='text-[11px] text-slate-400 font-medium'>to</span>
+								<span className='text-[11px] text-slate-400 font-medium whitespace-nowrap'>to</span>
 								<Input
-									type='date'
+									type='number'
+									placeholder='Year (e.g. 2024)'
+									min={1900}
+									max={2100}
 									value={filters.release_date_lte}
 									onChange={(e) => update({ release_date_lte: e.target.value })}
-									className='h-8 text-xs rounded-lg bg-slate-50/80 border-slate-200'
+									className='h-8 text-xs rounded-lg bg-slate-50/80 border-slate-200 focus-visible:ring-blue-500'
 								/>
 							</div>
 						</div>
@@ -216,29 +265,56 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 							</div>
 						</div>
 
-						{/* Certification ──────────────── */}
-						<div className='border-t border-dashed border-slate-100 pt-5'>
-							<button className='flex items-center justify-between w-full group'>
-								<SectionLabel>Certification</SectionLabel>
-								<ChevronRight size={14} className='text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all' />
-							</button>
-						</div>
 
 						{/* Language ────────────────────── */}
 						<div className='space-y-3 border-t border-dashed border-slate-100 pt-5'>
 							<SectionLabel>Language</SectionLabel>
-							<Select value={filters.with_original_language} onValueChange={(v) => update({ with_original_language: v })}>
-								<SelectTrigger className='w-full bg-slate-50/80 border-slate-200 rounded-xl text-[13px]'>
-									<SelectValue placeholder='None Selected' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='en'>English</SelectItem>
-									<SelectItem value='tr'>Turkish</SelectItem>
-									{languages.filter(l => !['en', 'tr'].includes(l.iso_639_1)).map(l => (
-										<SelectItem key={l.iso_639_1} value={l.iso_639_1}>{l.english_name}</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+							<div className='pt-1 space-y-3'>
+								<Select onValueChange={(v) => {
+									const cur = filters.with_original_language?.split(',').filter(Boolean) || [];
+									if (!cur.includes(v)) {
+										update({ with_original_language: [...cur, v].join(',') });
+									}
+								}}>
+									<SelectTrigger className='w-full bg-slate-50/80 border-slate-200 rounded-xl text-[13px]'>
+										<SelectValue placeholder='Select Language' />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='en'>English</SelectItem>
+										<SelectItem value='tr'>Turkish</SelectItem>
+										<SelectItem value='ar'>Arabic</SelectItem>
+										<SelectItem value='ko'>Korean</SelectItem>
+										<SelectItem value='fr'>French</SelectItem>
+										<SelectItem value='de'>German</SelectItem>
+										<SelectItem value='es'>Spanish</SelectItem>
+										<SelectItem value='ja'>Japanese</SelectItem>
+										{languages.filter(l => !['en', 'tr', 'ar', 'ko', 'fr', 'de', 'es', 'ja'].includes(l.iso_639_1)).map(l => (
+											<SelectItem key={l.iso_639_1} value={l.iso_639_1}>{l.english_name}</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+
+								{/* Selected Language Pills */}
+								<div className='flex flex-wrap gap-1.5'>
+									{filters.with_original_language?.split(',').filter(Boolean).map(langCode => {
+										const lang = languages.find(l => l.iso_639_1 === langCode);
+										return (
+											<div key={langCode} className='flex items-center gap-1.5 pl-2 pr-1 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-lg text-[11px] font-bold animate-in fade-in zoom-in duration-200'>
+												{lang ? lang.english_name : langCode}
+												<button 
+													onClick={() => {
+														const cur = filters.with_original_language.split(',').filter(x => x !== langCode);
+														update({ with_original_language: cur.join(',') });
+													}}
+													className='p-0.5 hover:bg-blue-100 rounded-md transition-colors'
+												>
+													<X size={12} />
+												</button>
+											</div>
+										);
+									})}
+								</div>
+							</div>
 						</div>
 
 						{/* User Score ─────────────────── */}

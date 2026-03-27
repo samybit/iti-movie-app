@@ -58,10 +58,10 @@ export function useMovies({
 						'with_runtime.gte': with_runtime_gte,
 						'with_runtime.lte': with_runtime_lte,
 						'with_keywords': with_keywords,
-						'air_date.gte': mediaType === 'tv' ? release_date_gte : undefined,
-						'air_date.lte': mediaType === 'tv' ? release_date_lte : undefined,
-						'primary_release_date.gte': mediaType === 'movie' ? release_date_gte : undefined,
-						'primary_release_date.lte': mediaType === 'movie' ? release_date_lte : undefined,
+						'primary_release_date.gte': mediaType === 'movie' ? (release_date_gte && release_date_gte.length === 4 ? `${release_date_gte}-01-01` : release_date_gte) : undefined,
+						'primary_release_date.lte': mediaType === 'movie' ? (release_date_lte && release_date_lte.length === 4 ? `${release_date_lte}-12-31` : release_date_lte) : undefined,
+						'air_date.gte': mediaType === 'tv' ? (release_date_gte && release_date_gte.length === 4 ? `${release_date_gte}-01-01` : release_date_gte) : undefined,
+						'air_date.lte': mediaType === 'tv' ? (release_date_lte && release_date_lte.length === 4 ? `${release_date_lte}-12-31` : release_date_lte) : undefined,
 					};
 
 					// Clean up undefined values from params
