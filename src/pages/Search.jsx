@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router';
 import { useMovies } from '@/hooks/useMovies';
 import useDebounce from '@/hooks/useDebounce';
 import MovieList from '@/components/MovieList';
@@ -11,10 +12,21 @@ import usePageTitle from '@/hooks/usePageTitle';
 
 const Search = () => {
 	usePageTitle('Search');
-	const [query, setQuery] = useState('');
+	const [urlParams] = useSearchParams();
+	const initialQuery = urlParams.get('q') || '';
+	const [query, setQuery] = useState(initialQuery);
 	const [page, setPage] = useState(1);
 	const [mediaType, setMediaType] = useState('movie');
 	const debouncedQuery = useDebounce(query, 500);
+
+	// Sync query if navigated with ?q= param
+	useEffect(() => {
+		const q = urlParams.get('q');
+		if (q && q !== query) {
+			setQuery(q);
+			setPage(1);
+		}
+	}, [urlParams]);
 
 	const { data: movies, totalPages, loading, error } = useMovies({
 		type: 'search',

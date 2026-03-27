@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router';
+import { useSearchParams, useNavigate } from 'react-router';
 import { useMovies } from '../hooks/useMovies';
 import MovieList from '../components/MovieList';
 import PaginationControls from '../components/PaginationControls';
@@ -8,12 +8,15 @@ import EmptyState from '../components/EmptyState';
 import SortSelect from '../components/SortSelect';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Filter, Search } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
 
 const Browse = () => {
 	usePageTitle('Browse');
+	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
+	const [browseQuery, setBrowseQuery] = useState('');
 
 	// These are the active filters being used for the API call
 	const activeFilters = {
@@ -136,6 +139,27 @@ const Browse = () => {
 						value={activeFilters.sort_by} 
 						onValueChange={handleSortChange} 
 					/>
+				</div>
+
+				{/* Search Field — redirects to /search */}
+				<div className='relative'>
+					<Search size={18} className='absolute left-4 top-1/2 -translate-y-1/2 text-slate-400' />
+					<Input
+						placeholder={`Search ${activeFilters.mediaType === 'movie' ? 'movies' : 'series'}...`}
+						value={browseQuery}
+						onChange={(e) => setBrowseQuery(e.target.value)}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter' && browseQuery.trim()) navigate(`/search?q=${encodeURIComponent(browseQuery.trim())}`);
+						}}
+						className='pl-11 pr-24 h-12 rounded-2xl bg-white border-slate-200 shadow-sm text-sm placeholder:text-slate-300 focus-visible:ring-blue-500'
+					/>
+					<Button
+						onClick={() => { if (browseQuery.trim()) navigate(`/search?q=${encodeURIComponent(browseQuery.trim())}`); }}
+						size='sm'
+						className='absolute right-2 top-1/2 -translate-y-1/2 rounded-xl bg-blue-600 hover:bg-blue-700 font-bold px-5 h-8'
+					>
+						Search
+					</Button>
 				</div>
 
 				{data.length === 0 && !loading ? (
