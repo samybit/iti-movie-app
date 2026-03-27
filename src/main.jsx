@@ -28,7 +28,20 @@ const router = createBrowserRouter([
 				path: 'search',
 				element: <Search />,
 			},
-			// Dynamic route
+			{
+				path: 'movie/:id',
+				lazy: async () => {
+					const MediaDetail = (await import('./pages/MediaDetail')).default;
+					return { element: <MediaDetail type='movie' /> };
+				},
+			},
+			{
+				path: 'tv/:id',
+				lazy: async () => {
+					const MediaDetail = (await import('./pages/MediaDetail')).default;
+					return { element: <MediaDetail type='tv' /> };
+				},
+			},
 		],
 	},
 

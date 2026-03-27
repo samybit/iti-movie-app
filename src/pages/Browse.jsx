@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router';
 import { useMovies } from '../hooks/useMovies';
 import MovieList from '../components/MovieList';
 import PaginationControls from '../components/PaginationControls';
@@ -12,25 +13,80 @@ import usePageTitle from '@/hooks/usePageTitle';
 
 const Browse = () => {
 	usePageTitle('Browse');
-	const [filters, setFilters] = useState({
-		mediaType: 'movie',
-		with_genres: '',
-		with_original_language: '',
-		release_date_gte: '',
-		release_date_lte: '',
-		episode_count_gte: '',
-		episode_count_lte: '',
-		sort_by: 'popularity.desc',
-		page: 1,
-	});
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	// These are the active filters being used for the API call
+	const activeFilters = {
+		mediaType: searchParams.get('type') || 'movie',
+		with_genres: searchParams.get('genres') || '',
+		with_original_language: searchParams.get('lang') || '',
+		with_origin_country: searchParams.get('country') || '',
+		language: searchParams.get('translate') || 'en-US',
+		release_date_gte: searchParams.get('year_from') || '',
+		release_date_lte: searchParams.get('year_to') || '',
+		episode_count_gte: searchParams.get('ep_min') || '',
+		episode_count_lte: searchParams.get('ep_max') || '',
+		vote_average_gte: searchParams.get('score_min') || '',
+		vote_count_gte: searchParams.get('votes_min') || '',
+		with_runtime_gte: searchParams.get('runtime_min') || '',
+		with_runtime_lte: searchParams.get('runtime_max') || '',
+		with_keywords: searchParams.get('keywords') || '',
+		sort_by: searchParams.get('sort') || 'popularity.desc',
+		page: parseInt(searchParams.get('page') || '1', 10),
+	};
+
+	// These are the filters currently being edited in the sidebar
+	const [pendingFilters, setPendingFilters] = useState(activeFilters);
+
+	// Sync pending filters with searchParams when they change externally (e.g. navigation)
+	useEffect(() => {
+		setPendingFilters(activeFilters);
+	}, [searchParams]);
 
 	const { data, totalPages, loading, error } = useMovies({
 		type: 'discover',
-		...filters,
+		...activeFilters,
 	});
 
-	const handleFilterChange = (newFilters) => {
-		setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
+	const handleSearch = () => {
+		const updatedParams = new URLSearchParams(searchParams);
+		
+		const paramMap = {
+			mediaType: 'type',
+			with_genres: 'genres',
+			with_original_language: 'lang',
+			with_origin_country: 'country',
+			language: 'translate',
+			release_date_gte: 'year_from',
+			release_date_lte: 'year_to',
+			episode_count_gte: 'ep_min',
+			episode_count_lte: 'ep_max',
+			vote_average_gte: 'score_min',
+			vote_count_gte: 'votes_min',
+			with_runtime_gte: 'runtime_min',
+			with_runtime_lte: 'runtime_max',
+			with_keywords: 'keywords',
+			sort_by: 'sort', // Sort stays immediate for UX
+			page: 'page',
+		};
+
+		Object.entries(pendingFilters).forEach(([key, value]) => {
+			const paramName = paramMap[key] || key;
+			if (value && value !== '0') {
+				updatedParams.set(paramName, value);
+			} else {
+				updatedParams.delete(paramName);
+			}
+		});
+
+		updatedParams.set('page', '1'); // Reset page on new search
+		setSearchParams(updatedParams);
+	};
+
+	const handleSortChange = (newSort) => {
+		const updatedParams = new URLSearchParams(searchParams);
+		updatedParams.set('sort', newSort);
+		setSearchParams(updatedParams);
 	};
 
 	return (
@@ -44,19 +100,24 @@ const Browse = () => {
 							<Filter size={16} /> Filters
 						</Button>
 					</SheetTrigger>
-					<SheetContent side='left' className='w-80 overflow-y-auto'>
-						<div className='mt-6'>
-							<AdvancedSidebar filters={filters} onFilterChange={handleFilterChange} />
-						</div>
+					<SheetContent side='left' className='w-80 overflow-y-auto pt-10'>
+						<AdvancedSidebar 
+							filters={pendingFilters} 
+							setFilters={setPendingFilters} 
+							onSearch={handleSearch}
+						/>
 					</SheetContent>
 				</Sheet>
 			</div>
 
 			{/* Sidebar Desktop */}
 			<aside className='hidden lg:block w-72 flex-shrink-0'>
-				<div className='sticky top-24'>
-					<h2 className='text-2xl font-bold tracking-tight mb-6'>Filters</h2>
-					<AdvancedSidebar filters={filters} onFilterChange={handleFilterChange} />
+				<div className='sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto pr-4 custom-scrollbar bg-white rounded-xl border p-4 shadow-sm'>
+					<AdvancedSidebar 
+						filters={pendingFilters} 
+						setFilters={setPendingFilters} 
+						onSearch={handleSearch}
+					/>
 				</div>
 			</aside>
 
@@ -64,28 +125,32 @@ const Browse = () => {
 			<div className='flex-grow space-y-8'>
 				<div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
 					<div>
-						<h1 className='text-3xl font-extrabold tracking-tight hidden lg:block'>
-							Browse {filters.mediaType === 'movie' ? 'Movies' : 'Series'}
+						<h1 className='text-3xl font-extrabold tracking-tight hidden lg:block uppercase'>
+							{activeFilters.mediaType === 'movie' ? 'Movies' : 'TV Series'}
 						</h1>
 						<p className='text-slate-500'>
-							Showing {filters.mediaType === 'movie' ? 'cinema masterworks' : 'binge-worthy shows'}.
+							{loading ? 'Searching...' : `Discover the perfect ${activeFilters.mediaType === 'movie' ? 'movie' : 'series'}.` }
 						</p>
 					</div>
 					<SortSelect 
-						value={filters.sort_by} 
-						onValueChange={(val) => handleFilterChange({ sort_by: val })} 
+						value={activeFilters.sort_by} 
+						onValueChange={handleSortChange} 
 					/>
 				</div>
 
 				{data.length === 0 && !loading ? (
-					<EmptyState description='Try clearing some filters or changing your selection.' />
+					<EmptyState description='No matches found. Adjust your filters and try again.' />
 				) : (
 					<div className='space-y-10'>
 						<MovieList movies={data} isLoading={loading} />
 						<PaginationControls
-							currentPage={filters.page}
+							currentPage={activeFilters.page}
 							totalPages={totalPages}
-							onPageChange={(p) => setFilters(prev => ({ ...prev, page: p }))}
+							onPageChange={(p) => {
+								const updatedParams = new URLSearchParams(searchParams);
+								updatedParams.set('page', p);
+								setSearchParams(updatedParams);
+							}}
 						/>
 					</div>
 				)}

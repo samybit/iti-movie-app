@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { movieService } from '../services/movieService';
 import { tvService } from '../services/tvService';
 
-export function useGenres(type = 'movie') {
+export function useGenres(type = 'movie', language = 'en-US') {
 	const [genres, setGenres] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export function useGenres(type = 'movie') {
 			setLoading(true);
 			try {
 				const service = type === 'tv' ? tvService : movieService;
-				const response = await service.getGenres();
+				const response = await service.getGenres(language);
 				setGenres(response.data.genres);
 			} catch (err) {
 				setError(err.message || 'Failed to fetch genres');
@@ -22,7 +22,7 @@ export function useGenres(type = 'movie') {
 		};
 
 		fetchGenres();
-	}, [type]);
+	}, [type, language]);
 
 	return { genres, loading, error };
 }

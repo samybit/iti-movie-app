@@ -22,6 +22,9 @@ export const movieService = {
 	getVideos: (id) =>
 		api.get(`/movie/${id}/videos`),
 
+	getCredits: (id) =>
+		api.get(`/movie/${id}/credits`),
+
 	getRecommendations: (id) =>
 		api.get(`/movie/${id}/recommendations`),
 
@@ -31,8 +34,8 @@ export const movieService = {
 	discover: (params) =>
 		api.get('/discover/movie', { params }),
 
-	getGenres: () =>
-		api.get('/genre/movie/list'),
+	getGenres: (language = 'en-US') => 
+		api.get('/genre/movie/list', { params: { language } }),
 
 	getLanguages: () =>
 		api.get('/configuration/languages'),
