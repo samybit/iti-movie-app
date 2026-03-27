@@ -7,12 +7,6 @@ export const tvService = {
 	getPopular: (page = 1) =>
 		api.get('/tv/popular', { params: { page } }),
 
-	getDetails: (id) =>
-		api.get(`/tv/${id}`),
-
-	getVideos: (id) =>
-		api.get(`/tv/${id}/videos`),
-
 	search: (query, page = 1) =>
 		api.get('/search/tv', { params: { query, page } }),
 
@@ -23,7 +17,7 @@ export const tvService = {
 		api.get('/genre/tv/list', { params: { language } }),
 
 	getDetails: (id) =>
-		api.get(`/tv/${id}`),
+		api.get(`/tv/${id}`, { params: { append_to_response: 'keywords' } }),
 
 	getVideos: (id) =>
 		api.get(`/tv/${id}/videos`),
