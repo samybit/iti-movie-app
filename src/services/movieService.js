@@ -17,7 +17,7 @@ export const movieService = {
 		api.get('/movie/upcoming', { params: { page } }),
 
 	getDetails: (id) =>
-		api.get(`/movie/${id}`),
+		api.get(`/movie/${id}`, { params: { append_to_response: 'keywords' } }),
 
 	getVideos: (id) =>
 		api.get(`/movie/${id}/videos`),
