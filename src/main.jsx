@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
-import App from './App';
+import Home from './pages/Home';
 import Search from './pages/Search';
 import Browse from './pages/Browse';
 import MainLayout from './layouts/MainLayout';
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				element: <App />,
+				element: <Home />,
 			},
 			{
 				path: 'browse',
