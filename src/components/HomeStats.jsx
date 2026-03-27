@@ -1,14 +1,38 @@
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Users, Film, Tv, Layout, Zap, ArrowRight } from 'lucide-react';
+import { Clapperboard, MonitorPlay, UsersRound, Activity, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 
 const HomeStats = () => {
 	const stats = [
-		{ label: 'Movies', value: '850K+', icon: <Film size={22} />, color: 'from-blue-500 to-blue-600', bg: 'bg-blue-50' },
-		{ label: 'TV Shows', value: '150K+', icon: <Tv size={22} />, color: 'from-purple-500 to-purple-600', bg: 'bg-purple-50' },
-		{ label: 'Members', value: '4.2M+', icon: <Users size={22} />, color: 'from-emerald-500 to-emerald-600', bg: 'bg-emerald-50' },
-		{ label: 'API Requests', value: '1.2B+', icon: <Zap size={22} />, color: 'from-amber-500 to-amber-600', bg: 'bg-amber-50' },
+		{ 
+			label: 'Movies Catalog', 
+			value: '850K+', 
+			icon: <Clapperboard size={24} className='fill-blue-500/10' />, 
+			color: 'text-blue-600', 
+			bg: 'bg-blue-50/50' 
+		},
+		{ 
+			label: 'TV Series', 
+			value: '150K+', 
+			icon: <MonitorPlay size={24} className='fill-purple-500/10' />, 
+			color: 'text-purple-600', 
+			bg: 'bg-purple-50/50' 
+		},
+		{ 
+			label: 'Global Members', 
+			value: '4.2M+', 
+			icon: <UsersRound size={24} className='fill-emerald-500/10' />, 
+			color: 'text-emerald-600', 
+			bg: 'bg-emerald-50/50' 
+		},
+		{ 
+			label: 'Daily Activity', 
+			value: '1.2B+', 
+			icon: <Activity size={24} className='fill-amber-500/10' />, 
+			color: 'text-amber-600', 
+			bg: 'bg-amber-50/50' 
+		},
 	];
 
 	return (
@@ -16,15 +40,17 @@ const HomeStats = () => {
 			{/* ── Stats Grid ──────────────────────────────────── */}
 			<div className='grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6'>
 				{stats.map((stat, i) => (
-					<Card key={i} className='border-0 shadow-md hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden group cursor-default'>
-						<CardContent className='pt-6 pb-6 flex flex-col items-center text-center space-y-3'>
-							<div className={`p-3 rounded-2xl ${stat.bg} group-hover:scale-110 transition-transform duration-300`}>
-								<div className={`bg-gradient-to-br ${stat.color} bg-clip-text text-transparent`}>
+					<Card key={i} className='border-0 shadow-md hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden group cursor-default bg-white'>
+						<CardContent className='pt-8 pb-8 flex flex-col items-center text-center space-y-4'>
+							<div className={`p-4 rounded-2xl ${stat.bg} group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}>
+								<div className={`${stat.color}`}>
 									{stat.icon}
 								</div>
 							</div>
-							<div className='text-3xl font-black text-slate-900 tracking-tight'>{stat.value}</div>
-							<div className='text-sm text-slate-400 font-semibold uppercase tracking-wider'>{stat.label}</div>
+							<div className='space-y-1'>
+								<div className='text-3xl font-black text-slate-900 tracking-tighter'>{stat.value}</div>
+								<div className='text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]'>{stat.label}</div>
+							</div>
 						</CardContent>
 					</Card>
 				))}
