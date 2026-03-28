@@ -13,6 +13,9 @@ const MediaDetail = ({ type }) => {
 	const [details, setDetails] = useState(null);
 	const [credits, setCredits] = useState(null);
 	const [videos, setVideos] = useState([]);
+
+	const [similar, setSimilar] = useState([]);
+
 	const [loading, setLoading] = useState(true);
 
 	usePageTitle(details?.title || details?.name || 'Loading details...');
@@ -22,14 +25,16 @@ const MediaDetail = ({ type }) => {
 			setLoading(true);
 			try {
 				const service = type === 'movie' ? movieService : tvService;
-				const [detailsRes, creditsRes, videosRes] = await Promise.all([
+				const [detailsRes, creditsRes, videosRes , similarRes ] = await Promise.all([
 					service.getDetails(id),
 					service.getCredits(id),
 					service.getVideos(id),
+					service.getSimilar(id),
 				]);
 				setDetails(detailsRes.data);
 				setCredits(creditsRes.data);
 				setVideos(videosRes.data.results);
+				setSimilar(similarRes.data.results);
 			} catch (error) {
 				console.error('Error fetching media details:', error);
 			} finally {
@@ -172,6 +177,44 @@ const MediaDetail = ({ type }) => {
 							</div>
 						</section>
 					)}
+
+					{/* Similar Movies Section */}
+{similar.length > 0 && (
+	<section className='space-y-6'>
+		<h2 className='text-2xl font-bold'>
+			Similar {type === 'movie' ? 'Movies' : 'TV Shows'}
+		</h2>
+
+		<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6'>
+			{similar.slice(0, 10).map(item => (
+				<Link
+					key={item.id}
+					to={`/${type}/${item.id}`}
+					className='group space-y-3'
+				>
+					<div className='aspect-[2/3] rounded-xl overflow-hidden bg-slate-800'>
+						{item.poster_path ? (
+							<img
+								src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+								alt={item.title || item.name}
+								className='w-full h-full object-cover group-hover:scale-105 transition'
+							/>
+						) : (
+							<div className='w-full h-full flex items-center justify-center text-slate-500'>
+								No Image
+							</div>
+						)}
+					</div>
+
+					<p className='text-sm font-semibold line-clamp-1'>
+						{item.title || item.name}
+					</p>
+				</Link>
+			))}
+		</div>
+	</section>
+)}
+
 				</div>
 
 				{/* Sidebar Info */}
