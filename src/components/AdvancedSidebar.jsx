@@ -89,10 +89,6 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 			{/* ── Accordion Sections ──────────────────────────────────────── */}
 			<Accordion type='multiple' defaultValue={['sort', 'filters']} className='w-full space-y-2.5'>
 
-				{/* SORT ─────────────────────────────────────────────────────── */}
-				<AccordionItem value='sort' className='border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden'>
-					
-				</AccordionItem>
 
 				{/* WHERE TO WATCH ───────────────────────────────────────────── */}
 				<AccordionItem value='watch' className='border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden'>
@@ -278,9 +274,9 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 							<SectionLabel>Language</SectionLabel>
 							<div className='pt-1 space-y-3'>
 								<Select onValueChange={(v) => {
-									const cur = filters.with_original_language?.split(',').filter(Boolean) || [];
+									const cur = filters.with_original_language?.split('|').filter(Boolean) || [];
 									if (!cur.includes(v)) {
-										update({ with_original_language: [...cur, v].join(',') });
+										update({ with_original_language: [...cur, v].join('|') });
 									}
 								}}>
 									<SelectTrigger className='w-full bg-slate-50/80 border-slate-200 rounded-xl text-[13px]'>
@@ -303,15 +299,15 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 
 								{/* Selected Language Pills */}
 								<div className='flex flex-wrap gap-1.5'>
-									{filters.with_original_language?.split(',').filter(Boolean).map(langCode => {
+									{filters.with_original_language?.split('|').filter(Boolean).map(langCode => {
 										const lang = languages.find(l => l.iso_639_1 === langCode);
 										return (
 											<div key={langCode} className='flex items-center gap-1.5 pl-2 pr-1 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-lg text-[11px] font-bold animate-in fade-in zoom-in duration-200'>
 												{lang ? lang.english_name : langCode}
 												<button 
 													onClick={() => {
-														const cur = filters.with_original_language.split(',').filter(x => x !== langCode);
-														update({ with_original_language: cur.join(',') });
+														const cur = filters.with_original_language.split('|').filter(x => x !== langCode);
+														update({ with_original_language: cur.join('|') });
 													}}
 													className='p-0.5 hover:bg-blue-100 rounded-md transition-colors'
 												>
