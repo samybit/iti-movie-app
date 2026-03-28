@@ -20,11 +20,12 @@ const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist }) => {
 	// Color-coded rating
 	const ratingColor =
 		vote_average >= 7 ? 'bg-green-500 text-white' :
-		vote_average >= 5 ? 'bg-yellow-400 text-yellow-950' :
-		'bg-red-500 text-white';
+			vote_average >= 5 ? 'bg-yellow-400 text-yellow-950' :
+				'bg-red-500 text-white';
 
 	return (
-		<Card className='overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col h-full group rounded-2xl bg-white'>
+		// Removed bg-white and added bg-card
+		<Card className='overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col h-full group rounded-2xl bg-card'>
 			<div className='relative aspect-[2/3] overflow-hidden rounded-t-2xl'>
 				<Link to={`/${mediaType}/${id}`} className='block w-full h-full'>
 					<img
@@ -51,9 +52,8 @@ const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist }) => {
 					<Button
 						variant='ghost'
 						size='icon'
-						className={`rounded-full bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 shadow-lg ${
-							isWishlisted ? 'text-red-400 opacity-100' : 'text-white'
-						}`}
+						className={`rounded-full bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 shadow-lg ${isWishlisted ? 'text-red-400 opacity-100' : 'text-white'
+							}`}
 						onClick={(e) => {
 							e.preventDefault();
 							onToggleWishlist?.(movie);
@@ -84,13 +84,14 @@ const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist }) => {
 			{/* Card body */}
 			<CardHeader className='p-3 pb-0'>
 				<Link to={`/${mediaType}/${id}`} className='hover:no-underline'>
-					<CardTitle className='text-sm font-bold line-clamp-1 hover:text-blue-600 transition-colors'>
+					<CardTitle className='text-sm font-bold line-clamp-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors'>
 						{displayTitle}
 					</CardTitle>
 				</Link>
 			</CardHeader>
 			<CardContent className='p-3 pt-1 flex-grow'>
-				<p className='text-[11px] text-slate-400 flex items-center gap-1'>
+				{/* Changed text-slate-400 to text-muted-foreground */}
+				<p className='text-[11px] text-muted-foreground flex items-center gap-1'>
 					<Calendar size={10} />
 					{displayDate ? new Date(displayDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBA'}
 				</p>

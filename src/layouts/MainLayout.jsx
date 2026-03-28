@@ -27,7 +27,7 @@ export default function MainLayout() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [userName, setUserName] = useState("");
-    const [loadingUser, setLoadingUser] = useState(true); // <<< New
+    const [loadingUser, setLoadingUser] = useState(true);
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -87,8 +87,10 @@ export default function MainLayout() {
     if (loadingUser) return null;
 
     return (
-        <div className='min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white'>
-            <header className='sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl shadow-sm'>
+        // Added dark:from-background dark:to-background
+        <div className='min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white dark:from-background dark:to-background text-foreground transition-colors duration-300'>
+            {/* Added dark:border-border dark:bg-background/80 */}
+            <header className='sticky top-0 z-50 w-full border-b border-slate-200/60 dark:border-border bg-white/80 dark:bg-background/80 backdrop-blur-xl shadow-sm'>
                 <div className='container mx-auto flex h-16 items-center justify-between px-4 lg:px-8'>
                     {/* Logo */}
                     <Link to='/' className='flex items-center gap-2.5 group'>
@@ -114,7 +116,7 @@ export default function MainLayout() {
                                                 setIsSearchOpen(true);
                                             }
                                         }}
-                                        className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200'
+                                        className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all duration-200'
                                     >
                                         {icon} {label}
                                     </button>
@@ -125,11 +127,10 @@ export default function MainLayout() {
                                 <Link
                                     key={to}
                                     to={to}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                                        isActive
-                                            ? 'bg-blue-50 text-blue-600 shadow-sm'
-                                            : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-                                    }`}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${isActive
+                                            ? 'bg-blue-50 text-blue-600 shadow-sm dark:bg-blue-500/10 dark:text-blue-400'
+                                            : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
+                                        }`}
                                 >
                                     {icon} {label}
                                 </Link>
@@ -140,20 +141,20 @@ export default function MainLayout() {
                         {user ? (
                             <button
                                 onClick={() => setIsAccountOpen(true)}
-                                className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-taupe-900 hover:text-slate-800 hover:bg-slate-50 transition-all'
+                                className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-800 dark:text-foreground hover:bg-slate-50 dark:hover:bg-accent transition-all'
                             >
                                 <User size={16} /> {userName}
                             </button>
                         ) : (
                             <Link
                                 to='/login'
-                                className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all'
+                                className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all'
                             >
                                 <LogIn size={16} /> Login
                             </Link>
                         )}
 
-                        <div className='ml-4 pl-4 border-l border-slate-200'>
+                        <div className='ml-4 pl-4 border-l border-slate-200 dark:border-border'>
                             <ThemeToggle />
                         </div>
                     </nav>
@@ -162,7 +163,7 @@ export default function MainLayout() {
                     <div className='flex items-center md:hidden gap-2'>
                         <ThemeToggle />
                         <button
-                            className='p-2 rounded-xl hover:bg-slate-100 transition-colors'
+                            className='p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-accent transition-colors'
                             onClick={() => setMobileOpen(!mobileOpen)}
                         >
                             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -172,7 +173,7 @@ export default function MainLayout() {
 
                 {/* Mobile Drawer */}
                 {mobileOpen && (
-                    <div className='md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200'>
+                    <div className='md:hidden border-t border-slate-100 dark:border-border bg-white/95 dark:bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200'>
                         <nav className='container mx-auto flex flex-col gap-1 p-4'>
                             {navItems.map(({ to, label, icon }) => {
                                 if (label === 'Search') {
@@ -187,7 +188,7 @@ export default function MainLayout() {
                                                 }
                                                 setMobileOpen(false);
                                             }}
-                                            className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-all'
+                                            className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all'
                                         >
                                             {icon} {label}
                                         </button>
@@ -199,11 +200,10 @@ export default function MainLayout() {
                                         key={to}
                                         to={to}
                                         onClick={() => setMobileOpen(false)}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                                            isActive
-                                                ? 'bg-blue-50 text-blue-600'
-                                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
-                                        }`}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive
+                                                ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
+                                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
+                                            }`}
                                     >
                                         {icon} {label}
                                     </Link>
@@ -217,7 +217,7 @@ export default function MainLayout() {
                                         setIsAccountOpen(true);
                                         setMobileOpen(false);
                                     }}
-                                    className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-taupe-900 hover:bg-slate-50 hover:text-slate-800'
+                                    className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-800 dark:text-foreground hover:bg-slate-50 dark:hover:bg-accent transition-all'
                                 >
                                     <User size={16} /> {userName}
                                 </button>
@@ -225,7 +225,7 @@ export default function MainLayout() {
                                 <Link
                                     to='/login'
                                     onClick={() => setMobileOpen(false)}
-                                    className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                                    className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all'
                                 >
                                     <LogIn size={16} /> Login
                                 </Link>
