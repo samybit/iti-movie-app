@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import AccountSidebar from "@/components/AccountSidebar";
+import SearchModal from "@/components/SearchModal";
 
 const navItems = [
     { to: '/', label: 'Home', icon: <Film size={16} /> },
@@ -28,6 +29,7 @@ export default function MainLayout() {
     const [userName, setUserName] = useState("");
     const [loadingUser, setLoadingUser] = useState(true); // <<< New
     const [isAccountOpen, setIsAccountOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     // Listen to auth changes
     useEffect(() => {
@@ -54,6 +56,19 @@ export default function MainLayout() {
         });
 
         return () => unsubscribe();
+    }, []);
+
+    // Shortcut to open search (typical for professional apps)
+    useEffect(() => {
+        const down = (e) => {
+            if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                setIsSearchOpen(true);
+            }
+        };
+
+        document.addEventListener('keydown', down);
+        return () => document.removeEventListener('keydown', down);
     }, []);
 
     // Logout function
@@ -88,6 +103,23 @@ export default function MainLayout() {
                     {/* Desktop Navigation */}
                     <nav className='hidden md:flex items-center gap-1'>
                         {navItems.map(({ to, label, icon }) => {
+                            if (label === 'Search') {
+                                return (
+                                    <button
+                                        key={to}
+                                        onClick={() => {
+                                            if (pathname === '/browse') {
+                                                navigate('/search');
+                                            } else {
+                                                setIsSearchOpen(true);
+                                            }
+                                        }}
+                                        className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all duration-200'
+                                    >
+                                        {icon} {label}
+                                    </button>
+                                );
+                            }
                             const isActive = pathname === to || (to !== '/' && pathname.startsWith(to));
                             return (
                                 <Link
@@ -143,6 +175,24 @@ export default function MainLayout() {
                     <div className='md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200'>
                         <nav className='container mx-auto flex flex-col gap-1 p-4'>
                             {navItems.map(({ to, label, icon }) => {
+                                if (label === 'Search') {
+                                    return (
+                                        <button
+                                            key={to}
+                                            onClick={() => {
+                                                if (pathname === '/browse') {
+                                                    navigate('/search');
+                                                } else {
+                                                    setIsSearchOpen(true);
+                                                }
+                                                setMobileOpen(false);
+                                            }}
+                                            className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-all'
+                                        >
+                                            {icon} {label}
+                                        </button>
+                                    );
+                                }
                                 const isActive = pathname === to || (to !== '/' && pathname.startsWith(to));
                                 return (
                                     <Link
@@ -199,6 +249,7 @@ export default function MainLayout() {
 
             <BackToTop />
             <CommunityFooter />
+            <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </div>
     );
 }
