@@ -28,6 +28,9 @@ export const movieService = {
 	getRecommendations: (id) =>
 		api.get(`/movie/${id}/recommendations`),
 
+	getSimilar: (id) =>
+	api.get(`/movie/${id}/similar`),
+
 	search: (query, page = 1) =>
 		api.get('/search/movie', { params: { query, page } }),
 

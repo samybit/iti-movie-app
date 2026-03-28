@@ -6,6 +6,7 @@ export const tvService = {
 
 	getPopular: (page = 1) =>
 		api.get('/tv/popular', { params: { page } }),
+	
 
 	search: (query, page = 1) =>
 		api.get('/search/tv', { params: { query, page } }),
@@ -24,4 +25,7 @@ export const tvService = {
 
 	getCredits: (id) =>
 		api.get(`/tv/${id}/credits`),
+	
+	getSimilar: (id) =>
+	api.get(`/tv/${id}/similar`),
 };
