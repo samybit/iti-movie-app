@@ -3,129 +3,42 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
 
 import { User, Mail, ShieldCheck, ShieldX, LogOut } from "lucide-react";
 
-import { auth, db } from "@/lib/firebase";
-
-import { signOut } from "firebase/auth";
-
+import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-
 import { useEffect, useState } from "react";
 
-import { useNavigate } from "react-router";
+export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
 
-import toast from "react-hot-toast";
+  const [userName, setUserName] = useState(null);
 
-
-export default function AccountSidebar() {
-
-  const navigate = useNavigate();
-
-  const [userData, setUserData] = useState(null);
-
-  const user = auth.currentUser;
-
-
-  //////////////////////////////
-  // fetch user data
-  //////////////////////////////
-
+  //fetch name from Firestore
   useEffect(() => {
-
-    const fetchUser = async () => {
-
-      if (!user) return;
-
-      const docRef = doc(db, "users", user.uid);
-
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-
-        setUserData(docSnap.data());
-
-      }
-
+    const fetchName = async () => {
+      if (!user?.uid) return;
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (snap.exists()) setUserName(snap.data()?.name);
     };
-
-    fetchUser();
-
+    fetchName();
   }, [user]);
 
+  const displayName = userName || user?.displayName || user?.email?.split("@")[0] || "—";
 
-  //////////////////////////////
-  // logout
-  //////////////////////////////
-
-  const handleLogout = async () => {
-
-    try {
-
-      await signOut(auth);
-
-      toast.success("Logged out successfully 👋");
-
-      navigate("/login");
-
-    } catch {
-
-      toast.error("Logout failed ❌");
-
-    }
-
-  };
-
-
-  const initials = userData?.name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
-
-  //////////////////////////////
-  // UI
-  //////////////////////////////
+  const initials = displayName !== "—"
+    ? displayName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()
+    : null;
 
   return (
-
-    <Sheet>
-
-      <SheetTrigger asChild>
-
-        <button className="
-          group flex items-center gap-2 px-3 py-1.5 rounded-full
-          text-sm font-medium text-slate-500
-          border border-transparent
-          hover:border-slate-200 hover:text-slate-800 hover:bg-white
-          transition-all duration-200 shadow-none hover:shadow-sm
-        ">
-
-          <span className="
-            w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600
-            text-white text-[10px] font-bold flex items-center justify-center
-          ">
-            {initials || <User size={12} />}
-          </span>
-
-          {userData?.name?.split(" ")[0] || "Account"}
-
-        </button>
-
-      </SheetTrigger>
-
+    <Sheet open={isOpen} onOpenChange={onClose}>
 
       <SheetContent side="right" className="w-[340px] p-0 flex flex-col">
 
-
-        {/* Header gradient band */}
+        {/* Header gradient */}
         <div className="bg-gradient-to-br from-blue-500 to-indigo-600 px-6 pt-8 pb-10">
 
           <SheetHeader className="text-left mb-6">
@@ -136,39 +49,29 @@ export default function AccountSidebar() {
 
           {/* Avatar */}
           <div className="flex items-center gap-4">
-
             <div className="
               w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm
-              text-white text-2xl font-bold
-              flex items-center justify-center
+              text-white text-2xl font-bold flex items-center justify-center
               ring-2 ring-white/30 shadow-lg
             ">
               {initials || <User size={24} />}
             </div>
-
             <div>
               <p className="text-white text-lg font-semibold leading-tight">
-                {userData?.name || "—"}
+                {displayName}
               </p>
               <p className="text-white/60 text-sm mt-0.5">
                 {user?.email}
               </p>
             </div>
-
           </div>
-
         </div>
-
 
         {/* Body */}
         <div className="flex-1 px-6 py-6 space-y-3 -mt-4">
-
-
-          {/* Info card */}
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm divide-y divide-slate-100 overflow-hidden">
 
-
-            {/* Email row */}
+            {/* Email */}
             <div className="flex items-center gap-3 px-4 py-3.5">
               <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
                 <Mail size={14} className="text-blue-500" />
@@ -181,8 +84,7 @@ export default function AccountSidebar() {
               </div>
             </div>
 
-
-            {/* Verified row */}
+            {/* Verified */}
             <div className="flex items-center gap-3 px-4 py-3.5">
               <div className={`
                 w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0
@@ -201,16 +103,13 @@ export default function AccountSidebar() {
               </div>
             </div>
 
-
           </div>
-
         </div>
-
 
         {/* Footer */}
         <div className="px-6 pb-8">
           <Button
-            onClick={handleLogout}
+            onClick={onLogout}
             variant="ghost"
             className="
               w-full h-11 rounded-xl
@@ -225,11 +124,7 @@ export default function AccountSidebar() {
           </Button>
         </div>
 
-
       </SheetContent>
-
     </Sheet>
-
   );
-
 }
