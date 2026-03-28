@@ -68,31 +68,31 @@ const SearchModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden border-none shadow-2xl bg-white/95 backdrop-blur-2xl rounded-3xl">
+      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden border-none shadow-2xl bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl rounded-3xl">
         <DialogHeader className="sr-only">
           <DialogTitle>Search Movies & TV Shows</DialogTitle>
         </DialogHeader>
-        
+
         <div className="flex flex-col max-h-[85vh]">
           {/* Input Area */}
           <form onSubmit={handleSearch} className="relative">
-            <div className="flex items-center px-6 h-20 border-b border-slate-100/50">
+            <div className="flex items-center px-6 h-20 border-b border-slate-100/50 dark:border-slate-800/50">
               <Search className="w-6 h-6 text-blue-600 mr-4" strokeWidth={2.5} />
               <input
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search movies, TV shows..."
-                className="flex-1 bg-transparent border-none outline-none text-xl font-medium text-slate-800 placeholder:text-slate-300"
+                className="flex-1 bg-transparent border-none outline-none text-xl font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600"
               />
               {loading && query && (
                 <Loader2 className="w-5 h-5 text-slate-400 animate-spin mr-2" />
               )}
               {query && (
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setQuery('')}
-                  className="p-1 hover:bg-slate-100 rounded-full transition-colors"
+                  className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                 >
                   <X size={18} className="text-slate-400" />
                 </button>
@@ -108,7 +108,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                   <div className="space-y-1">
                     <div className="px-4 py-2 flex items-center justify-between">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suggestions</span>
-                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full uppercase">Dynamic</span>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full uppercase">Dynamic</span>
                     </div>
                     {results.slice(0, 6).map((item) => {
                       const mediaType = item.title ? 'movie' : 'tv';
@@ -123,21 +123,20 @@ const SearchModal = ({ isOpen, onClose }) => {
                         <button
                           key={`${mediaType}-${item.id}`}
                           onClick={() => handleResultClick(mediaType, item.id, title)}
-                          className="w-full flex items-center gap-4 p-3 hover:bg-slate-100/80 rounded-2xl transition-all group"
+                          className="w-full flex items-center gap-4 p-3 hover:bg-slate-100/80 dark:hover:bg-slate-800/50 rounded-2xl transition-all group"
                         >
-                          <div className="relative w-14 h-20 rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-slate-100">
+                          <div className="relative w-14 h-20 rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-slate-100 dark:border-slate-800">
                             <img src={imageUrl} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="font-bold text-slate-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                            <h4 className="font-bold text-slate-800 dark:text-slate-100 line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               {title}
                             </h4>
                             <div className="flex items-center gap-3 mt-1.5">
-                              <span className={`flex items-center gap-1.5 text-[10px] font-black px-2 py-0.5 rounded-md border ${
-                                mediaType === 'movie' 
-                                  ? 'bg-blue-50 text-blue-600 border-blue-100' 
-                                  : 'bg-indigo-50 text-indigo-600 border-indigo-100'
-                              }`}>
+                              <span className={`flex items-center gap-1.5 text-[10px] font-black px-2 py-0.5 rounded-md border ${mediaType === 'movie'
+                                  ? 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:border-blue-500/20'
+                                  : 'bg-indigo-50 text-indigo-600 border-indigo-100 dark:bg-indigo-500/10 dark:border-indigo-500/20'
+                                }`}>
                                 {mediaType === 'movie' ? <Film size={10} strokeWidth={3} /> : <Tv size={10} strokeWidth={3} />}
                                 {mediaType === 'movie' ? 'MOVIE' : 'TV SHOW'}
                               </span>
@@ -154,18 +153,18 @@ const SearchModal = ({ isOpen, onClose }) => {
                             </div>
                           </div>
                           <div className="opacity-0 group-hover:opacity-100 transition-all pr-2 translate-x-2 group-hover:translate-x-0">
-                             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-                                <Film size={14} />
-                             </div>
+                            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                              <Film size={14} />
+                            </div>
                           </div>
                         </button>
                       );
                     })}
-                    
+
                     {results.length > 6 && (
-                      <button 
+                      <button
                         onClick={handleSearch}
-                        className="w-full py-5 text-center text-xs font-black text-slate-400 hover:text-blue-600 tracking-widest uppercase transition-colors"
+                        className="w-full py-5 text-center text-xs font-black text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 tracking-widest uppercase transition-colors"
                       >
                         + View all {results.length} matches
                       </button>
@@ -173,14 +172,14 @@ const SearchModal = ({ isOpen, onClose }) => {
                   </div>
                 ) : !loading ? (
                   <div className="py-20 text-center animate-in zoom-in-95 duration-300">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 mb-4">
-                       <Search className="text-slate-200" size={32} />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 dark:bg-slate-900 dark:border-slate-800 mb-4">
+                      <Search className="text-slate-200 dark:text-slate-700" size={32} />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-800">No matches found</h3>
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">No matches found</h3>
                     <p className="text-sm text-slate-400 mt-1">Try different keywords or check spelling.</p>
                   </div>
                 ) : (
-                  <div className="py-20 flex flex-col items-center justify-center text-slate-300 space-y-4">
+                  <div className="py-20 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 space-y-4">
                     <Loader2 className="w-10 h-10 animate-spin text-blue-500/20" />
                     <span className="text-xs font-bold tracking-widest uppercase">Searching Universe...</span>
                   </div>
@@ -194,15 +193,15 @@ const SearchModal = ({ isOpen, onClose }) => {
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recent Searches</span>
                     <div className="flex flex-wrap gap-2 mt-3">
                       {recentSearches.map(term => (
-                        <button 
+                        <button
                           key={term}
                           onClick={() => setQuery(term)}
-                          className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 hover:text-blue-600 text-xs font-bold text-slate-500 border border-transparent hover:border-blue-200 transition-all"
+                          className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold text-slate-500 dark:text-slate-300 border border-transparent hover:border-blue-200 dark:hover:border-blue-800/50 transition-all"
                         >
                           {term}
                         </button>
                       ))}
-                      <button 
+                      <button
                         onClick={() => {
                           setRecentSearches([]);
                           localStorage.removeItem('recentSearches');
@@ -220,35 +219,35 @@ const SearchModal = ({ isOpen, onClose }) => {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Trending Now</span>
                     <div className="flex items-center gap-1.5">
-                       <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
-                       <span className="text-[10px] font-bold text-red-500 uppercase">Live</span>
+                      <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+                      <span className="text-[10px] font-bold text-red-500 uppercase">Live</span>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-3">
                     {trendingResults.slice(0, 4).map(item => {
-                       const title = item.title || item.name;
-                       const type = item.title ? 'movie' : 'tv';
-                       return (
-                         <button 
-                           key={item.id}
-                           onClick={() => handleResultClick(type, item.id, title)}
-                           className="flex items-center gap-3 p-2 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all text-left group"
-                         >
-                           <img 
-                            src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} 
-                            className="w-9 h-12 rounded-lg object-cover shadow-sm group-hover:scale-105 transition-transform" 
-                           />
-                           <div className="min-w-0">
-                             <p className="text-xs font-bold text-slate-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
-                               {title}
-                             </p>
-                             <p className="text-[10px] font-medium text-slate-400 uppercase mt-0.5">
-                               {type === 'movie' ? 'Movie' : 'TV Series'}
-                             </p>
-                           </div>
-                         </button>
-                       )
+                      const title = item.title || item.name;
+                      const type = item.title ? 'movie' : 'tv';
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => handleResultClick(type, item.id, title)}
+                          className="flex items-center gap-3 p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-transparent hover:border-slate-100 dark:hover:border-slate-700 transition-all text-left group"
+                        >
+                          <img
+                            src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
+                            className="w-9 h-12 rounded-lg object-cover shadow-sm group-hover:scale-105 transition-transform"
+                          />
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                              {title}
+                            </p>
+                            <p className="text-[10px] font-medium text-slate-400 uppercase mt-0.5">
+                              {type === 'movie' ? 'Movie' : 'TV Series'}
+                            </p>
+                          </div>
+                        </button>
+                      )
                     })}
                   </div>
                 </div>
@@ -258,10 +257,10 @@ const SearchModal = ({ isOpen, onClose }) => {
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Discover Categories</span>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {['Marvel', 'Disney+', 'Action', 'Horror', 'Sci-Fi', 'Netflix Original'].map(tag => (
-                      <button 
+                      <button
                         key={tag}
                         onClick={() => setQuery(tag)}
-                        className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm active:scale-95"
+                        className="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white hover:border-blue-600 transition-all shadow-sm active:scale-95"
                       >
                         {tag}
                       </button>
@@ -273,20 +272,20 @@ const SearchModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-4 bg-slate-50/80 border-t border-slate-100/50">
+          <div className="p-4 bg-slate-50/80 dark:bg-slate-900/80 border-t border-slate-100/50 dark:border-slate-800/50">
             <div className="flex items-center justify-between px-2">
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 bg-white text-[10px] font-bold text-slate-500 shadow-sm">Enter</div>
+                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 shadow-sm">Enter</div>
                   <span className="text-[11px] font-bold text-slate-400">Search</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 bg-white text-[10px] font-bold text-slate-500 shadow-sm">Esc</div>
+                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 shadow-sm">Esc</div>
                   <span className="text-[11px] font-bold text-slate-400">Close</span>
                 </div>
               </div>
-              
-              <Button 
+
+              <Button
                 onClick={handleSearch}
                 disabled={!query.trim()}
                 className="rounded-xl px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/25 transition-all active:scale-95 disabled:opacity-50"
