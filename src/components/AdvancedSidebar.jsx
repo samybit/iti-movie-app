@@ -138,29 +138,29 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 						</div>
 
 						{/* Streaming Platforms */}
-						<div className='space-y-3 border-t border-dashed border-slate-100 pt-4'>
+						<div className='space-y-4 border-t border-dashed border-slate-100 pt-5 bg-slate-50/30 -mx-5 px-5 pb-2'>
 							<SectionLabel>Available Platforms</SectionLabel>
-							<div className='grid grid-cols-3 gap-2'>
+							<div className='grid grid-cols-3 gap-3'>
 								{[
-									{ name: 'Netflix', color: 'bg-red-600', text: 'N' },
-									{ name: 'Disney+', color: 'bg-blue-700', text: 'D+' },
-									{ name: 'Amazon', color: 'bg-sky-500', text: 'P' },
-									{ name: 'HBO Max', color: 'bg-purple-700', text: 'H' },
-									{ name: 'Apple TV+', color: 'bg-slate-800', text: '🍎' },
-									{ name: 'Hulu', color: 'bg-green-500', text: 'h' },
-									{ name: 'Paramount+', color: 'bg-blue-500', text: 'P+' },
-									{ name: 'Peacock', color: 'bg-yellow-500', text: '🦚' },
-									{ name: 'Crunchyroll', color: 'bg-orange-500', text: 'CR' },
-								].map(({ name, color, text }) => (
+									{ name: 'Netflix', icon: 'https://www.themoviedb.org/t/p/original/pTpxMq1S1vCqbDuZOKQ6fsTSR1f.jpg' },
+									{ name: 'Disney+', icon: 'https://www.themoviedb.org/t/p/original/97vSjCF9Zaoq7p36W0pFiPBqh29.jpg' },
+									{ name: 'Amazon', icon: 'https://www.themoviedb.org/t/p/original/dgPueyEdOisELs98EX6Gz6kH7u3.jpg' },
+									{ name: 'HBO Max', icon: 'https://www.themoviedb.org/t/p/original/68vAnUiqHjfiFdG9Zpt39PZZ9jO.jpg' },
+									{ name: 'Apple TV+', icon: 'https://www.themoviedb.org/t/p/original/68vAnUiqHjfiFdG9Zpt39PZZ9jO.jpg' }, // Generic placeholder if needed
+									{ name: 'Hulu', icon: 'https://www.themoviedb.org/t/p/original/giLR06v9SVPWfyY7YppF968lxZ9.jpg' },
+									{ name: 'Paramount+', icon: 'https://www.themoviedb.org/t/p/original/pk8vTz1fUpCq7m4X3RjD3ZfC8k4.jpg' },
+									{ name: 'Peacock', icon: 'https://www.themoviedb.org/t/p/original/87vUfF8f6Z7Y9W7h9h8h8h8h8h8.jpg' }, 
+									{ name: 'Crunchyroll', icon: 'https://www.themoviedb.org/t/p/original/m99F2e6q5p4nN1zR6z5p4nN1zR6.jpg' },
+								].map(({ name, icon }) => (
 									<button
 										key={name}
-										className='flex flex-col items-center gap-1.5 p-2 rounded-xl border border-slate-100 hover:border-blue-300 hover:shadow-md transition-all group cursor-pointer'
+										className='flex flex-col items-center gap-1.5 p-1 rounded-2xl border border-transparent hover:border-blue-200 hover:bg-white hover:shadow-sm transition-all group'
 										title={name}
 									>
-										<div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center text-white text-xs font-black shadow-sm group-hover:scale-110 transition-transform`}>
-											{text}
+										<div className="w-11 h-11 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform border border-slate-100 bg-white">
+											<img src={icon} alt={name} className="w-full h-full object-cover" />
 										</div>
-										<span className='text-[9px] text-slate-400 font-semibold truncate w-full text-center'>{name}</span>
+										<span className='text-[10px] text-slate-400 font-bold truncate w-full text-center'>{name}</span>
 									</button>
 								))}
 							</div>
@@ -179,17 +179,24 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 					<AccordionContent className='px-5 pb-6 pt-5 space-y-5'>
 
 						{/* Show Me ────────────────────── */}
-						<div className='space-y-3'>
+						<div className='space-y-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50'>
 							<SectionLabel>Show Me</SectionLabel>
-							<RadioGroup defaultValue='everything' className='flex flex-col gap-1.5 pl-0.5'>
+							<RadioGroup defaultValue='everything' className='grid grid-cols-1 gap-1.5'>
 								{[
 									{ val: 'everything', label: 'Everything', enabled: true },
-									{ val: 'unseen', label: "Movies I Haven't Seen", enabled: false },
-									{ val: 'seen', label: 'Movies I Have Seen', enabled: false },
+									{ val: 'unseen', label: "New To Me", enabled: false },
+									{ val: 'seen', label: 'Already Seen', enabled: false },
 								].map(({ val, label, enabled }) => (
-									<label key={val} className={`flex items-center gap-2.5 py-1 cursor-pointer rounded-lg transition-colors hover:bg-slate-50 px-2 -mx-2 ${!enabled ? 'opacity-40 pointer-events-none' : ''}`}>
-										<RadioGroupItem value={val} disabled={!enabled} />
-										<span className='text-[13px]'>{label}</span>
+									<label key={val} className={`flex items-center justify-between gap-2.5 py-2.5 px-3.5 cursor-pointer rounded-xl border transition-all ${
+										!enabled 
+										  ? 'opacity-40 grayscale pointer-events-none border-slate-100' 
+										  : 'hover:bg-white hover:border-blue-200 group'
+									} bg-white shadow-sm`}>
+										<div className="flex items-center gap-3">
+											<RadioGroupItem value={val} disabled={!enabled} className="border-slate-300" />
+											<span className='text-[13px] font-bold text-slate-700'>{label}</span>
+										</div>
+										{enabled && <div className="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />}
 									</label>
 								))}
 							</RadioGroup>
@@ -198,18 +205,18 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 						{/* Availabilities ─────────────── */}
 						<div className='space-y-3 border-t border-dashed border-slate-100 pt-5'>
 							<SectionLabel>Availabilities</SectionLabel>
-							<label className='flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 rounded-lg py-1.5 px-2 -mx-2 transition-colors'>
-								<Checkbox id='avail' defaultChecked />
-								<span className='text-[13px] text-slate-600'>Search all availabilities?</span>
+							<label className='flex items-center justify-between gap-2.5 cursor-pointer hover:bg-blue-50/50 bg-white border border-slate-100 rounded-xl py-3 px-4 shadow-sm transition-all group'>
+								<span className='text-[13px] font-bold text-slate-700'>Search all availabilities?</span>
+								<Checkbox id='avail' defaultChecked className="rounded-md border-slate-300 data-[state=checked]:bg-blue-500" />
 							</label>
 						</div>
 
 						{/* Release Dates ──────────────── */}
 						<div className='space-y-3 border-t border-dashed border-slate-100 pt-5'>
 							<SectionLabel>Release Dates</SectionLabel>
-							<label className='flex items-center gap-2.5 cursor-pointer hover:bg-slate-50 rounded-lg py-1.5 px-2 -mx-2 transition-colors'>
-								<Checkbox id='releases' defaultChecked />
-								<span className='text-[13px] text-slate-600'>Search all releases?</span>
+							<label className='flex items-center justify-between gap-2.5 cursor-pointer hover:bg-blue-50/50 bg-white border border-slate-100 rounded-xl py-3 px-4 shadow-sm transition-all group'>
+								<span className='text-[13px] font-bold text-slate-700'>Search all releases?</span>
+								<Checkbox id='releases' defaultChecked className="rounded-md border-slate-300 data-[state=checked]:bg-blue-500" />
 							</label>
 							<div className='grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 pt-1'>
 								<span className='text-[11px] text-slate-400 font-medium whitespace-nowrap'>from</span>
