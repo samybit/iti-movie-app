@@ -18,6 +18,7 @@ export function ThemeProvider({
 	useEffect(() => {
 		const root = window.document.documentElement;
 
+		// 1. Clean up Tailwind classes
 		root.classList.remove('light', 'dark');
 
 		if (theme === 'system') {
@@ -25,11 +26,15 @@ export function ThemeProvider({
 				? 'dark'
 				: 'light';
 
+			// 2. Apply Tailwind class AND Bootstrap attribute for System preference
 			root.classList.add(systemTheme);
+			root.setAttribute('data-bs-theme', systemTheme);
 			return;
 		}
 
+		// 3. Apply Tailwind class AND Bootstrap attribute for Manual preference
 		root.classList.add(theme);
+		root.setAttribute('data-bs-theme', theme);
 	}, [theme]);
 
 	const value = {

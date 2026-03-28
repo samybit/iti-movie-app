@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
-<<<<<<< HEAD
-=======
+
 /* ── Custom Scrollbar ──────────────────────────────────────── */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #e2e8f0;
   border-radius: 10px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #cbd5e1;
 }
@@ -21,6 +23,7 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -43,4 +46,3 @@ html {
   outline-offset: 2px;
   border-radius: 8px;
 }
->>>>>>> belal
