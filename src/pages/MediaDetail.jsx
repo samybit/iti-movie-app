@@ -31,10 +31,27 @@ const MediaDetail = ({ type }) => {
 					service.getVideos(id),
 					service.getSimilar(id),
 				]);
-				setDetails(detailsRes.data);
+				const data = detailsRes.data;
+				setDetails(data);
 				setCredits(creditsRes.data);
 				setVideos(videosRes.data.results);
 				setSimilar(similarRes.data.results);
+
+				// 🕒 Track Visited History (for Account Sidebar)
+				const newItem = {
+					id: data.id,
+					title: data.title || data.name,
+					poster_path: data.poster_path,
+					vote_average: data.vote_average,
+					release_date: data.release_date || data.first_air_date,
+					mediaType: type
+				};
+				
+				const history = JSON.parse(localStorage.getItem('visitedHistory') || '[]');
+				const filteredHistory = history.filter(item => item.id !== data.id);
+				const newHistory = [newItem, ...filteredHistory].slice(0, 15);
+				localStorage.setItem('visitedHistory', JSON.stringify(newHistory));
+
 			} catch (error) {
 				console.error('Error fetching media details:', error);
 			} finally {

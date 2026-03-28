@@ -12,10 +12,26 @@ import { User, Mail, ShieldCheck, ShieldX, LogOut } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { History, Trash2, TrendingUp, Clock, ChevronRight } from "lucide-react";
+import { Link } from "react-router";
 
 export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
 
   const [userName, setUserName] = useState(null);
+  const [visitedHistory, setVisitedHistory] = useState([]);
+
+  // Load History from localStorage
+  useEffect(() => {
+    if (isOpen) {
+      const history = JSON.parse(localStorage.getItem('visitedHistory') || '[]');
+      setVisitedHistory(history);
+    }
+  }, [isOpen]);
+
+  const clearHistory = () => {
+    localStorage.removeItem('visitedHistory');
+    setVisitedHistory([]);
+  };
 
   //fetch name from Firestore
   useEffect(() => {
@@ -103,6 +119,68 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
               </div>
             </div>
 
+          </div>
+
+          {/* 🕒 Visited History Section */}
+          <div className="flex flex-col flex-1 min-h-0 bg-slate-50/50 rounded-3xl p-4 overflow-hidden border border-slate-100 italic font-medium -mx-1 uppercase text-slate-400">
+            <div className="flex items-center justify-between mb-4 px-2">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-blue-100/50 text-blue-600">
+                  <History size={14} />
+                </div>
+                <h3 className="text-[11px] font-black tracking-widest text-slate-800">Your Activity</h3>
+              </div>
+              {visitedHistory.length > 0 && (
+                <button 
+                  onClick={clearHistory}
+                  className="p-1 px-2 rounded-lg text-[10px] text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 size={12} className="inline mr-1" /> Clear
+                </button>
+              )}
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-2 -mr-2 space-y-2.5 custom-scrollbar not-italic font-normal">
+              {visitedHistory.length > 0 ? (
+                visitedHistory.map(item => (
+                  <Link 
+                    key={item.id}
+                    to={`/${item.mediaType}/${item.id}`}
+                    onClick={onClose}
+                    className="flex items-center gap-3 p-2 rounded-2xl bg-white border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all group"
+                  >
+                    <div className="w-12 h-16 rounded-lg overflow-hidden bg-slate-200 shrink-0">
+                      <img 
+                        src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform" 
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-black text-slate-800 line-clamp-1 group-hover:text-blue-600 transition-colors tracking-tight">
+                        {item.title}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="px-1.5 py-0.5 rounded-md bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-widest">
+                          {item.mediaType}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          {item.vote_average?.toFixed(1)} ★
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-slate-300 mr-1 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+                  </Link>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center h-40 text-center space-y-3 opacity-60">
+                   <div className="p-4 rounded-full bg-slate-100">
+                     <Clock size={24} className="text-slate-400" />
+                   </div>
+                   <p className="text-xs text-slate-600 font-medium max-w-[140px] leading-relaxed tracking-tight">You haven't viewed any movies yet.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
