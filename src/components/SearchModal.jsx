@@ -13,8 +13,15 @@ import useDebounce from '@/hooks/useDebounce';
 
 const SearchModal = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
+  const [recentSearches, setRecentSearches] = useState([]);
   const navigate = useNavigate();
   const debouncedQuery = useDebounce(query, 500);
+
+  // Fetch Trending data for when search is empty
+  const { data: trendingResults } = useMovies({
+    type: 'trending',
+    page: 1,
+  });
 
   const { data: results, loading } = useMovies({
     type: 'search',
@@ -22,19 +29,34 @@ const SearchModal = ({ isOpen, onClose }) => {
     page: 1,
   });
 
+  // Load recent searches from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('recentSearches');
+    if (saved) {
+      setRecentSearches(JSON.parse(saved));
+    }
+  }, [isOpen]);
+
+  const saveSearch = (term) => {
+    if (!term.trim()) return;
+    const filtered = [term, ...recentSearches.filter(s => s !== term)].slice(0, 5);
+    setRecentSearches(filtered);
+    localStorage.setItem('recentSearches', JSON.stringify(filtered));
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim()) {
+      saveSearch(query.trim());
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       onClose();
-      setQuery('');
     }
   };
 
-  const handleResultClick = (type, id) => {
+  const handleResultClick = (type, id, title) => {
+    saveSearch(title);
     navigate(`/${type}/${id}`);
     onClose();
-    setQuery('');
   };
 
   // Reset query when modal closes
@@ -79,13 +101,14 @@ const SearchModal = ({ isOpen, onClose }) => {
           </form>
 
           {/* Results Area */}
-          <div className="overflow-y-auto flex-1 custom-scrollbar">
+          <div className="overflow-y-auto flex-1 custom-scrollbar min-h-[300px]">
             {query.trim().length > 0 ? (
-              <div className="p-2">
+              <div className="p-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 {results.length > 0 ? (
                   <div className="space-y-1">
-                    <div className="px-4 py-2">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Dynamic Results</span>
+                    <div className="px-4 py-2 flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suggestions</span>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full uppercase">Dynamic</span>
                     </div>
                     {results.slice(0, 6).map((item) => {
                       const mediaType = item.title ? 'movie' : 'tv';
@@ -99,39 +122,41 @@ const SearchModal = ({ isOpen, onClose }) => {
                       return (
                         <button
                           key={`${mediaType}-${item.id}`}
-                          onClick={() => handleResultClick(mediaType, item.id)}
-                          className="w-full flex items-center gap-4 p-3 hover:bg-blue-50/50 rounded-2xl transition-all group"
+                          onClick={() => handleResultClick(mediaType, item.id, title)}
+                          className="w-full flex items-center gap-4 p-3 hover:bg-slate-100/80 rounded-2xl transition-all group"
                         >
-                          <div className="relative w-12 h-18 rounded-lg overflow-hidden flex-shrink-0 shadow-sm border border-slate-100">
-                            <img src={imageUrl} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                          <div className="relative w-14 h-20 rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-slate-100">
+                            <img src={imageUrl} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                           </div>
                           <div className="flex-1 text-left">
                             <h4 className="font-bold text-slate-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
                               {title}
                             </h4>
                             <div className="flex items-center gap-3 mt-1.5">
-                              <span className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
-                                {mediaType === 'movie' ? <Film size={12} /> : <Tv size={12} />}
-                                {mediaType === 'movie' ? 'Movie' : 'TV Show'}
+                              <span className={`flex items-center gap-1.5 text-[10px] font-black px-2 py-0.5 rounded-md border ${
+                                mediaType === 'movie' 
+                                  ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                                  : 'bg-indigo-50 text-indigo-600 border-indigo-100'
+                              }`}>
+                                {mediaType === 'movie' ? <Film size={10} strokeWidth={3} /> : <Tv size={10} strokeWidth={3} />}
+                                {mediaType === 'movie' ? 'MOVIE' : 'TV SHOW'}
                               </span>
-                              <span className="w-1 h-1 rounded-full bg-slate-300" />
                               <span className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
-                                <Calendar size={12} />
+                                <Calendar size={12} strokeWidth={2.5} />
                                 {year}
                               </span>
                               {item.vote_average > 0 && (
-                                <>
-                                  <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                  <span className="flex items-center gap-1 text-[11px] font-bold text-amber-500">
-                                    <Star size={12} className="fill-current" />
-                                    {item.vote_average.toFixed(1)}
-                                  </span>
-                                </>
+                                <span className="flex items-center gap-1 text-[11px] font-bold text-amber-500">
+                                  <Star size={12} className="fill-current" />
+                                  {item.vote_average.toFixed(1)}
+                                </span>
                               )}
                             </div>
                           </div>
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity pr-2">
-                             <span className="text-blue-600 text-sm font-black">View →</span>
+                          <div className="opacity-0 group-hover:opacity-100 transition-all pr-2 translate-x-2 group-hover:translate-x-0">
+                             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                                <Film size={14} />
+                             </div>
                           </div>
                         </button>
                       );
@@ -140,41 +165,108 @@ const SearchModal = ({ isOpen, onClose }) => {
                     {results.length > 6 && (
                       <button 
                         onClick={handleSearch}
-                        className="w-full py-4 text-center text-sm font-bold text-slate-500 hover:text-blue-600 border-t border-slate-100/50 mt-2 transition-colors"
+                        className="w-full py-5 text-center text-xs font-black text-slate-400 hover:text-blue-600 tracking-widest uppercase transition-colors"
                       >
-                        View all {results.length} results for "{query}"
+                        + View all {results.length} matches
                       </button>
                     )}
                   </div>
                 ) : !loading ? (
-                  <div className="py-12 text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 mb-3">
-                       <Search className="text-slate-300" size={20} />
+                  <div className="py-20 text-center animate-in zoom-in-95 duration-300">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 mb-4">
+                       <Search className="text-slate-200" size={32} />
                     </div>
-                    <p className="text-sm font-bold text-slate-400">No results found for "{query}"</p>
+                    <h3 className="text-lg font-bold text-slate-800">No matches found</h3>
+                    <p className="text-sm text-slate-400 mt-1">Try different keywords or check spelling.</p>
                   </div>
-                ) : null}
+                ) : (
+                  <div className="py-20 flex flex-col items-center justify-center text-slate-300 space-y-4">
+                    <Loader2 className="w-10 h-10 animate-spin text-blue-500/20" />
+                    <span className="text-xs font-bold tracking-widest uppercase">Searching Universe...</span>
+                  </div>
+                )}
               </div>
             ) : (
-              <div className="p-8 text-center space-y-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-blue-50 text-blue-600 mb-2">
-                   <Search size={28} strokeWidth={2.5} />
+              <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                {/* Recent Searches */}
+                {recentSearches.length > 0 && (
+                  <div className="p-6 pb-2">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recent Searches</span>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {recentSearches.map(term => (
+                        <button 
+                          key={term}
+                          onClick={() => setQuery(term)}
+                          className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 hover:text-blue-600 text-xs font-bold text-slate-500 border border-transparent hover:border-blue-200 transition-all"
+                        >
+                          {term}
+                        </button>
+                      ))}
+                      <button 
+                        onClick={() => {
+                          setRecentSearches([]);
+                          localStorage.removeItem('recentSearches');
+                        }}
+                        className="text-[10px] font-bold text-red-400 hover:text-red-600 px-2 py-1 transition-colors"
+                      >
+                        Clear History
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Trending Section */}
+                <div className="p-6 pt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Trending Now</span>
+                    <div className="flex items-center gap-1.5">
+                       <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+                       <span className="text-[10px] font-bold text-red-500 uppercase">Live</span>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    {trendingResults.slice(0, 4).map(item => {
+                       const title = item.title || item.name;
+                       const type = item.title ? 'movie' : 'tv';
+                       return (
+                         <button 
+                           key={item.id}
+                           onClick={() => handleResultClick(type, item.id, title)}
+                           className="flex items-center gap-3 p-2 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all text-left group"
+                         >
+                           <img 
+                            src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} 
+                            className="w-9 h-12 rounded-lg object-cover shadow-sm group-hover:scale-105 transition-transform" 
+                           />
+                           <div className="min-w-0">
+                             <p className="text-xs font-bold text-slate-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                               {title}
+                             </p>
+                             <p className="text-[10px] font-medium text-slate-400 uppercase mt-0.5">
+                               {type === 'movie' ? 'Movie' : 'TV Series'}
+                             </p>
+                           </div>
+                         </button>
+                       )
+                    })}
+                  </div>
                 </div>
-                <h3 className="text-lg font-extrabold text-slate-800">Quick Search</h3>
-                <p className="text-slate-400 text-sm max-w-[280px] mx-auto font-medium">
-                  Start typing to see instant movie and TV show suggestions.
-                </p>
-                
-                <div className="flex flex-wrap justify-center gap-2 pt-4">
-                  {['Action', 'Comedy', 'Horror', 'Sci-Fi', 'Netflix'].map(tag => (
-                    <button 
-                      key={tag}
-                      onClick={() => setQuery(tag)}
-                      className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-50 hover:border-slate-300 transition-all"
-                    >
-                      {tag}
-                    </button>
-                  ))}
+
+                {/* Quick Categories */}
+                <div className="p-6 pt-0">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Discover Categories</span>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {['Marvel', 'Disney+', 'Action', 'Horror', 'Sci-Fi', 'Netflix Original'].map(tag => (
+                      <button 
+                        key={tag}
+                        onClick={() => setQuery(tag)}
+                        className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm active:scale-95"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

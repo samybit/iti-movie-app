@@ -9,7 +9,7 @@ import SortSelect from '../components/SortSelect';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, X } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
 
 const Browse = () => {
@@ -141,43 +141,65 @@ const Browse = () => {
 					/>
 				</div>
 
-				{/* Search Field — redirects to /search */}
+				{/* Search — Dynamic Filter on results */}
 				<div className='relative'>
 					<Search size={18} className='absolute left-4 top-1/2 -translate-y-1/2 text-slate-400' />
 					<Input
-						placeholder={`Search ${activeFilters.mediaType === 'movie' ? 'movies' : 'series'}...`}
+						placeholder="Search is on the out put categories..."
 						value={browseQuery}
 						onChange={(e) => setBrowseQuery(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === 'Enter' && browseQuery.trim()) navigate(`/search?q=${encodeURIComponent(browseQuery.trim())}`);
-						}}
-						className='pl-11 pr-24 h-12 rounded-2xl bg-white border-slate-200 shadow-sm text-sm placeholder:text-slate-300 focus-visible:ring-blue-500'
+						className='pl-11 pr-12 h-12 rounded-2xl bg-white border-slate-200 shadow-sm text-sm placeholder:text-slate-300 focus-visible:ring-blue-500'
 					/>
-					<Button
-						onClick={() => { if (browseQuery.trim()) navigate(`/search?q=${encodeURIComponent(browseQuery.trim())}`); }}
-						size='sm'
-						className='absolute right-2 top-1/2 -translate-y-1/2 rounded-xl bg-blue-600 hover:bg-blue-700 font-bold px-5 h-8'
-					>
-						Search
-					</Button>
+					{browseQuery && (
+						<button 
+							onClick={() => setBrowseQuery('')}
+							className='absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full transition-colors'
+						>
+							<X size={16} className='text-slate-400' />
+						</button>
+					)}
 				</div>
 
-				{data.length === 0 && !loading ? (
-					<EmptyState description='No matches found. Adjust your filters and try again.' />
-				) : (
-					<div className='space-y-10'>
-						<MovieList movies={data} isLoading={loading} />
-						<PaginationControls
-							currentPage={activeFilters.page}
-							totalPages={totalPages}
-							onPageChange={(p) => {
-								const updatedParams = new URLSearchParams(searchParams);
-								updatedParams.set('page', p);
-								setSearchParams(updatedParams);
-							}}
-						/>
-					</div>
-				)}
+				{(() => {
+					const filteredMovies = data.filter(movie => {
+						const title = (movie.title || movie.name || '').toLowerCase();
+						return title.includes(browseQuery.toLowerCase());
+					});
+					
+					if (filteredMovies.length === 0 && !loading) {
+						return (
+							<EmptyState 
+								message='No matches found in these categories' 
+								description='Try adjusting your search text or changing the filters in the sidebar.' 
+							/>
+						);
+					}
+					
+					return (
+						<div className='space-y-10'>
+							<div className='flex items-center justify-between'>
+								<h3 className='text-sm font-bold text-slate-400 uppercase tracking-widest'>
+									{browseQuery ? `Found results for "${browseQuery}"` : 'All results'}
+								</h3>
+								<span className='text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full'>
+									{filteredMovies.length} items
+								</span>
+							</div>
+							<MovieList movies={filteredMovies} isLoading={loading} />
+							{!browseQuery && (
+								<PaginationControls
+									currentPage={activeFilters.page}
+									totalPages={totalPages}
+									onPageChange={(p) => {
+										const updatedParams = new URLSearchParams(searchParams);
+										updatedParams.set('page', p);
+										setSearchParams(updatedParams);
+									}}
+								/>
+							)}
+						</div>
+					);
+				})()}
 			</div>
 		</div>
 	);
