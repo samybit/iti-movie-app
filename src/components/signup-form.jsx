@@ -101,7 +101,7 @@ function SignupForm(props) {
       )
 
       // redirect to login after signup
-      navigate("/login")
+      navigate("/verify-email")
     } catch (error) {
       switch (error.code) {
         case "auth/email-already-in-use":

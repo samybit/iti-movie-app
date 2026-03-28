@@ -15,6 +15,7 @@ import Wishlist from './pages/Wishlist';
 import MediaDetail from './pages/MediaDetail';
 import NotFound404 from './pages/NotFound404';
 import ProtectedRoute from "./components/ProtectedRoute";
+import VerifyEmail from './pages/VerifyEmail';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
 			{
 				path: 'register',
 				element: <Register />,
+			},
+			{
+				path: "verify-email",
+				element: <VerifyEmail />
 			},
 			{
 				path: 'login',
