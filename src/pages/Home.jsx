@@ -3,13 +3,14 @@ import HorizontalScroll from '@/components/HorizontalScroll';
 import TrailerSection from '@/components/TrailerSection';
 import HomeStats from '@/components/HomeStats';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, TrendingUp } from 'lucide-react';
+import { AlertCircle, TrendingUp, Search as SearchIcon, Sparkles } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
-import { Link } from 'react-router';
+import { Link, useOutletContext } from 'react-router';
 import { Button } from '@/components/ui/button';
 
 const Home = () => {
 	usePageTitle('Home');
+	const { setIsSearchOpen } = useOutletContext();
 	
 	const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useMovies({
 		type: 'trending',
@@ -67,12 +68,29 @@ const Home = () => {
 					<p className='text-slate-300 text-lg md:text-xl max-w-xl leading-relaxed font-medium'>
 						Explore millions of movies and TV shows. Build your library, track ratings, and find hidden gems in high definition.
 					</p>
-					<div className='flex flex-wrap gap-4 pt-4'>
-						<Button asChild size='lg' className='h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-2xl shadow-blue-500/40 px-10 transition-all hover:scale-105 active:scale-95'>
-							<Link to='/browse'>Start Browsing</Link>
-						</Button>
-						<Button asChild size='lg' variant='ghost' className='h-14 rounded-2xl text-white hover:bg-white/10 border-2 border-white/20 px-10 font-bold backdrop-blur-sm transition-all hover:border-white/40'>
-							<Link to='/search'>Quick Search</Link>
+					<div className='flex flex-col sm:flex-row gap-4 pt-8 w-full max-w-2xl'>
+						{/* Real Search Trigger (Above-Tab style) */}
+						<button 
+							onClick={() => setIsSearchOpen(true)}
+							className='flex-1 group relative flex items-center gap-4 h-16 px-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/40 shadow-2xl transition-all duration-300'
+						>
+							<div className='flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform'>
+								<SearchIcon size={18} strokeWidth={2.5} />
+							</div>
+							<div className='flex flex-col items-start'>
+								<span className='text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity'>Quick Discover</span>
+								<span className='text-slate-200 text-sm font-bold opacity-80 group-hover:opacity-100'>Search for movies, TV shows...</span>
+							</div>
+							<div className='ml-auto px-2 py-0.5 rounded border border-white/10 bg-white/5 text-[9px] font-bold text-white/40 group-hover:text-blue-300 transition-colors uppercase'>⌘ K</div>
+						</button>
+
+						<Button asChild size='lg' className='h-16 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-2xl shadow-blue-500/40 px-10 transition-all hover:scale-105 active:scale-95 group overflow-hidden relative'>
+							<Link to='/browse'>
+								<div className="flex items-center gap-2">
+									<Sparkles size={18} className="animate-bounce" />
+									Start Browsing
+								</div>
+							</Link>
 						</Button>
 					</div>
 				</div>
