@@ -16,81 +16,84 @@ import {
 import { Input } from "@/components/ui/input"
 
 import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import { auth } from "../lib/firebase"
-import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGoogle } from "@fortawesome/free-brands-svg-icons"
 import toast, { Toaster } from "react-hot-toast"
 
- function LoginForm({ className, ...props }) {
+function LoginForm({ className, ...props }) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Email login
-const handleLogin = async (e) => {
-  e.preventDefault()
-  setIsSubmitting(true)
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
 
-  try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    )
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user
 
-    const user = userCredential.user
+      // Check if email is verified
+      if (!user.emailVerified) {
+        toast.error("Please verify your email before logging in ❌")
+        await auth.signOut()
+        setIsSubmitting(false)
+        return
+      }
 
-    // verification
-    if (!user.emailVerified) {
-      toast.error("Please verify your email first ")
-      return
+      toast.success("Logged in successfully ✅")
+      navigate("/wishlist") // redirect after successful login
+
+    } catch (error) {
+      switch (error.code) {
+        case "auth/user-not-found":
+          toast.error("No account found with this email ❌")
+          break
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          toast.error("Incorrect email or password ❌")
+          break
+        case "auth/invalid-email":
+          toast.error("Invalid email format ❌")
+          break
+        case "auth/network-request-failed":
+          toast.error("Check your internet connection 🌐")
+          break
+        case "auth/too-many-requests":
+          toast.error("Too many attempts. Try again later ⏳")
+          break
+        default:
+          toast.error("Login failed. Please try again ❌")
+      }
+    } finally {
+      setIsSubmitting(false)
     }
-
-    toast.success("Logged in successfully ✅")
-
-  } catch (error) {
-
-    switch (error.code) {
-
-      case "auth/user-not-found":
-        toast.error("No account found with this email ❌")
-        break
-
-      case "auth/wrong-password":
-      case "auth/invalid-credential":
-        toast.error("Incorrect email or password ❌")
-        break
-
-      case "auth/invalid-email":
-        toast.error("Invalid email format ❌")
-        break
-
-      case "auth/network-request-failed":
-        toast.error("Check your internet connection 🌐")
-        break
-
-      case "auth/too-many-requests":
-        toast.error("Too many attempts. Try again later ⏳")
-        break
-
-      default:
-        toast.error("Login failed. Please try again ❌")
-    }
-
-  } finally {
-    setIsSubmitting(false)
   }
-}
 
   // Google login
   const handleGoogleLogin = async () => {
     setIsSubmitting(true)
     try {
       const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      const user = result.user
+
+      // Optional: Check if Google email is verified
+      if (!user.emailVerified) {
+        toast.error("Please verify your Google email before logging in ❌")
+        await auth.signOut()
+        setIsSubmitting(false)
+        return
+      }
+
       toast.success("Logged in with Google ✅")
+      navigate("/wishlist") // redirect after Google login
+
     } catch (error) {
       toast.error(error.message)
     } finally {
@@ -99,8 +102,7 @@ const handleLogin = async (e) => {
   }
 
   return (
-   
-    <div className={cn( " flex flex-col items-center justify-center mt-5 gap-6", className)} {...props}>
+    <div className={cn("flex flex-col items-center justify-center mt-5 gap-6", className)} {...props}>
       {/* Toast container */}
       <Toaster position="top-center" reverseOrder={false} />
 
@@ -159,11 +161,9 @@ const handleLogin = async (e) => {
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={isSubmitting}
+                  className="flex items-center justify-center gap-2"
                 >
-                   <FontAwesomeIcon
-                      icon={faGoogle}
-                      className="text-[#DB4437]"
-                    />
+                  <FontAwesomeIcon icon={faGoogle} className="text-[#DB4437]" />
                   Login with Google
                 </Button>
 
@@ -181,4 +181,5 @@ const handleLogin = async (e) => {
     </div>
   )
 }
+
 export default LoginForm

@@ -9,7 +9,7 @@ import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 
 export default function App() {
-	usePageTitle('Home');
+
 	
 	const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useMovies({
 		type: 'trending',

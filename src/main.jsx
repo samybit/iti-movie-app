@@ -14,7 +14,7 @@ import Login from './pages/Login';
 import Wishlist from './pages/Wishlist';
 import MediaDetail from './pages/MediaDetail';
 import NotFound404 from './pages/NotFound404';
-
+import ProtectedRoute from "./components/ProtectedRoute";
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -34,7 +34,11 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'wishlist',
-				element: <Wishlist />,
+				element: (
+					<ProtectedRoute>
+						<Wishlist />
+					</ProtectedRoute>
+				),
 			},
 			{
 				path: 'register',
