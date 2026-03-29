@@ -38,20 +38,16 @@ const Browse = () => {
 		page: parseInt(searchParams.get('page') || '1', 10),
 	};
 
-	// These are the filters currently being edited in the sidebar
-	const [pendingFilters, setPendingFilters] = useState(activeFilters);
-
-	// Sync pending filters with searchParams when they change externally (e.g. navigation)
-	useEffect(() => {
-		setPendingFilters(activeFilters);
-	}, [searchParams]);
-
 	const { data, totalPages, loading, error } = useMovies({
 		type: 'discover',
 		...activeFilters,
 	});
 
-	const handleSearch = () => {
+	const handleFilterChange = (newFiltersUpdater) => {
+		const nextFilters = typeof newFiltersUpdater === 'function' 
+			? newFiltersUpdater(activeFilters) 
+			: newFiltersUpdater;
+			
 		const updatedParams = new URLSearchParams(searchParams);
 		
 		const paramMap = {
@@ -73,7 +69,7 @@ const Browse = () => {
 			page: 'page',
 		};
 
-		Object.entries(pendingFilters).forEach(([key, value]) => {
+		Object.entries(nextFilters).forEach(([key, value]) => {
 			const paramName = paramMap[key] || key;
 			if (value && value !== '0') {
 				updatedParams.set(paramName, value);
@@ -105,9 +101,8 @@ const Browse = () => {
 					</SheetTrigger>
 					<SheetContent side='left' className='w-80 overflow-y-auto pt-10'>
 						<AdvancedSidebar 
-							filters={pendingFilters} 
-							setFilters={setPendingFilters} 
-							onSearch={handleSearch}
+							filters={activeFilters} 
+							setFilters={handleFilterChange} 
 						/>
 					</SheetContent>
 				</Sheet>
@@ -117,9 +112,8 @@ const Browse = () => {
 			<aside className='hidden lg:block w-72 flex-shrink-0'>
 				<div className='sticky top-20 bg-card text-card-foreground rounded-xl border p-4 shadow-sm'>
 					<AdvancedSidebar 
-						filters={pendingFilters} 
-						setFilters={setPendingFilters} 
-						onSearch={handleSearch}
+						filters={activeFilters} 
+						setFilters={handleFilterChange} 
 					/>
 				</div>
 			</aside>

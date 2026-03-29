@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGenres } from '../hooks/useGenres';
 import { useLanguages } from '../hooks/useLanguages';
 import { useCountries } from '../hooks/useCountries';
@@ -21,16 +21,24 @@ const SectionLabel = ({ children }) => (
 const SliderWithTicks = ({ label, min = 0, max, step, value, onChange, format }) => {
 	const ticks = [];
 	for (let i = min; i <= max; i += step) ticks.push(i);
+
+	const [localValue, setLocalValue] = useState(Array.isArray(value) ? value : [value]);
+	
+	useEffect(() => {
+		setLocalValue(Array.isArray(value) ? value : [value]);
+	}, [value]);
+
 	return (
 		<div className='space-y-2 border-t border-dashed border-slate-100 pt-5'>
 			<SectionLabel>{label}</SectionLabel>
 			<div className='px-1 pt-1 pb-2'>
 				<Slider
-					defaultValue={Array.isArray(value) ? value : [value]}
+					value={localValue}
 					min={min}
 					max={max}
 					step={step}
-					onValueChange={onChange}
+					onValueChange={setLocalValue}
+					onValueCommit={onChange}
 					className='cursor-pointer'
 				/>
 				<div className='flex justify-between mt-1.5'>
@@ -52,6 +60,12 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 	const { countries } = useCountries();
 
 	const update = (patch) => setFilters((p) => ({ ...p, ...patch }));
+
+	const [localKeywords, setLocalKeywords] = useState(filters.with_keywords || '');
+
+	useEffect(() => {
+		setLocalKeywords(filters.with_keywords || '');
+	}, [filters.with_keywords]);
 
 	const toggleGenre = (id) => {
 		const cur = (filters.with_genres || '').split('|').filter(Boolean);
@@ -393,8 +407,15 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 							<SectionLabel>Keywords</SectionLabel>
 							<Input
 								placeholder='Filter by keywords...'
-								value={filters.with_keywords}
-								onChange={(e) => update({ with_keywords: e.target.value })}
+								value={localKeywords}
+								onChange={(e) => setLocalKeywords(e.target.value)}
+								onBlur={() => update({ with_keywords: localKeywords })}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter') {
+										e.preventDefault();
+										update({ with_keywords: localKeywords });
+									}
+								}}
 								className='text-[13px] h-9 bg-muted/50 border-input rounded-xl placeholder:text-muted-foreground'
 							/>
 						</div>
@@ -419,15 +440,6 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 				</AccordionItem>
 			</Accordion>
 
-			{/* ── Search Button (sticky) ──────────────────────────────────── */}
-			<div className='sticky bottom-0 pt-3 pb-1 bg-gradient-to-t from-card via-card'>
-				<Button
-					onClick={onSearch}
-					className='w-full h-12 rounded-2xl font-bold text-[15px] bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-2xl transition-all active:scale-[0.97] flex items-center justify-center gap-2'
-				>
-					<Search size={18} /> Search
-				</Button>
-			</div>
 		</div>
 	);
 };
