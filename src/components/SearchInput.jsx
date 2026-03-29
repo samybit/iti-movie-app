@@ -13,7 +13,7 @@ const SearchInput = ({ value, onChange, placeholder = 'Search for a movie...', c
 				onChange={(e) => onChange(e.target.value)}
 				placeholder={placeholder}
 				className={cn(
-					'h-16 pl-14 pr-6 rounded-2xl border-slate-200/60 bg-white/70 backdrop-blur-md text-lg font-medium shadow-xl shadow-slate-200/20 placeholder:text-slate-300 focus-visible:ring-blue-500 focus-visible:border-blue-500/50 transition-all active:scale-[0.995]',
+					'h-16 pl-14 pr-6 rounded-2xl border border-slate-200/60 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md text-lg font-medium text-slate-900 dark:text-slate-100 shadow-xl shadow-slate-200/20 dark:shadow-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:ring-blue-500 focus-visible:border-blue-500/50 transition-all active:scale-[0.995]',
 					className
 				)}
 			/>
