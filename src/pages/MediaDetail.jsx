@@ -74,7 +74,7 @@ const MediaDetail = ({ type }) => {
 	const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube');
 
 	return (
-		<div className='-mx-4 sm:-mx-8 lg:-mx-12'>
+		<div className='overflow-hidden'>
 			{/* Hero Section */}
 			<div className='relative w-full h-[500px] lg:h-[600px] overflow-hidden'>
 				{/* Backdrop */}
@@ -275,7 +275,7 @@ const MediaDetail = ({ type }) => {
 };
 
 const MediaDetailSkeleton = () => (
-	<div className='-mx-4 sm:-mx-8 lg:-mx-12 space-y-12 pb-20'>
+	<div className='overflow-hidden space-y-12 pb-20'>
 		<Skeleton className='w-full h-[600px]' />
 		<div className='container grid grid-cols-1 lg:grid-cols-4 gap-12'>
 			<div className='lg:col-span-3 space-y-12'>
