@@ -236,32 +236,32 @@ const MediaDetail = ({ type }) => {
 
 				{/* Sidebar Info */}
 				<aside className='space-y-8'>
-					<div className='p-6 rounded-2xl bg-white border shadow-sm space-y-6'>
+					<div className='p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 text-slate-800 dark:text-slate-200'>
 						<div className='space-y-1'>
-							<p className='text-xs font-bold uppercase text-slate-400'>Status</p>
+							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Status</p>
 							<p className='font-semibold'>{details.status}</p>
 						</div>
 						<div className='space-y-1'>
-							<p className='text-xs font-bold uppercase text-slate-400'>Original Language</p>
+							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Original Language</p>
 							<p className='font-semibold uppercase'>{details.original_language}</p>
 						</div>
 						{details.budget > 0 && (
 							<div className='space-y-1'>
-								<p className='text-xs font-bold uppercase text-slate-400'>Budget</p>
+								<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Budget</p>
 								<p className='font-semibold'>${details.budget.toLocaleString()}</p>
 							</div>
 						)}
 						{details.revenue > 0 && (
 							<div className='space-y-1'>
-								<p className='text-xs font-bold uppercase text-slate-400'>Revenue</p>
+								<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Revenue</p>
 								<p className='font-semibold'>${details.revenue.toLocaleString()}</p>
 							</div>
 						)}
-						<div className='space-y-4 pt-4 border-t'>
-							<p className='text-xs font-bold uppercase text-slate-400'>Keywords</p>
+						<div className='space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800'>
+							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Keywords</p>
 							<div className='flex flex-wrap gap-2'>
 								{(details.keywords?.keywords || details.keywords?.results)?.slice(0, 10).map(k => (
-									<Badge key={k.id} variant="outline" className="rounded-sm font-normal text-[10px] text-slate-500">
+									<Badge key={k.id} variant="outline" className="rounded-sm font-normal text-[10px] text-slate-500 dark:text-slate-400">
 										{k.name}
 									</Badge>
 								))}
