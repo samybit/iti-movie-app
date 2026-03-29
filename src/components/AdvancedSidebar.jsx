@@ -14,7 +14,7 @@ import { ChevronRight, Search, SlidersHorizontal, Tv, Film, X } from 'lucide-rea
 
 // ── Reusable sub-heading ────────────────────────────────────────────────────
 const SectionLabel = ({ children }) => (
-	<h4 className='text-[13px] font-semibold text-slate-700 tracking-tight'>{children}</h4>
+	<h4 className='text-[13px] font-extrabold text-slate-800 dark:text-slate-100 uppercase tracking-wide'>{children}</h4>
 );
 
 // ── Slider with ticks ───────────────────────────────────────────────────────
@@ -54,12 +54,13 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 	const update = (patch) => setFilters((p) => ({ ...p, ...patch }));
 
 	const toggleGenre = (id) => {
-		const cur = (filters.with_genres || '').split(',').filter(Boolean);
+		const cur = (filters.with_genres || '').split('|').filter(Boolean);
 		const s = String(id);
-		update({ with_genres: (cur.includes(s) ? cur.filter(x => x !== s) : [...cur, s]).join(',') });
+		update({ with_genres: (cur.includes(s) ? cur.filter(x => x !== s) : [...cur, s]).join('|') });
 	};
 
-	const selectedGenreCount = (filters.with_genres || '').split(',').filter(Boolean).length;
+	const selectedGenreCount = (filters.with_genres || '').split('|').filter(Boolean).length;
+	const years = Array.from({ length: 132 }, (_, i) => (2031 - i).toString()); // 1900 to 2031
 
 	return (
 		<div className='flex flex-col gap-3'>
@@ -208,56 +209,72 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 						</div>
 
 						{/* Release Dates ──────────────── */}
-						<div className='space-y-3 border-t border-dashed border-slate-100 pt-5'>
+						<div className='space-y-3 border-t border-dashed border-slate-100 dark:border-slate-800 pt-5'>
 							<SectionLabel>Release Dates</SectionLabel>
-							<label className='flex items-center justify-between gap-2.5 cursor-pointer hover:bg-blue-50/50 bg-white border border-slate-100 rounded-xl py-3 px-4 shadow-sm transition-all group'>
-								<span className='text-[13px] font-bold text-slate-700'>Search all releases?</span>
-								<Checkbox id='releases' defaultChecked className="rounded-md border-slate-300 data-[state=checked]:bg-blue-500" />
+
+							<label 
+								className='flex items-center justify-between gap-2.5 cursor-pointer hover:bg-blue-50/50 dark:hover:bg-blue-500/10 bg-white dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800 rounded-2xl py-3 px-4 shadow-sm transition-all group'
+							>
+								<span className='text-[13px] font-bold text-slate-700 dark:text-slate-200'>Search all dates?</span>
+								<Checkbox 
+									id='releases' 
+									checked={!filters.release_date_gte && !filters.release_date_lte}
+									onCheckedChange={(checked) => {
+										if (checked) update({ release_date_gte: '', release_date_lte: '' });
+									}}
+									className="rounded-md border-slate-300 dark:border-slate-700 data-[state=checked]:bg-blue-600 dark:data-[state=checked]:bg-blue-600" 
+								/>
 							</label>
-							<div className='grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 pt-1'>
-								<span className='text-[11px] text-slate-400 font-medium whitespace-nowrap'>from</span>
-								<Input
-									type='number'
-									placeholder='Year (e.g. 2020)'
-									min={1900}
-									max={2100}
-									value={filters.release_date_gte}
-									onChange={(e) => update({ release_date_gte: e.target.value })}
-									className='h-8 text-xs rounded-lg bg-slate-50/80 border-slate-200 focus-visible:ring-blue-500'
-								/>
-								<span className='text-[11px] text-slate-400 font-medium whitespace-nowrap'>to</span>
-								<Input
-									type='number'
-									placeholder='Year (e.g. 2024)'
-									min={1900}
-									max={2100}
-									value={filters.release_date_lte}
-									onChange={(e) => update({ release_date_lte: e.target.value })}
-									className='h-8 text-xs rounded-lg bg-slate-50/80 border-slate-200 focus-visible:ring-blue-500'
-								/>
+							
+							<div className='grid grid-cols-2 gap-3 pt-1'>
+								<div className="space-y-1.5 flex flex-col">
+									<Label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 px-1 mb-1">From Year</Label>
+									<Select value={filters.release_date_gte || ' '} onValueChange={(v) => update({ release_date_gte: v === ' ' ? '' : v })}>
+										<SelectTrigger className='h-10 bg-slate-50/80 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl text-[13px] font-semibold dark:text-slate-100'>
+											<SelectValue placeholder='Any' />
+										</SelectTrigger>
+										<SelectContent className="max-h-[300px] rounded-2xl dark:bg-slate-950 dark:text-slate-100 dark:border-slate-800 shadow-2xl">
+											<SelectItem value=" ">Any Year</SelectItem>
+											{years.map(y => <SelectItem key={`from-${y}`} value={y}>{y}</SelectItem>)}
+										</SelectContent>
+									</Select>
+								</div>
+								
+								<div className="space-y-1.5 flex flex-col">
+									<Label className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 px-1 mb-1">To Year</Label>
+									<Select value={filters.release_date_lte || ' '} onValueChange={(v) => update({ release_date_lte: v === ' ' ? '' : v })}>
+										<SelectTrigger className='h-10 bg-slate-50/80 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl text-[13px] font-semibold dark:text-slate-100'>
+											<SelectValue placeholder='Any' />
+										</SelectTrigger>
+										<SelectContent className="max-h-[300px] rounded-2xl dark:bg-slate-950 dark:text-slate-100 dark:border-slate-800 shadow-2xl">
+											<SelectItem value=" ">Any Year</SelectItem>
+											{years.map(y => <SelectItem key={`to-${y}`} value={y}>{y}</SelectItem>)}
+										</SelectContent>
+									</Select>
+								</div>
 							</div>
 						</div>
 
 						{/* Genres ─────────────────────── */}
-						<div className='space-y-3 border-t border-dashed border-slate-100 pt-5'>
+						<div className='space-y-3 border-t border-dashed border-slate-100 dark:border-slate-800 pt-5'>
 							<div className='flex items-center justify-between'>
 								<SectionLabel>Genres</SectionLabel>
 								{selectedGenreCount > 0 && (
-									<span className='text-[10px] font-extrabold bg-blue-50 text-blue-500 px-2 py-0.5 rounded-full border border-blue-100'>
+									<span className='text-[10px] font-extrabold bg-blue-50 dark:bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded-full border border-blue-100 dark:border-blue-500/20'>
 										{selectedGenreCount} selected
 									</span>
 								)}
 							</div>
 							<div className='flex flex-wrap gap-1.5'>
 								{genres.map((g) => {
-									const on = (filters.with_genres || '').split(',').includes(String(g.id));
+									const on = (filters.with_genres || '').split('|').includes(String(g.id));
 									return (
 										<button
 											key={g.id}
 											className={`px-3 py-[6px] rounded-full text-[11px] font-semibold border transition-all duration-150 select-none ${
 												on
 													? 'bg-blue-600 border-blue-600 text-white shadow-sm'
-													: 'bg-white border-slate-200 text-slate-500 hover:border-blue-300 hover:text-blue-500 hover:shadow-sm'
+													: 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-blue-300 dark:hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-400 hover:shadow-sm'
 											}`}
 											onClick={() => toggleGenre(g.id)}
 										>
