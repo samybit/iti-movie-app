@@ -50,14 +50,14 @@ const HorizontalScroll = ({ title, data, isLoading }) => {
 						<button
 							onClick={() => scroll('left')}
 							disabled={!canScrollLeft}
-							className={`p-2 rounded-full border transition-all ${canScrollLeft ? 'bg-white shadow-md hover:shadow-lg text-slate-700 border-slate-200' : 'bg-slate-50 text-slate-200 border-slate-100 cursor-default'}`}
+							className={`p-2 rounded-full border transition-all ${canScrollLeft ? 'bg-white dark:bg-slate-950 shadow-md hover:shadow-lg text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800' : 'bg-slate-50 dark:bg-slate-900 text-slate-200 dark:text-slate-700 border-slate-100 dark:border-slate-800 cursor-default'}`}
 						>
 							<ChevronLeft size={18} />
 						</button>
 						<button
 							onClick={() => scroll('right')}
 							disabled={!canScrollRight}
-							className={`p-2 rounded-full border transition-all ${canScrollRight ? 'bg-white shadow-md hover:shadow-lg text-slate-700 border-slate-200' : 'bg-slate-50 text-slate-200 border-slate-100 cursor-default'}`}
+							className={`p-2 rounded-full border transition-all ${canScrollRight ? 'bg-white dark:bg-slate-950 shadow-md hover:shadow-lg text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800' : 'bg-slate-50 dark:bg-slate-900 text-slate-200 dark:text-slate-700 border-slate-100 dark:border-slate-800 cursor-default'}`}
 						>
 							<ChevronRight size={18} />
 						</button>
@@ -68,10 +68,10 @@ const HorizontalScroll = ({ title, data, isLoading }) => {
 			{/* Fade edges */}
 			<div className='relative'>
 				{canScrollLeft && (
-					<div className='absolute left-0 top-0 bottom-4 w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none' />
+					<div className='absolute left-0 top-0 bottom-4 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none' />
 				)}
 				{canScrollRight && (
-					<div className='absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none' />
+					<div className='absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none' />
 				)}
 				<div
 					ref={scrollRef}
