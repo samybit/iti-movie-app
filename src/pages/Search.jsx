@@ -67,49 +67,48 @@ const Search = () => {
 	return (
 		<div className='space-y-12 min-h-[70vh] pb-20'>
 			{/* ── Cinematic Search Hero ───────────────────────────────────── */}
-			<section className='relative min-h-[460px] flex flex-col items-center justify-center gap-10 py-20 px-6 overflow-hidden rounded-[40px] border border-slate-200/50 bg-white/50 shadow-2xl shadow-indigo-500/5'>
-				
+			<section className='relative min-h-[460px] flex flex-col items-center justify-center gap-10 py-20 px-6 overflow-hidden rounded-[40px] border border-slate-200/50 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 shadow-2xl shadow-indigo-500/5 dark:shadow-indigo-500/10 transition-colors'>
+
 				{/* Floating Animated Background Elements */}
-				<div className='absolute top-[-10%] left-[-5%] w-[40%] h-[60%] bg-blue-400/10 rounded-full blur-[120px] animate-pulse pointer-events-none' />
-				<div className='absolute bottom-[-10%] right-[-5%] w-[40%] h-[60%] bg-indigo-400/10 rounded-full blur-[120px] animate-pulse pointer-events-none delay-1000' />
-				<div className='absolute top-[20%] right-[15%] w-32 h-32 bg-purple-400/5 rounded-full blur-[60px] pointer-events-none' />
-				
+				<div className='absolute top-[-10%] left-[-5%] w-[40%] h-[60%] bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none' />
+				<div className='absolute bottom-[-10%] right-[-5%] w-[40%] h-[60%] bg-indigo-400/10 dark:bg-indigo-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none delay-1000' />
+				<div className='absolute top-[20%] right-[15%] w-32 h-32 bg-purple-400/5 dark:bg-purple-500/5 rounded-full blur-[60px] pointer-events-none' />
+
 				<div className='relative text-center space-y-4 max-w-2xl'>
-					<div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100/50 text-blue-600 text-[10px] font-black uppercase tracking-widest leading-none mb-2'>
+					<div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2'>
 						<Sparkles size={12} strokeWidth={3} className='animate-bounce' /> Cinematic Discoveries
 					</div>
-					<h1 className='text-5xl md:text-6xl font-black tracking-tighter text-slate-900 leading-[1.1]'>
+					<h1 className='text-5xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-slate-100 leading-[1.1]'>
 						Find your next <br />
-						<span className='bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent'>
+						<span className='bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400 bg-clip-text text-transparent'>
 							masterpiece.
 						</span>
 					</h1>
-					<p className='text-slate-400 font-medium text-lg leading-relaxed'>
+					<p className='text-slate-400 dark:text-slate-300 font-medium text-lg leading-relaxed'>
 						Search millions of cinematic stories. Filter by type and see the results instantly in premium quality.
 					</p>
 				</div>
-				
+
 				<div className='relative w-full max-w-3xl flex flex-col items-center gap-8'>
-					<SearchInput 
-						value={query} 
-						onChange={handleSearchChange} 
-						placeholder={`What are you looking for?`} 
-						className="max-w-2xl h-20 shadow-2xl shadow-blue-500/10"
+					<SearchInput
+						value={query}
+						onChange={handleSearchChange}
+						placeholder={`What are you looking for?`}
+						className="max-w-2xl h-20 shadow-2xl shadow-blue-500/10 dark:shadow-none"
 					/>
-					
+
 					{/* Media Type Segmented Toggle */}
-					<div className='flex p-1.5 bg-slate-100/80 backdrop-blur-md rounded-2xl border border-slate-200/50 shadow-inner max-w-sm w-full'>
+					<div className='flex p-1.5 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-inner max-w-sm w-full transition-colors'>
 						{[
 							{ key: 'movie', label: 'Movies', icon: <Film size={16} /> },
 							{ key: 'tv', label: 'TV Series', icon: <Tv size={16} /> },
 						].map(({ key, label, icon }) => (
 							<button
 								key={key}
-								className={`flex-1 flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-black transition-all duration-300 ${
-									mediaType === key
-										? 'bg-white text-blue-600 shadow-xl shadow-blue-500/10 ring-1 ring-blue-500/10'
-										: 'text-slate-400 hover:text-slate-600 hover:bg-white/40'
-								}`}
+								className={`flex-1 flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-black transition-all duration-300 ${mediaType === key
+									? 'bg-white dark:bg-slate-950 text-blue-600 dark:text-blue-400 shadow-xl shadow-blue-500/10 ring-1 ring-blue-500/10 dark:ring-blue-500/20'
+									: 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-white/40 dark:hover:bg-slate-800/40'
+									}`}
 								onClick={() => setMediaType(key)}
 							>
 								{icon} {label}
@@ -120,7 +119,7 @@ const Search = () => {
 			</section>
 
 			{error && (
-				<Alert variant='destructive' className='rounded-[32px] border-red-100 bg-red-50/50 p-6'>
+				<Alert variant='destructive' className='rounded-[32px] border-red-100 dark:border-red-900/50 bg-red-50/50 dark:bg-red-900/10 p-6'>
 					<AlertCircle className='h-5 w-5' />
 					<AlertTitle className='font-black'>System Alert</AlertTitle>
 					<AlertDescription className='text-sm opacity-80'>
@@ -138,17 +137,17 @@ const Search = () => {
 						{recentSearches.length > 0 && (
 							<div className='space-y-6'>
 								<div className='flex items-center gap-3'>
-									<div className='p-2 rounded-xl bg-slate-50 border border-slate-100'>
-										<History className='text-slate-400' size={18} />
+									<div className='p-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800'>
+										<History className='text-slate-400 dark:text-slate-500' size={18} />
 									</div>
-									<h3 className='text-sm font-black text-slate-800 uppercase tracking-widest'>Jump Back In</h3>
+									<h3 className='text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest'>Jump Back In</h3>
 								</div>
 								<div className='flex flex-wrap gap-2.5'>
 									{recentSearches.map(term => (
-										<button 
+										<button
 											key={term}
 											onClick={() => onTagClick(term)}
-											className='px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 active:scale-95'
+											className='px-4 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white hover:border-blue-600 dark:hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 dark:hover:shadow-none transition-all duration-300 active:scale-95'
 										>
 											{term}
 										</button>
@@ -160,17 +159,17 @@ const Search = () => {
 						{/* Trending Now */}
 						<div className='space-y-6 lg:col-span-2'>
 							<div className='flex items-center gap-3'>
-								<div className='p-2 rounded-xl bg-orange-50 border border-orange-100'>
-									<TrendingUp className='text-orange-500' size={18} />
+								<div className='p-2 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20'>
+									<TrendingUp className='text-orange-500 dark:text-orange-400' size={18} />
 								</div>
-								<h3 className='text-sm font-black text-slate-800 uppercase tracking-widest'>Trending Discoveries</h3>
+								<h3 className='text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest'>Trending Discoveries</h3>
 							</div>
 							<div className='flex flex-wrap gap-2.5'>
 								{['Marvel', 'Academy Awards', 'Animation', 'Horror classics', 'Netflix', 'IMDb TOP 250'].map(tag => (
-									<button 
+									<button
 										key={tag}
 										onClick={() => onTagClick(tag)}
-										className='px-5 py-2.5 bg-slate-50 border border-slate-100 rounded-2xl text-[13px] font-bold text-slate-600 hover:bg-white hover:border-blue-500 hover:text-blue-600 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1'
+										className='px-5 py-2.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl text-[13px] font-bold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:border-blue-500 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-none transition-all duration-300 transform hover:-translate-y-1'
 									>
 										{tag}
 									</button>
@@ -180,30 +179,30 @@ const Search = () => {
 					</div>
 
 					{/* Trending Preview Grid */}
-					<div className='mt-20 pt-12 border-t border-slate-100'>
+					<div className='mt-20 pt-12 border-t border-slate-100 dark:border-slate-800'>
 						<div className='flex items-center justify-between mb-8 px-2'>
-							<h4 className='text-xs font-black text-slate-400 uppercase tracking-[0.2em]'>Recommended for you</h4>
-							<span className='px-3 py-1 bg-green-50 text-green-600 text-[10px] font-black rounded-lg border border-green-100'>Updated Live</span>
+							<h4 className='text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]'>Recommended for you</h4>
+							<span className='px-3 py-1 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-black rounded-lg border border-green-100 dark:border-green-500/20'>Updated Live</span>
 						</div>
 						<MovieList movies={trendingMovies.slice(0, 8)} isLoading={loading} />
 					</div>
 				</div>
 			) : (
 				<div className='space-y-12 animate-in fade-in duration-500'>
-					<div className='flex items-end justify-between px-2 pt-4 border-b border-slate-100/50 pb-6'>
+					<div className='flex items-end justify-between px-2 pt-4 border-b border-slate-100/50 dark:border-slate-800/50 pb-6'>
 						<div>
-							<span className='text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100 mb-3 inline-block'>
+							<span className='text-[10px] font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100 dark:border-blue-500/20 mb-3 inline-block'>
 								Database Match
 							</span>
-							<h3 className='text-2xl font-black text-slate-800 tracking-tight'>
+							<h3 className='text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight'>
 								{debouncedQuery ? `Showing results for "${debouncedQuery}"` : ''}
 							</h3>
 						</div>
 						{movies.length > 0 && (
 							<div className='flex flex-col items-end gap-1'>
-								<span className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Collection Size</span>
-								<span className='text-lg font-black text-slate-800'>
-									{movies.length} <span className='text-slate-300 font-bold'>Titles</span>
+								<span className='text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest'>Collection Size</span>
+								<span className='text-lg font-black text-slate-800 dark:text-slate-100'>
+									{movies.length} <span className='text-slate-300 dark:text-slate-600 font-bold'>Titles</span>
 								</span>
 							</div>
 						)}
