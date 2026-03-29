@@ -24,22 +24,63 @@ npm run dev
 
 ## The Team
 
-- **[Shimaa]** — Data & Auth Lead
-  - Firebase/LocalStorage authentication
-  - Login/Register pages
-  - Global state setup for the user
+<table align="center">
+  <tr>
+    <th>Teammate</th>
+    <th>Role</th>
+    <th>Contributions</th>
+  </tr>
 
-- **[Belal]** — Discovery Lead
-  - Home Page & Search functionality
-  - Movie Grids
-  - Browse Page & Filtering
+  <tr>
+    <td align="center">
+      <img src="https://github.com/Shimaa-Mohammad.png" width="50" style="border-radius:50%;" /><br/>
+      Shimaa
+    </td>
+    <td>Data & Auth Lead</td>
+    <td>
+      - Firebase/LocalStorage authentication<br/>
+      - Login/Register pages<br/>
+      - Global state setup for the user
+    </td>
+  </tr>
 
-- **[Mostafa]** — Details Lead
-  - Movie Details page
-  - Fetching recommendations
-  - React Router (Lazy Loading)
+  <tr>
+    <td align="center">
+      <img src="https://github.com/belal987.png" width="50" style="border-radius:50%;" /><br/>
+      Belal
+    </td>
+    <td>Discovery Lead</td>
+    <td>
+      - Home Page & Search functionality<br/>
+      - Movie Grids<br/>
+      - Browse Page & Filtering
+    </td>
+  </tr>
 
-- **[Samy]** — UI/UX Lead
-  - Shadcn components
-  - Dark Mode
-  - Loading Skeleton
+  <tr>
+    <td align="center">
+      <img src="https://github.com/MostafaNageh187.png" width="50" style="border-radius:50%;" /><br/>
+      Mostafa
+    </td>
+    <td>Details Lead</td>
+    <td>
+      - Movie Details page<br/>
+      - Fetching recommendations<br/>
+      - React Router (Lazy Loading)
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="https://github.com/samybit.png" width="50" style="border-radius:50%;" /><br/>
+      Samy
+    </td>
+    <td>UI/UX Lead</td>
+    <td>
+      - Shadcn components<br/>
+      - Dark Mode<br/>
+      - Loading Skeleton
+    </td>
+  </tr>
+
+</table>
