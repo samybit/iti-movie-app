@@ -115,7 +115,7 @@ const Browse = () => {
 
 			{/* Sidebar Desktop */}
 			<aside className='hidden lg:block w-72 flex-shrink-0'>
-				<div className='sticky top-20 bg-white rounded-xl border p-4 shadow-sm'>
+				<div className='sticky top-20 bg-card text-card-foreground rounded-xl border p-4 shadow-sm'>
 					<AdvancedSidebar 
 						filters={pendingFilters} 
 						setFilters={setPendingFilters} 
@@ -145,10 +145,10 @@ const Browse = () => {
 				<div className='relative'>
 					<Search size={18} className='absolute left-4 top-1/2 -translate-y-1/2 text-slate-400' />
 					<Input
-						placeholder="Search is on the out put categories..."
+						placeholder="Search in the output categories..."
 						value={browseQuery}
 						onChange={(e) => setBrowseQuery(e.target.value)}
-						className='pl-11 pr-12 h-12 rounded-2xl bg-white border-slate-200 shadow-sm text-sm placeholder:text-slate-300 focus-visible:ring-blue-500'
+						className='pl-11 pr-12 h-12 rounded-2xl bg-background border-input shadow-sm text-sm placeholder:text-muted-foreground focus-visible:ring-blue-500'
 					/>
 					{browseQuery && (
 						<button 

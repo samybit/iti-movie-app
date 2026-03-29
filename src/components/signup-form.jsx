@@ -172,7 +172,7 @@ function SignupForm(props) {
         />
 
         {/* Right Form */}
-        <div className="flex w-full md:w-1/2 items-center justify-center p-10 bg-white dark:bg-gray-900">
+      <div className="flex w-full md:w-1/2 items-center justify-center p-10 bg-card text-card-foreground">
           <Card className="w-full max-w-md border-0 shadow-none bg-transparent">
             <CardHeader>
               <CardTitle>Create an account</CardTitle>
@@ -249,7 +249,7 @@ function SignupForm(props) {
                   </Button>
 
                   {/* Login Link */}
-                  <p className="text-center text-sm text-gray-500 dark:text-gray-300">
+              <p className="text-center text-sm text-muted-foreground">
                     Already have an account?{" "}
                     <Link to="/login" className="text-indigo-600 hover:underline">
                       Sign in

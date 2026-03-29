@@ -45,12 +45,16 @@ export function ThemeProvider({
 		}
 
 		// 4. Force browser to repaint, then remove the style tag to re-enable transitions
-		window.getComputedStyle(document.body);
-		const timeoutId = setTimeout(() => {
-			document.head.removeChild(css);
-		}, 1);
+		const _ = document.documentElement.offsetHeight; // Force a synchronous layout reflow
 
-		return () => clearTimeout(timeoutId);
+		let frameId;
+		frameId = requestAnimationFrame(() => {
+			frameId = requestAnimationFrame(() => {
+				document.head.removeChild(css);
+			});
+		});
+
+		return () => cancelAnimationFrame(frameId);
 	}, [theme]);
 
 	useEffect(() => {
