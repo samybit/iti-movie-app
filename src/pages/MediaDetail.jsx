@@ -5,7 +5,7 @@ import { tvService } from '../services/tvService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Star, Clock, Calendar, Globe, DollarSign, Play } from 'lucide-react';
+import { Star, Clock, Calendar, Play } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
 
 const MediaDetail = ({ type }) => {
@@ -13,9 +13,7 @@ const MediaDetail = ({ type }) => {
 	const [details, setDetails] = useState(null);
 	const [credits, setCredits] = useState(null);
 	const [videos, setVideos] = useState([]);
-
 	const [similar, setSimilar] = useState([]);
-
 	const [loading, setLoading] = useState(true);
 
 	usePageTitle(details?.title || details?.name || 'Loading details...');
@@ -25,7 +23,7 @@ const MediaDetail = ({ type }) => {
 			setLoading(true);
 			try {
 				const service = type === 'movie' ? movieService : tvService;
-				const [detailsRes, creditsRes, videosRes , similarRes ] = await Promise.all([
+				const [detailsRes, creditsRes, videosRes, similarRes] = await Promise.all([
 					service.getDetails(id),
 					service.getCredits(id),
 					service.getVideos(id),
@@ -37,7 +35,6 @@ const MediaDetail = ({ type }) => {
 				setVideos(videosRes.data.results);
 				setSimilar(similarRes.data.results);
 
-				// 🕒 Track Visited History (for Account Sidebar)
 				const newItem = {
 					id: data.id,
 					title: data.title || data.name,
@@ -46,7 +43,7 @@ const MediaDetail = ({ type }) => {
 					release_date: data.release_date || data.first_air_date,
 					mediaType: type
 				};
-				
+
 				const history = JSON.parse(localStorage.getItem('visitedHistory') || '[]');
 				const filteredHistory = history.filter(item => item.id !== data.id);
 				const newHistory = [newItem, ...filteredHistory].slice(0, 15);
@@ -63,10 +60,7 @@ const MediaDetail = ({ type }) => {
 		window.scrollTo(0, 0);
 	}, [id, type]);
 
-	if (loading) {
-		return <MediaDetailSkeleton />;
-	}
-
+	if (loading) return <MediaDetailSkeleton />;
 	if (!details) return null;
 
 	const backdropUrl = `https://image.tmdb.org/t/p/original${details.backdrop_path}`;
@@ -74,25 +68,24 @@ const MediaDetail = ({ type }) => {
 	const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube');
 
 	return (
-		<div className='w-screen relative left-1/2 -translate-x-1/2'>
+		<div className='w-full overflow-x-hidden'>
+
 			{/* Hero Section */}
 			<div className='relative w-full h-[500px] lg:h-[600px] overflow-hidden'>
-				{/* Backdrop */}
-				<div 
-					className='absolute inset-0 bg-cover bg-center transition-all duration-700'
+				<div
+					className='absolute inset-0 bg-cover bg-center'
 					style={{ backgroundImage: `url(${backdropUrl})` }}
 				>
 					<div className='absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent' />
 				</div>
 
-				{/* Content Overlay */}
-				<div className='relative h-full container flex flex-col lg:flex-row items-end lg:items-center gap-8 pb-12 lg:pb-0'>
+				<div className='relative h-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col lg:flex-row items-end lg:items-center gap-8 pb-12 lg:pb-0'>
 					{/* Poster */}
 					<div className='hidden lg:block w-72 h-[450px] shrink-0 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10'>
 						<img src={posterUrl} alt={details.title || details.name} className='w-full h-full object-cover' />
 					</div>
 
-					{/* Text Details */}
+					{/* Text */}
 					<div className='flex-grow space-y-6'>
 						<div className='space-y-2'>
 							<h1 className='text-4xl lg:text-6xl font-black tracking-tighter'>
@@ -118,7 +111,7 @@ const MediaDetail = ({ type }) => {
 									{details.runtime} min
 								</div>
 							)}
-							<div className='flex gap-2'>
+							<div className='flex flex-wrap gap-2'>
 								{details.genres?.map(g => (
 									<Badge key={g.id} variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700">
 										{g.name}
@@ -129,14 +122,12 @@ const MediaDetail = ({ type }) => {
 
 						<div className='max-w-3xl space-y-4'>
 							<h3 className='text-xl font-bold uppercase tracking-widest text-slate-500'>Overview</h3>
-							<p className='text-slate-300 leading-relaxed text-lg'>
-								{details.overview}
-							</p>
+							<p className='text-slate-300 leading-relaxed text-lg'>{details.overview}</p>
 						</div>
 
 						{trailer && (
-							<Button 
-								size="lg" 
+							<Button
+								size="lg"
 								className="rounded-full bg-blue-600 hover:bg-blue-700 gap-2 font-bold px-8"
 								onClick={() => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank')}
 							>
@@ -148,19 +139,21 @@ const MediaDetail = ({ type }) => {
 			</div>
 
 			{/* Detailed Info Section */}
-			<div className='container py-16 grid grid-cols-1 lg:grid-cols-4 gap-12'>
-				<div className='lg:col-span-3 space-y-12'>
-					{/* Cast Section */}
+			<div className='max-w-7xl mx-auto px-4 sm:px-8 py-16 grid grid-cols-1 lg:grid-cols-4 gap-12'>
+
+				<div className='lg:col-span-3 space-y-12 min-w-0'>
+
+					{/* Cast */}
 					<section className='space-y-6'>
 						<h2 className='text-2xl font-bold'>Top Billed Cast</h2>
-						<div className='flex gap-4 overflow-x-auto pb-4 custom-scrollbar'>
+						<div className='flex gap-4 overflow-x-auto overflow-y-hidden pb-4 custom-scrollbar'>
 							{credits?.cast?.slice(0, 10).map(person => (
 								<div key={person.id} className='w-32 shrink-0 space-y-3 group'>
 									<div className='aspect-[2/3] rounded-xl overflow-hidden bg-slate-800 shadow-md transition-transform group-hover:scale-105'>
 										{person.profile_path ? (
-											<img 
-												src={`https://image.tmdb.org/t/p/w185${person.profile_path}`} 
-												alt={person.name} 
+											<img
+												src={`https://image.tmdb.org/t/p/w185${person.profile_path}`}
+												alt={person.name}
 												className='w-full h-full object-cover'
 											/>
 										) : (
@@ -178,7 +171,7 @@ const MediaDetail = ({ type }) => {
 						</div>
 					</section>
 
-					{/* Trailer Section (Embedded) */}
+					{/* Trailer */}
 					{trailer && (
 						<section className='space-y-6'>
 							<h2 className='text-2xl font-bold'>Official Trailer</h2>
@@ -190,25 +183,20 @@ const MediaDetail = ({ type }) => {
 									frameBorder="0"
 									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 									allowFullScreen
-								></iframe>
+								/>
 							</div>
 						</section>
 					)}
 
-					{/* recommended movies & Similar Movies Section */}
+					{/* Similar */}
 					{similar.length > 0 && (
 						<section className='space-y-6'>
 							<h2 className='text-2xl font-bold'>
 								Similar {type === 'movie' ? 'Movies' : 'TV Shows'}
 							</h2>
-
 							<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6'>
 								{similar.slice(0, 10).map(item => (
-									<Link
-										key={item.id}
-										to={`/${type}/${item.id}`}
-										className='group space-y-3'
-									>
+									<Link key={item.id} to={`/${type}/${item.id}`} className='group space-y-3'>
 										<div className='aspect-[2/3] rounded-xl overflow-hidden bg-slate-800'>
 											{item.poster_path ? (
 												<img
@@ -222,7 +210,6 @@ const MediaDetail = ({ type }) => {
 												</div>
 											)}
 										</div>
-
 										<p className='text-sm font-semibold line-clamp-1'>
 											{item.title || item.name}
 										</p>
@@ -231,7 +218,6 @@ const MediaDetail = ({ type }) => {
 							</div>
 						</section>
 					)}
-
 				</div>
 
 				{/* Sidebar Info */}
@@ -269,15 +255,16 @@ const MediaDetail = ({ type }) => {
 						</div>
 					</div>
 				</aside>
+
 			</div>
 		</div>
 	);
 };
 
 const MediaDetailSkeleton = () => (
-	<div className='-mx-4 sm:-mx-8 lg:-mx-12 space-y-12 pb-20'>
+	<div className='w-full overflow-x-hidden space-y-12 pb-20'>
 		<Skeleton className='w-full h-[600px]' />
-		<div className='container grid grid-cols-1 lg:grid-cols-4 gap-12'>
+		<div className='max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-4 gap-12'>
 			<div className='lg:col-span-3 space-y-12'>
 				<div className='space-y-4'>
 					<Skeleton className='h-8 w-48' />
