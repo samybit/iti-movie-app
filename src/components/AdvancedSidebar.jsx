@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGenres } from '../hooks/useGenres';
 import { useLanguages } from '../hooks/useLanguages';
 import { useCountries } from '../hooks/useCountries';
@@ -10,33 +10,40 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { ChevronRight, Search, SlidersHorizontal, Tv, Film, X } from 'lucide-react';
+import { ChevronRight, Search, SlidersHorizontal, Tv, Film, X, MoreHorizontal } from 'lucide-react';
 
 // ── Reusable sub-heading ────────────────────────────────────────────────────
 const SectionLabel = ({ children }) => (
-	<h4 className='text-[13px] font-extrabold text-foreground uppercase tracking-wide'>{children}</h4>
+	<h4 className='text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] mb-3'>{children}</h4>
 );
 
 // ── Slider with ticks ───────────────────────────────────────────────────────
 const SliderWithTicks = ({ label, min = 0, max, step, value, onChange, format }) => {
 	const ticks = [];
 	for (let i = min; i <= max; i += step) ticks.push(i);
+
+	const [localValue, setLocalValue] = useState(Array.isArray(value) ? value : [value]);
+	
+	useEffect(() => {
+		setLocalValue(Array.isArray(value) ? value : [value]);
+	}, [value]);
+
 	return (
-		<div className='space-y-2 border-t border-dashed border-slate-100 pt-5'>
+		<div className='space-y-4 pt-2'>
 			<SectionLabel>{label}</SectionLabel>
-			<div className='px-1 pt-1 pb-2'>
+			<div className='px-1'>
 				<Slider
-					defaultValue={Array.isArray(value) ? value : [value]}
+					value={localValue}
 					min={min}
 					max={max}
 					step={step}
-					onValueChange={onChange}
+					onValueChange={setLocalValue}
+					onValueCommit={onChange}
 					className='cursor-pointer'
 				/>
-				<div className='flex justify-between mt-1.5'>
-					{ticks.filter((_, i) => i % Math.max(1, Math.floor(ticks.length / 5)) === 0 || _ === max).map(t => (
-						<span key={t} className='text-[9px] text-muted-foreground font-bold select-none'>{format ? format(t) : t}</span>
-					))}
+				<div className='flex justify-between mt-3 px-1'>
+					<span className='text-[10px] font-bold text-slate-400'>{format ? format(min) : min}</span>
+					<span className='text-[10px] font-bold text-slate-400'>{format ? format(max) : max}</span>
 				</div>
 			</div>
 		</div>
@@ -46,12 +53,18 @@ const SliderWithTicks = ({ label, min = 0, max, step, value, onChange, format })
 // ═══════════════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
-const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
+const AdvancedSidebar = ({ filters, setFilters }) => {
 	const { genres } = useGenres(filters.mediaType, filters.language);
 	const { languages } = useLanguages();
 	const { countries } = useCountries();
 
 	const update = (patch) => setFilters((p) => ({ ...p, ...patch }));
+
+	const [localKeywords, setLocalKeywords] = useState(filters.with_keywords || '');
+
+	useEffect(() => {
+		setLocalKeywords(filters.with_keywords || '');
+	}, [filters.with_keywords]);
 
 	const toggleGenre = (id) => {
 		const cur = (filters.with_genres || '').split('|').filter(Boolean);
@@ -59,374 +72,265 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 		update({ with_genres: (cur.includes(s) ? cur.filter(x => x !== s) : [...cur, s]).join('|') });
 	};
 
+	const setDecade = (range) => {
+		if (range === 'any') {
+			update({ release_date_gte: '', release_date_lte: '' });
+			return;
+		}
+		const [start, end] = range.split('-');
+		update({ release_date_gte: `${start}-01-01`, release_date_lte: `${end}-12-31` });
+	};
+
+	const getCurrentDecadeRange = () => {
+		if (!filters.release_date_gte || !filters.release_date_lte) return 'any';
+		const start = filters.release_date_gte.substring(0, 4);
+		const end = filters.release_date_lte.substring(0, 4);
+		return `${start}-${end}`;
+	};
+
+	const toggleMood = (keyword) => {
+		const cur = (filters.with_keywords || '').split(',').filter(Boolean);
+		if (cur.includes(keyword)) {
+			update({ with_keywords: cur.filter(k => k !== keyword).join(',') });
+		} else {
+			update({ with_keywords: [...cur, keyword].join(',') });
+		}
+	};
+
+	const setContentRating = (rating) => {
+		update({ certification: rating, certification_country: 'US' });
+	};
+
 	const selectedGenreCount = (filters.with_genres || '').split('|').filter(Boolean).length;
-	const years = Array.from({ length: 132 }, (_, i) => (2031 - i).toString()); // 1900 to 2031
 
 	return (
-		<div className='flex flex-col gap-3'>
+		<div className='flex flex-col gap-8'>
 
 			{/* ── Media Type Toggle ────────────────────────────────────────── */}
-			<div className='relative p-1 rounded-2xl bg-muted/50 border border-border/50 shadow-sm'>
-				<div className='flex gap-1'>
+			<div className='flex p-1 bg-slate-100 dark:bg-slate-800/50 rounded-xl gap-1'>
+				{[
+					{ key: 'movie', label: 'Movies' },
+					{ key: 'tv', label: 'TV Series' },
+				].map(({ key, label }) => (
+					<button
+						key={key}
+						className={`flex-1 py-2 px-4 rounded-lg text-xs font-bold transition-all ${
+							filters.mediaType === key
+								? 'bg-blue-600 text-white shadow-lg'
+								: 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+						}`}
+						onClick={() => update({ mediaType: key, with_genres: '' })}
+					>
+						{label}
+					</button>
+				))}
+			</div>
+
+			{/* ── Sort By ─────────────────────────────────────────────────── */}
+			<div className='space-y-3'>
+				<SectionLabel>Sort By</SectionLabel>
+				<div className='grid grid-cols-2 gap-2'>
 					{[
-						{ key: 'movie', label: 'Movies', icon: <Film size={15} /> },
-						{ key: 'tv', label: 'TV Series', icon: <Tv size={15} /> },
-					].map(({ key, label, icon }) => (
+						{ label: 'Popularity', val: 'popularity.desc' },
+						{ label: 'Rating', val: 'vote_average.desc' },
+						{ label: 'Latest', val: 'primary_release_date.desc' },
+						{ label: 'Revenue', val: 'revenue.desc' },
+					].map(({ label, val }) => (
 						<button
-							key={key}
-							className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-								filters.mediaType === key
-									? 'bg-background shadow-md text-primary ring-1 ring-primary/20'
-									: 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+							key={val}
+							onClick={() => update({ sort_by: val })}
+							className={`px-3 py-2.5 rounded-xl text-[10px] font-bold border transition-all truncate text-center ${
+								filters.sort_by === val
+									? 'bg-blue-600 border-blue-600 text-white shadow-lg'
+									: 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500'
 							}`}
-							onClick={() => update({ mediaType: key, with_genres: '' })}
 						>
-							{icon} {label}
+							{label}
 						</button>
 					))}
 				</div>
 			</div>
 
-			{/* ── Accordion Sections ──────────────────────────────────────── */}
-			<Accordion type='multiple' defaultValue={['sort', 'filters']} className='w-full space-y-2.5'>
+			{/* ── Decade ──────────────────────────────────────────────────── */}
+			<div className='space-y-3'>
+				<SectionLabel>Decade</SectionLabel>
+				<div className='flex flex-wrap gap-2'>
+					{[
+						{ label: '80s', val: '1980-1989' },
+						{ label: '90s', val: '1990-1999' },
+						{ label: '2000s', val: '2000-2009' },
+						{ label: '2010s', val: '2010-2019' },
+						{ label: '2020s', val: '2020-2029' },
+					].map(({ label, val }) => (
+						<button
+							key={label}
+							onClick={() => setDecade(val)}
+							className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${
+								getCurrentDecadeRange() === val
+									? 'bg-blue-600 border-blue-600 text-white'
+									: 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-500'
+							}`}
+						>
+							{label}
+						</button>
+					))}
+				</div>
+			</div>
 
-
-				{/* WHERE TO WATCH ───────────────────────────────────────────── */}
-				<AccordionItem value='watch' className='border border-border rounded-2xl bg-background shadow-sm overflow-hidden'>
-					<AccordionTrigger className='font-bold hover:no-underline px-5 py-3 text-sm data-[state=open]:border-b border-border/50'>
-						<div className='flex w-full items-center justify-between pr-3'>
-							<span>Where To Watch</span>
-							<span className='text-[10px] font-extrabold bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20'>41</span>
-						</div>
-					</AccordionTrigger>
-					<AccordionContent className='px-5 pb-5 pt-4 space-y-5'>
-						{/* My Services */}
-						<div className='space-y-3'>
-							<SectionLabel>My Services</SectionLabel>
-							<label className='flex items-center gap-2.5 cursor-pointer hover:bg-accent rounded-lg py-1.5 px-2 -mx-2 transition-colors'>
-								<Checkbox id='restrict-services' />
-								<span className='text-[12px] text-foreground leading-tight'>Restrict searches to my subscribed services?</span>
-							</label>
-						</div>
-
-						{/* Country */}
-						<div className='space-y-3 border-t border-dashed border-border pt-4'>
-							<div className='flex items-center justify-between'>
-								<SectionLabel>Country</SectionLabel>
-								{filters.with_origin_country && (
-									<button 
-										onClick={() => update({ with_origin_country: '' })}
-										className='text-[10px] font-bold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded-full'
-									>
-										<X size={10} /> Clear
-									</button>
-								)}
-							</div>
-							<Select value={filters.with_origin_country || ''} onValueChange={(v) => update({ with_origin_country: v })}>
-								<SelectTrigger className='w-full bg-muted/50 border-input rounded-xl text-[13px] text-foreground'>
-									<SelectValue placeholder='Select Country' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='US'>🇺🇸 United States</SelectItem>
-									<SelectItem value='GB'>🇬🇧 United Kingdom</SelectItem>
-									<SelectItem value='DE'>🇩🇪 Germany</SelectItem>
-									<SelectItem value='FR'>🇫🇷 France</SelectItem>
-									<SelectItem value='TR'>🇹🇷 Turkey</SelectItem>
-									<SelectItem value='EG'>🇪🇬 Egypt</SelectItem>
-									<SelectItem value='SA'>🇸🇦 Saudi Arabia</SelectItem>
-									<SelectItem value='IN'>🇮🇳 India</SelectItem>
-									<SelectItem value='JP'>🇯🇵 Japan</SelectItem>
-									<SelectItem value='KR'>🇰🇷 South Korea</SelectItem>
-									{countries.filter(c => !['US','GB','DE','FR','TR','EG','SA','IN','JP','KR'].includes(c.iso_3166_1)).map(c => (
-										<SelectItem key={c.iso_3166_1} value={c.iso_3166_1}>{c.english_name}</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-
-						{/* Streaming Platforms */}
-						<div className='space-y-4 border-t border-dashed border-border pt-5 bg-muted/30 -mx-5 px-5 pb-2'>
-							<SectionLabel>Available Platforms</SectionLabel>
-							<div className='grid grid-cols-3 gap-3'>
-								{[
-									{ id: 8, name: 'Netflix', icon: 'https://image.tmdb.org/t/p/original/pTpxMq1S1vCqbDuZOKQ6fsTSR1f.jpg' },
-									{ id: 337, name: 'Disney+', icon: 'https://image.tmdb.org/t/p/original/78SUD9vYyS9fWIDo92p969p969p9.jpg' },
-									{ id: 119, name: 'Amazon', icon: 'https://image.tmdb.org/t/p/original/dgPueyEdOisELs98EX6Gz6kH7u3.jpg' },
-									{ id: 384, name: 'HBO Max', icon: 'https://image.tmdb.org/t/p/original/68vAnUiqHjfiFdG9Zpt39PZZ9jO.jpg' },
-									{ id: 350, name: 'Apple TV+', icon: 'https://image.tmdb.org/t/p/original/6hu9v9Yis9qS9uXmP2tM5S1qH1t.jpg' },
-									{ id: 15, name: 'Hulu', icon: 'https://image.tmdb.org/t/p/original/giLR06v9SVPWfyY7YppF968lxZ9.jpg' },
-									{ id: 531, name: 'Paramount+', icon: 'https://image.tmdb.org/t/p/original/pk8vTz1fUpCq7m4X3RjD3ZfC8k4.jpg' },
-									{ id: 386, name: 'Peacock', icon: 'https://image.tmdb.org/t/p/original/78SUD9vYyS9fWIDo92p969p969p9.jpg' }, 
-									{ id: 283, name: 'Crunchyroll', icon: 'https://image.tmdb.org/t/p/original/m99F2e6q5p4nN1zR6z5p4nN1zR6.jpg' },
-								].map(({ id, name, icon }) => {
-									const isSelected = (filters.with_watch_providers || '').split('|').includes(String(id));
-									return (
-										<button
-											key={id}
-											onClick={() => {
-												const cur = (filters.with_watch_providers || '').split('|').filter(Boolean);
-												const next = isSelected ? cur.filter(x => x !== String(id)) : [...cur, String(id)];
-												update({ with_watch_providers: next.join('|'), watch_region: filters.with_origin_country || 'US' });
-											}}
-											className={`flex flex-col items-center gap-1.5 p-1 rounded-2xl border transition-all group ${
-												isSelected 
-												? 'border-primary bg-primary/10 shadow-lg scale-105' 
-												: 'border-transparent hover:border-primary/30 hover:bg-background'
-											}`}
-											title={name}
-										>
-											<div className={`w-11 h-11 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform border bg-background ${
-												isSelected ? 'border-primary/50' : 'border-border/50'
-											}`}>
-												<img src={icon} alt={name} className="w-full h-full object-cover" />
-											</div>
-											<span className={`text-[10px] font-bold truncate w-full text-center ${
-												isSelected ? 'text-primary' : 'text-muted-foreground'
-											}`}>{name}</span>
-										</button>
-									);
-								})}
-							</div>
-						</div>
-					</AccordionContent>
-				</AccordionItem>
-
-				{/* FILTERS MAIN ─────────────────────────────────────────────── */}
-				<AccordionItem value='filters' className='border border-border rounded-2xl bg-background shadow-sm overflow-hidden'>
-					<AccordionTrigger className='font-bold hover:no-underline px-5 py-3 text-sm data-[state=open]:border-b border-border/50'>
-						<div className='flex items-center gap-2'>
-							<SlidersHorizontal size={14} className='text-muted-foreground' />
-							Filters
-						</div>
-					</AccordionTrigger>
-					<AccordionContent className='px-5 pb-6 pt-5 space-y-5'>
-
-						{/* Show Me ────────────────────── */}
-						<div className='space-y-3 p-4 bg-muted/30 rounded-2xl border border-border/50'>
-							<SectionLabel>Show Me</SectionLabel>
-							<RadioGroup defaultValue='everything' className='grid grid-cols-1 gap-1.5'>
-								{[
-									{ val: 'everything', label: 'Everything', enabled: true },
-									{ val: 'unseen', label: "New To Me", enabled: false },
-									{ val: 'seen', label: 'Already Seen', enabled: false },
-								].map(({ val, label, enabled }) => (
-									<label key={val} className={`flex items-center justify-between gap-2.5 py-2.5 px-3.5 cursor-pointer rounded-xl border transition-all ${
-										!enabled 
-										  ? 'opacity-40 grayscale pointer-events-none border-border' 
-										  : 'hover:bg-background hover:border-primary/30 group'
-									} bg-background shadow-sm`}>
-										<div className="flex items-center gap-3">
-											<RadioGroupItem value={val} disabled={!enabled} className="border-input" />
-											<span className='text-[13px] font-bold text-foreground'>{label}</span>
-										</div>
-										{enabled && <div className="w-1.5 h-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />}
-									</label>
-								))}
-							</RadioGroup>
-						</div>
-
-						{/* Availabilities ─────────────── */}
-						<div className='space-y-3 border-t border-dashed border-border pt-5'>
-							<SectionLabel>Availabilities</SectionLabel>
-							<label className='flex items-center justify-between gap-2.5 cursor-pointer hover:bg-primary/5 bg-background border border-border rounded-xl py-3 px-4 shadow-sm transition-all group'>
-								<span className='text-[13px] font-bold text-foreground'>Search all availabilities?</span>
-								<Checkbox id='avail' defaultChecked className="rounded-md border-input data-[state=checked]:bg-primary" />
-							</label>
-						</div>
-
-						{/* Release Dates ──────────────── */}
-						<div className='space-y-3 border-t border-dashed border-border pt-5'>
-							<SectionLabel>Release Dates</SectionLabel>
-
-							<label 
-								className='flex items-center justify-between gap-2.5 cursor-pointer hover:bg-primary/5 bg-background border border-border rounded-2xl py-3 px-4 shadow-sm transition-all group'
+			{/* ── Genre ───────────────────────────────────────────────────── */}
+			<div className='space-y-3'>
+				<SectionLabel>Genre</SectionLabel>
+				<div className='flex flex-wrap gap-2'>
+					{genres.slice(0, 10).map((g) => {
+						const active = (filters.with_genres || '').split('|').includes(String(g.id));
+						return (
+							<button
+								key={g.id}
+								onClick={() => toggleGenre(g.id)}
+								className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${
+									active
+										? 'bg-white text-slate-900 border-white shadow-xl'
+										: 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-500'
+								}`}
 							>
-								<span className='text-[13px] font-bold text-foreground'>Search all dates?</span>
-								<Checkbox 
-									id='releases' 
-									checked={!filters.release_date_gte && !filters.release_date_lte}
-									onCheckedChange={(checked) => {
-										if (checked) update({ release_date_gte: '', release_date_lte: '' });
-									}}
-									className="rounded-md border-input data-[state=checked]:bg-primary" 
-								/>
-							</label>
-							
-							<div className='grid grid-cols-2 gap-3 pt-1'>
-								<div className="space-y-1.5 flex flex-col">
-									<Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1 mb-1">From Year</Label>
-									<Select value={filters.release_date_gte || ' '} onValueChange={(v) => update({ release_date_gte: v === ' ' ? '' : v })}>
-										<SelectTrigger className='h-10 bg-muted/50 border-input rounded-xl text-[13px] font-semibold text-foreground'>
-											<SelectValue placeholder='Any' />
-										</SelectTrigger>
-										<SelectContent className="max-h-[300px] rounded-2xl shadow-2xl">
-											<SelectItem value=" ">Any Year</SelectItem>
-											{years.map(y => <SelectItem key={`from-${y}`} value={y}>{y}</SelectItem>)}
-										</SelectContent>
-									</Select>
-								</div>
-								
-								<div className="space-y-1.5 flex flex-col">
-									<Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1 mb-1">To Year</Label>
-									<Select value={filters.release_date_lte || ' '} onValueChange={(v) => update({ release_date_lte: v === ' ' ? '' : v })}>
-										<SelectTrigger className='h-10 bg-muted/50 border-input rounded-xl text-[13px] font-semibold text-foreground'>
-											<SelectValue placeholder='Any' />
-										</SelectTrigger>
-										<SelectContent className="max-h-[300px] rounded-2xl shadow-2xl">
-											<SelectItem value=" ">Any Year</SelectItem>
-											{years.map(y => <SelectItem key={`to-${y}`} value={y}>{y}</SelectItem>)}
-										</SelectContent>
-									</Select>
-								</div>
-							</div>
-						</div>
+								{g.name}
+							</button>
+						);
+					})}
+				</div>
+			</div>
 
-						{/* Genres ─────────────────────── */}
-						<div className='space-y-3 border-t border-dashed border-border pt-5'>
-							<div className='flex items-center justify-between'>
-								<SectionLabel>Genres</SectionLabel>
-								{selectedGenreCount > 0 && (
-									<span className='text-[10px] font-extrabold bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20'>
-										{selectedGenreCount} selected
-									</span>
-								)}
-							</div>
-							<div className='flex flex-wrap gap-1.5'>
-								{genres.map((g) => {
-									const on = (filters.with_genres || '').split('|').includes(String(g.id));
-									return (
-										<button
-											key={g.id}
-											className={`px-3 py-[6px] rounded-full text-[11px] font-semibold border transition-all duration-150 select-none ${
-												on
-													? 'bg-primary border-primary text-primary-foreground shadow-sm'
-													: 'bg-background border-border text-muted-foreground hover:border-primary/50 hover:text-primary hover:shadow-sm'
-											}`}
-											onClick={() => toggleGenre(g.id)}
-										>
-											{g.name}
-										</button>
-									);
-								})}
-							</div>
-						</div>
+			{/* ── Language ────────────────────────────────────────────────── */}
+			<div className='space-y-3'>
+				<SectionLabel>Language</SectionLabel>
+				<div className='flex flex-wrap gap-2'>
+					{[
+						{ label: 'English', id: 'en' },
+						{ label: 'Arabic', id: 'ar' },
+						{ label: 'Turkish', id: 'tr' },
+						{ label: 'Spanish', id: 'es' },
+						{ label: 'French', id: 'fr' },
+						{ label: 'Korean', id: 'ko' },
+						{ label: 'Japanese', id: 'ja' },
+					].map(({ label, id }) => {
+						const active = (filters.with_original_language || '').split('|').includes(id);
+						return (
+							<button
+								key={id}
+								onClick={() => {
+									const cur = (filters.with_original_language || '').split('|').filter(Boolean);
+									const next = cur.includes(id) ? cur.filter(l => l !== id) : [...cur, id];
+									update({ with_original_language: next.join('|') });
+								}}
+								className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${
+									active
+										? 'bg-blue-600 border-blue-600 text-white'
+										: 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-500'
+								}`}
+							>
+								{label}
+							</button>
+						);
+					})}
+				</div>
+			</div>
 
+			{/* ── Mood ────────────────────────────────────────────────────── */}
+			<div className='space-y-3'>
+				<SectionLabel>Mood</SectionLabel>
+				<div className='flex flex-wrap gap-2'>
+					{[
+						{ label: 'Feel-good', id: 'feel-good' },
+						{ label: 'Dark', id: 'dark' },
+						{ label: 'Funny', id: 'funny' },
+						{ label: 'Emotional', id: 'emotional' },
+						{ label: 'Mind-bending', id: 'mind-bending' },
+					].map(({ label, id }) => {
+						const active = (filters.with_keywords || '').split(',').includes(id);
+						return (
+							<button
+								key={id}
+								onClick={() => toggleMood(id)}
+								className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${
+									active
+										? 'bg-white text-slate-900 border-white'
+										: 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-500'
+								}`}
+							>
+								{label}
+							</button>
+						);
+					})}
+				</div>
+			</div>
 
-						{/* Language ────────────────────── */}
-						<div className='space-y-3 border-t border-dashed border-border pt-5'>
-							<SectionLabel>Language</SectionLabel>
-							<div className='pt-1 space-y-3'>
-								<Select onValueChange={(v) => {
-									const cur = filters.with_original_language?.split('|').filter(Boolean) || [];
-									if (!cur.includes(v)) {
-										update({ with_original_language: [...cur, v].join('|') });
-									}
-								}}>
-									<SelectTrigger className='w-full bg-muted/50 border-input rounded-xl text-[13px] text-foreground'>
-										<SelectValue placeholder='Select Language' />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value='en'>English</SelectItem>
-										<SelectItem value='tr'>Turkish</SelectItem>
-										<SelectItem value='ar'>Arabic</SelectItem>
-										<SelectItem value='ko'>Korean</SelectItem>
-										<SelectItem value='fr'>French</SelectItem>
-										<SelectItem value='de'>German</SelectItem>
-										<SelectItem value='es'>Spanish</SelectItem>
-										<SelectItem value='ja'>Japanese</SelectItem>
-										{languages.filter(l => !['en', 'tr', 'ar', 'ko', 'fr', 'de', 'es', 'ja'].includes(l.iso_639_1)).map(l => (
-											<SelectItem key={l.iso_639_1} value={l.iso_639_1}>{l.english_name}</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
+			{/* ── Runtime ─────────────────────────────────────────────────── */}
+			<SliderWithTicks
+				label='Runtime (Max)'
+				min={30}
+				max={180}
+				step={5}
+				value={filters.with_runtime_lte || 180}
+				onChange={(v) => update({ with_runtime_lte: v[0].toString() })}
+				format={(v) => `${v} min`}
+			/>
 
-								{/* Selected Language Pills */}
-								<div className='flex flex-wrap gap-1.5'>
-									{filters.with_original_language?.split('|').filter(Boolean).map(langCode => {
-										const lang = languages.find(l => l.iso_639_1 === langCode);
-										return (
-											<div key={langCode} className='flex items-center gap-1.5 pl-2 pr-1 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[11px] font-bold animate-in fade-in zoom-in duration-200'>
-												{lang ? lang.english_name : langCode}
-												<button 
-													onClick={() => {
-														const cur = filters.with_original_language.split('|').filter(x => x !== langCode);
-														update({ with_original_language: cur.join('|') });
-													}}
-													className='p-0.5 hover:bg-primary/20 rounded-md transition-colors'
-												>
-													<X size={12} />
-												</button>
-											</div>
-										);
-									})}
-								</div>
-							</div>
-						</div>
+			{/* ── Min User Score ────────────────────────────────────────── */}
+			<SliderWithTicks
+				label='Min User Score'
+				min={0}
+				max={10}
+				step={0.5}
+				value={filters.vote_average_gte || 0}
+				onChange={(v) => update({ vote_average_gte: v[0].toString() })}
+			/>
 
-						{/* User Score ─────────────────── */}
-						<SliderWithTicks
-							label='User Score'
-							max={10} step={1}
-							value={filters.vote_average_gte || 0}
-							onChange={(v) => update({ vote_average_gte: v[0].toString() })}
-						/>
+			{/* ── Content Rating ─────────────────────────────────────────── */}
+			<div className='space-y-3'>
+				<SectionLabel>Content Rating</SectionLabel>
+				<div className='flex flex-wrap gap-3'>
+					{['G', 'PG', 'PG-13', 'R', 'TV-MA'].map((r) => (
+						<button
+							key={r}
+							onClick={() => setContentRating(filters.certification === r ? '' : r)}
+							className={`text-[11px] font-black transition-colors ${
+								filters.certification === r
+									? 'text-blue-500'
+									: 'text-slate-500 hover:text-slate-300'
+							}`}
+						>
+							{r}
+						</button>
+					))}
+				</div>
+			</div>
 
-						{/* Minimum User Votes ────────── */}
-						<SliderWithTicks
-							label='Minimum User Votes'
-							max={500} step={50}
-							value={filters.vote_count_gte || 0}
-							onChange={(v) => update({ vote_count_gte: v[0].toString() })}
-						/>
-
-						{/* Runtime ────────────────────── */}
-						<SliderWithTicks
-							label='Runtime'
-							max={360} step={15}
-							value={[filters.with_runtime_gte || 0, filters.with_runtime_lte || 360]}
-							onChange={(v) => update({ with_runtime_gte: v[0].toString(), with_runtime_lte: v[1].toString() })}
-							format={(v) => `${v}m`}
-						/>
-
-						{/* Keywords ───────────────────── */}
-						<div className='space-y-3 border-t border-dashed border-border pt-5'>
-							<SectionLabel>Keywords</SectionLabel>
-							<Input
-								placeholder='Filter by keywords...'
-								value={filters.with_keywords}
-								onChange={(e) => update({ with_keywords: e.target.value })}
-								className='text-[13px] h-9 bg-muted/50 border-input rounded-xl placeholder:text-muted-foreground'
-							/>
-						</div>
-
-						{/* Translated To ──────────────── */}
-						<div className='space-y-3 border-t border-dashed border-border pt-5'>
-							<SectionLabel>Translated To</SectionLabel>
-							<Select value={filters.language} onValueChange={(v) => update({ language: v })}>
-								<SelectTrigger className='w-full bg-primary/10 border-primary/20 text-primary rounded-xl text-[13px] font-semibold'>
-									<SelectValue placeholder='Select Translation' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='en-US'>English (US)</SelectItem>
-									<SelectItem value='tr-TR'>Turkish (TR)</SelectItem>
-									<SelectItem value='ar-SA'>Arabic (SA)</SelectItem>
-									<SelectItem value='fr-FR'>French (FR)</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-
-					</AccordionContent>
-				</AccordionItem>
-			</Accordion>
-
-			{/* ── Search Button (sticky) ──────────────────────────────────── */}
-			<div className='sticky bottom-0 pt-3 pb-1 bg-gradient-to-t from-card via-card'>
-				<Button
-					onClick={onSearch}
-					className='w-full h-12 rounded-2xl font-bold text-[15px] bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl hover:shadow-2xl transition-all active:scale-[0.97] flex items-center justify-center gap-2'
+			{/* ── Footer Link ─────────────────────────────────────────────── */}
+			<div className='pt-4'>
+				<button 
+					onClick={() => setFilters({
+						mediaType: 'movie',
+						with_genres: '',
+						with_original_language: '',
+						with_origin_country: '',
+						language: 'en-US',
+						release_date_gte: '',
+						release_date_lte: '',
+						episode_count_gte: '',
+						episode_count_lte: '',
+						vote_average_gte: '',
+						vote_count_gte: '',
+						with_runtime_gte: '',
+						with_runtime_lte: '',
+						with_keywords: '',
+						certification: '',
+						sort_by: 'popularity.desc',
+						page: 1
+					})}
+					className='text-[11px] font-black text-blue-500 hover:underline uppercase tracking-widest transition-all'
 				>
-					<Search size={18} /> Search
-				</Button>
+					Clear all filters
+				</button>
 			</div>
 		</div>
 	);

@@ -7,96 +7,139 @@ import { Link } from 'react-router';
 // TMDB image base URL
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist }) => {
-	const { id, title, name, poster_path, vote_average, release_date, first_air_date } = movie;
+const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist, viewMode = 'grid' }) => {
+	const { id, title, name, poster_path, vote_average, release_date, first_air_date, genre_ids } = movie;
 	const displayTitle = title || name || 'Unknown';
 	const displayDate = release_date || first_air_date;
+	const year = displayDate ? new Date(displayDate).getFullYear() : 'TBA';
 	const mediaType = title ? 'movie' : 'tv';
 	const imageUrl = poster_path
 		? `https://image.tmdb.org/t/p/w500${poster_path}`
 		: 'https://placehold.co/500x750?text=No+Image';
-	const isComingSoon = displayDate && new Date(displayDate) > new Date();
 
 	// Color-coded rating
 	const ratingColor =
-		vote_average >= 7 ? 'bg-green-500 text-white' :
-			vote_average >= 5 ? 'bg-yellow-400 text-yellow-950' :
-				'bg-red-500 text-white';
+		vote_average >= 7 ? 'bg-green-500' :
+			vote_average >= 5 ? 'bg-yellow-400' :
+				'bg-red-500';
+
+	// Simulated duration & provider for UI matching
+	const duration = mediaType === 'movie' ? '2h 15m' : '1 Season';
+	const providers = [
+		{ name: 'Netflix', color: 'bg-red-600' },
+		{ name: 'Amazon', color: 'bg-blue-900' },
+		{ name: 'Disney+', color: 'bg-indigo-950' }
+	];
+	const randomProvider = providers[id % 3];
+
+	if (viewMode === 'list') {
+		return (
+			<Link to={`/${mediaType}/${id}`} className='flex items-center gap-6 p-4 rounded-[2rem] bg-slate-900/40 border border-white/5 hover:bg-slate-900/60 transition-all group'>
+				<div className='w-40 aspect-[2/3] overflow-hidden rounded-2xl flex-shrink-0'>
+					<img src={imageUrl} alt={displayTitle} className='w-full h-full object-cover transition-transform group-hover:scale-110' />
+				</div>
+				<div className='flex-grow space-y-4'>
+					<div className='flex justify-between items-start'>
+						<div>
+							<h3 className='text-3xl font-black text-foreground'>{displayTitle}</h3>
+							<div className='flex items-center gap-3 text-slate-400 font-bold text-sm'>
+								<span>{year}</span>
+								<span>•</span>
+								<span>{duration}</span>
+							</div>
+						</div>
+						<Button
+							variant='ghost'
+							size='icon'
+							className={`rounded-xl border border-white/10 ${isWishlisted ? 'text-blue-500 bg-blue-500/10 border-blue-500/30' : 'text-slate-400'}`}
+							onClick={(e) => { e.preventDefault(); onToggleWishlist?.(movie); }}
+						>
+							<Heart className={isWishlisted ? 'fill-current' : ''} size={20} />
+						</Button>
+					</div>
+					<div className='flex items-center gap-4'>
+						<div className='flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-green-500 text-white text-sm font-black'>
+							<Star size={14} className='fill-current' />
+							{vote_average?.toFixed(1)}
+						</div>
+						<div className='flex-grow h-1.5 bg-slate-800 rounded-full overflow-hidden'>
+							<div className='h-full bg-green-500 rounded-full' style={{ width: `${vote_average * 10}%` }} />
+						</div>
+						<span className='text-xs font-black text-slate-500 uppercase'>Match</span>
+					</div>
+				</div>
+			</Link>
+		);
+	}
 
 	return (
-		// Removed bg-white and added bg-card
-		<Card className='overflow-hidden border-0 shadow-md hover:shadow-2xl transition-all duration-500 flex flex-col h-full group rounded-2xl bg-card'>
-			<div className='relative aspect-[2/3] overflow-hidden rounded-t-2xl'>
+		<div className='group flex flex-col gap-4 animate-in fade-in zoom-in duration-500'>
+			<div className='relative aspect-[2/3] overflow-hidden rounded-[2.5rem] bg-slate-900 border border-white/5 shadow-2xl transition-all hover:shadow-blue-500/10'>
 				<Link to={`/${mediaType}/${id}`} className='block w-full h-full'>
 					<img
 						src={imageUrl}
 						alt={displayTitle}
-						className='w-full h-full object-cover transition-transform duration-700 group-hover:scale-110'
+						className='w-full h-full object-cover transition-transform duration-700 group-hover:scale-105'
 						loading='lazy'
 					/>
-					{/* Gradient overlay for readability */}
-					<div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500' />
+					<div className='absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20' />
 				</Link>
 
-				{/* Coming Soon badge */}
-				{isComingSoon && (
-					<div className='absolute top-3 left-3'>
-						<Badge className='bg-amber-500/90 backdrop-blur-sm text-white border-none shadow-lg font-bold text-[10px] px-2.5 py-1 animate-pulse'>
-							Coming Soon
-						</Badge>
+				{/* Streamer Badge */}
+				<div className='absolute top-5 left-5'>
+					<div className={`px-3 py-1.5 rounded-xl border border-white/10 backdrop-blur-md text-[10px] uppercase font-black tracking-widest text-white ${randomProvider.color}`}>
+						{randomProvider.name}
 					</div>
-				)}
+				</div>
 
-				{/* Wishlist heart */}
-				<div className='absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+				{/* Rating Badge */}
+				<div className='absolute bottom-5 left-5'>
+					<div className='flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-green-500 text-white text-xs font-black shadow-xl'>
+						<Star size={14} className='fill-current' />
+						{vote_average?.toFixed(1)}
+					</div>
+				</div>
+
+				{/* Wishlist Button */}
+				<div className='absolute top-5 right-5'>
 					<Button
 						variant='ghost'
 						size='icon'
-						className={`rounded-full bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 shadow-lg ${isWishlisted ? 'text-red-400 opacity-100' : 'text-white'
-							}`}
+						className={`rounded-2xl backdrop-blur-md border border-white/10 shadow-xl transition-all ${
+							isWishlisted 
+							? 'bg-blue-600 text-white border-blue-400' 
+							: 'bg-black/20 text-white hover:bg-black/40'
+						}`}
 						onClick={(e) => {
 							e.preventDefault();
 							onToggleWishlist?.(movie);
 						}}
 					>
-						<Heart className={isWishlisted ? 'fill-current' : ''} size={18} />
+						<Heart className={isWishlisted ? 'fill-current' : ''} size={20} />
 					</Button>
-				</div>
-
-				{/* Rating badge */}
-				<div className='absolute bottom-3 left-3'>
-					<div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-black shadow-lg backdrop-blur-sm ${ratingColor}`}>
-						<Star size={12} className='fill-current' />
-						{vote_average?.toFixed(1)}
-					</div>
-				</div>
-
-				{/* View details on hover */}
-				<div className='absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300'>
-					<Link to={`/${mediaType}/${id}`}>
-						<Button size='sm' className='rounded-xl bg-white/90 text-slate-900 hover:bg-white text-xs font-bold shadow-lg backdrop-blur-sm h-8 px-3'>
-							Details →
-						</Button>
-					</Link>
 				</div>
 			</div>
 
-			{/* Card body */}
-			<CardHeader className='p-3 pb-0'>
-				<Link to={`/${mediaType}/${id}`} className='hover:no-underline'>
-					<CardTitle className='text-sm font-bold line-clamp-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors'>
-						{displayTitle}
-					</CardTitle>
-				</Link>
-			</CardHeader>
-			<CardContent className='p-3 pt-1 flex-grow'>
-				{/* Changed text-slate-400 to text-muted-foreground */}
-				<p className='text-[11px] text-muted-foreground flex items-center gap-1'>
-					<Calendar size={10} />
-					{displayDate ? new Date(displayDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBA'}
-				</p>
-			</CardContent>
-		</Card>
+			{/* Info Area */}
+			<div className='px-4 space-y-1'>
+				<h3 className='text-lg font-black text-foreground truncate group-hover:text-blue-500 transition-colors'>
+					{displayTitle}
+				</h3>
+				<div className='flex items-center gap-2 text-xs font-bold text-slate-500'>
+					<span>{year}</span>
+					<span className='w-1 h-1 bg-slate-700 rounded-full' />
+					<span>{duration}</span>
+				</div>
+                <div className='pt-2'>
+                    <div className='h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden'>
+                        <div className='h-full bg-green-500 rounded-full transition-all duration-1000 delay-300' style={{ width: `${vote_average * 10}%` }} />
+                    </div>
+                    <div className='flex justify-between items-center mt-1'>
+                        <span className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Match</span>
+                    </div>
+                </div>
+			</div>
+		</div>
 	);
 };
 
