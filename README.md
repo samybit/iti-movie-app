@@ -24,19 +24,22 @@ npm run dev
 
 ## The Team
 
-- **[Name]** — Lead / DevOps & Data
-  - Git/Cloudflare setup
-  - Authentication & LocalStorage logic
+- **[Shimaa]** — Data & Auth Lead
+  - Firebase/LocalStorage authentication
+  - Login/Register pages
+  - Global state setup for the user
 
-- **[Name]** — Discovery Lead
-  - Home Page
+- **[Belal]** — Discovery Lead
+  - Home Page & Search functionality
   - Movie Grids
+  - Browse Page & Filtering
 
-- **[Name]** — Details Lead
+- **[Mostafa]** — Details Lead
   - Movie Details page
-  - Dynamic Routing
+  - Fetching recommendations
+  - React Router (Lazy Loading)
 
-- **[Name]** — UI/UX Lead
-  - Design System
+- **[Samy]** — UI/UX Lead
   - Shadcn components
   - Dark Mode
+  - Loading Skeleton
