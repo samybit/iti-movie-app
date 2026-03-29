@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { useMovies } from '../hooks/useMovies';
 import { useGenres } from '../hooks/useGenres';
@@ -20,6 +20,7 @@ const Browse = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [browseQuery, setBrowseQuery] = useState('');
 	const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+	const resultRef = useRef(null);
 
 	// These are the active filters being used for the API call
 	const activeFilters = {
@@ -143,7 +144,13 @@ const Browse = () => {
 								Fresh releases added across all your favorite streaming platforms.
 							</p>
 						</div>
-						<Button size='lg' className='bg-white/10 hover:bg-white/20 text-white rounded-2xl h-14 px-8 border border-white/20 backdrop-blur-md transition-all active:scale-95 text-lg font-bold'>
+						<Button 
+							size='lg' 
+							onClick={() => {
+								resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+							}}
+							className='bg-white/10 hover:bg-white/20 text-white rounded-2xl h-14 px-8 border border-white/20 backdrop-blur-md transition-all active:scale-95 text-lg font-bold'
+						>
 							Browse new arrivals
 						</Button>
 					</div>
@@ -152,7 +159,7 @@ const Browse = () => {
 				</div>
 
 				{/* Header Section */}
-				<div className='flex flex-col gap-6'>
+				<div ref={resultRef} className='flex flex-col gap-6 pt-4'>
 					<div className='flex flex-col sm:flex-row items-baseline justify-between gap-4'>
 						<div>
 							<h1 className='text-5xl font-black tracking-tighter text-foreground mb-2'>
@@ -207,6 +214,14 @@ const Browse = () => {
 								{keyword.replace(/-/g, ' ')} <X size={14} className='cursor-pointer hover:text-white transition-colors' onClick={() => removeFilter('with_keywords', keyword)} />
 							</Badge>
 						))}
+						{activeFilters.with_original_language && activeFilters.with_original_language.split('|').map(lang => {
+							const langMap = { en: 'English', ar: 'Arabic', tr: 'Turkish', es: 'Spanish', fr: 'French', ko: 'Korean', ja: 'Japanese' };
+							return (
+								<Badge key={lang} variant='secondary' className='pl-3 pr-1 py-1.5 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20 gap-2 flex items-center font-bold text-xs'>
+									{langMap[lang] || lang} <X size={14} className='cursor-pointer hover:text-white transition-colors' onClick={() => removeFilter('with_original_language', lang)} />
+								</Badge>
+							);
+						})}
 						{activeFilters.release_date_gte && (
 							<Badge variant='secondary' className='pl-3 pr-1 py-1.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 gap-2 flex items-center font-bold text-xs'>
 								{activeFilters.release_date_gte.substring(0, 4)}s <X size={14} className='cursor-pointer hover:text-white' onClick={() => { removeFilter('release_date_gte'); removeFilter('release_date_lte'); }} />
@@ -217,9 +232,9 @@ const Browse = () => {
 								{activeFilters.certification} <X size={14} className='cursor-pointer hover:text-white' onClick={() => removeFilter('certification')} />
 							</Badge>
 						)}
-						{(activeFilters.with_genres || activeFilters.release_date_gte || activeFilters.certification || activeFilters.with_keywords) && (
+						{(activeFilters.with_genres || activeFilters.release_date_gte || activeFilters.certification || activeFilters.with_keywords || activeFilters.with_original_language) && (
 							<button 
-								onClick={() => handleFilterChange({ ...activeFilters, with_genres: '', release_date_gte: '', release_date_lte: '', certification: '', with_keywords: '' })}
+								onClick={() => handleFilterChange({ ...activeFilters, with_genres: '', release_date_gte: '', release_date_lte: '', certification: '', with_keywords: '', with_original_language: '' })}
 								className='text-xs font-black text-slate-500 hover:text-foreground ml-2 transition-colors underline underline-offset-4'
 							>
 								Clear all

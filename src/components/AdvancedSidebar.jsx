@@ -129,17 +129,26 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 			{/* ── Sort By ─────────────────────────────────────────────────── */}
 			<div className='space-y-3'>
 				<SectionLabel>Sort By</SectionLabel>
-				<Select value={filters.sort_by} onValueChange={(v) => update({ sort_by: v })}>
-					<SelectTrigger className='w-full bg-slate-900 border-slate-700 rounded-xl h-11 text-xs font-bold'>
-						<SelectValue placeholder='Sort results' />
-					</SelectTrigger>
-					<SelectContent className='bg-slate-900 border-slate-700'>
-						<SelectItem value='popularity.desc'>Popularity</SelectItem>
-						<SelectItem value='vote_average.desc'>Rating</SelectItem>
-						<SelectItem value='primary_release_date.desc'>Release Date</SelectItem>
-						<SelectItem value='revenue.desc'>Revenue</SelectItem>
-					</SelectContent>
-				</Select>
+				<div className='grid grid-cols-2 gap-2'>
+					{[
+						{ label: 'Popularity', val: 'popularity.desc' },
+						{ label: 'Rating', val: 'vote_average.desc' },
+						{ label: 'Latest', val: 'primary_release_date.desc' },
+						{ label: 'Revenue', val: 'revenue.desc' },
+					].map(({ label, val }) => (
+						<button
+							key={val}
+							onClick={() => update({ sort_by: val })}
+							className={`px-3 py-2.5 rounded-xl text-[10px] font-bold border transition-all truncate text-center ${
+								filters.sort_by === val
+									? 'bg-blue-600 border-blue-600 text-white shadow-lg'
+									: 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500'
+							}`}
+						>
+							{label}
+						</button>
+					))}
+				</div>
 			</div>
 
 			{/* ── Decade ──────────────────────────────────────────────────── */}
@@ -185,6 +194,41 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 								}`}
 							>
 								{g.name}
+							</button>
+						);
+					})}
+				</div>
+			</div>
+
+			{/* ── Language ────────────────────────────────────────────────── */}
+			<div className='space-y-3'>
+				<SectionLabel>Language</SectionLabel>
+				<div className='flex flex-wrap gap-2'>
+					{[
+						{ label: 'English', id: 'en' },
+						{ label: 'Arabic', id: 'ar' },
+						{ label: 'Turkish', id: 'tr' },
+						{ label: 'Spanish', id: 'es' },
+						{ label: 'French', id: 'fr' },
+						{ label: 'Korean', id: 'ko' },
+						{ label: 'Japanese', id: 'ja' },
+					].map(({ label, id }) => {
+						const active = (filters.with_original_language || '').split('|').includes(id);
+						return (
+							<button
+								key={id}
+								onClick={() => {
+									const cur = (filters.with_original_language || '').split('|').filter(Boolean);
+									const next = cur.includes(id) ? cur.filter(l => l !== id) : [...cur, id];
+									update({ with_original_language: next.join('|') });
+								}}
+								className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all ${
+									active
+										? 'bg-blue-600 border-blue-600 text-white'
+										: 'bg-transparent border-slate-700 text-slate-400 hover:border-slate-500'
+								}`}
+							>
+								{label}
 							</button>
 						);
 					})}
@@ -248,7 +292,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 					{['G', 'PG', 'PG-13', 'R', 'TV-MA'].map((r) => (
 						<button
 							key={r}
-							onClick={() => setContentRating(r)}
+							onClick={() => setContentRating(filters.certification === r ? '' : r)}
 							className={`text-[11px] font-black transition-colors ${
 								filters.certification === r
 									? 'text-blue-500'
