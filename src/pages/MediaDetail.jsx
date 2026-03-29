@@ -74,7 +74,7 @@ const MediaDetail = ({ type }) => {
 	const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube');
 
 	return (
-		<div className='-mx-4 sm:-mx-8 lg:-mx-12'>
+		<div className='w-screen relative left-1/2 -translate-x-1/2'>
 			{/* Hero Section */}
 			<div className='relative w-full h-[500px] lg:h-[600px] overflow-hidden'>
 				{/* Backdrop */}
