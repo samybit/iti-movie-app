@@ -310,11 +310,24 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 				<button 
 					onClick={() => setFilters({
 						mediaType: 'movie',
-						sort_by: 'popularity.desc',
+						with_genres: '',
+						with_original_language: '',
+						with_origin_country: '',
 						language: 'en-US',
+						release_date_gte: '',
+						release_date_lte: '',
+						episode_count_gte: '',
+						episode_count_lte: '',
+						vote_average_gte: '',
+						vote_count_gte: '',
+						with_runtime_gte: '',
+						with_runtime_lte: '',
+						with_keywords: '',
+						certification: '',
+						sort_by: 'popularity.desc',
 						page: 1
 					})}
-					className='text-[11px] font-black text-blue-500 hover:underline uppercase tracking-widest'
+					className='text-[11px] font-black text-blue-500 hover:underline uppercase tracking-widest transition-all'
 				>
 					Clear all filters
 				</button>
