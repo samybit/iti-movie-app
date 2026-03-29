@@ -160,7 +160,7 @@ const Browse = () => {
 
 				{/* Header Section */}
 				<div ref={resultRef} className='flex flex-col gap-6 pt-4'>
-					<div className='flex flex-col sm:flex-row items-baseline justify-between gap-4'>
+					<div className='flex flex-col sm:flex-row items-start sm:items-baseline justify-between gap-4'>
 						<div>
 							<h1 className='text-5xl font-black tracking-tighter text-foreground mb-2'>
 								{activeFilters.mediaType === 'movie' ? 'Movies' : 'TV Series'}
@@ -171,8 +171,8 @@ const Browse = () => {
 						</div>
 						
 						{/* View Toggle & Mini Sort */}
-						<div className='flex items-center gap-4 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-white/5'>
-							<div className='flex gap-1'>
+						<div className='flex items-center gap-2 sm:gap-4 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-white/5 w-full sm:w-auto overflow-x-auto scrollbar-hide'>
+							<div className='flex gap-1 flex-shrink-0'>
 								<Button 
 									variant={viewMode === 'grid' ? 'default' : 'ghost'} 
 									size='sm' 
@@ -190,11 +190,11 @@ const Browse = () => {
 									List
 								</Button>
 							</div>
-							<div className='w-px h-6 bg-slate-700 mx-1' />
+							<div className='hidden sm:block w-px h-6 bg-slate-700 mx-1 flex-shrink-0' />
 							<SortSelect 
 								value={activeFilters.sort_by} 
 								onValueChange={(v) => handleFilterChange({ sort_by: v })} 
-								className='h-9 border-0 bg-transparent text-xs font-black ring-0 focus:ring-0'
+								className='h-9 border-0 bg-transparent text-xs font-black ring-0 focus:ring-0 w-[140px] sm:w-[180px] flex-shrink-0'
 							/>
 						</div>
 					</div>
