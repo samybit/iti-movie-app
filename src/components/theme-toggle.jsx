@@ -12,7 +12,7 @@ export function ThemeToggle() {
   const { setTheme } = useTheme();
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -25,7 +25,7 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="min-w-[150px] p-1.5 rounded-2xl bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-slate-200/60 dark:border-slate-800/60 shadow-2xl">
+      <DropdownMenuContent align="end" className="min-w-[150px] p-1.5 rounded-2xl bg-white dark:bg-slate-950 border-slate-200/60 dark:border-slate-800/60 shadow-2xl">
         <DropdownMenuItem
           onClick={() => setTheme("light")}
           className="flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

@@ -18,6 +18,13 @@ export function ThemeProvider({
 	useEffect(() => {
 		const root = window.document.documentElement;
 
+		// 0. Prevent transition lag by temporarily disabling all CSS transitions globally
+		const css = document.createElement('style');
+		css.appendChild(
+			document.createTextNode(`* { -webkit-transition: none !important; -moz-transition: none !important; -o-transition: none !important; -ms-transition: none !important; transition: none !important; }`)
+		);
+		document.head.appendChild(css);
+
 		// 1. Clean up Tailwind classes
 		root.classList.remove('light', 'dark');
 
@@ -30,13 +37,37 @@ export function ThemeProvider({
 			root.classList.add(systemTheme);
 			root.setAttribute('data-bs-theme', systemTheme);
 			root.setAttribute('data-theme', systemTheme);
-			return;
+		} else {
+			// 3. Apply Tailwind class AND Bootstrap attribute for Manual preference
+			root.classList.add(theme);
+			root.setAttribute('data-bs-theme', theme);
+			root.setAttribute('data-theme', theme);
 		}
 
-		// 3. Apply Tailwind class AND Bootstrap attribute for Manual preference
-		root.classList.add(theme);
-		root.setAttribute('data-bs-theme', theme);
-		root.setAttribute('data-theme', theme);
+		// 4. Force browser to repaint, then remove the style tag to re-enable transitions
+		window.getComputedStyle(document.body);
+		const timeoutId = setTimeout(() => {
+			document.head.removeChild(css);
+		}, 1);
+
+		return () => clearTimeout(timeoutId);
+	}, [theme]);
+
+	useEffect(() => {
+		if (theme !== 'system') return;
+
+		const media = window.matchMedia('(prefers-color-scheme: dark)');
+		const handleChange = () => {
+			const root = window.document.documentElement;
+			const systemTheme = media.matches ? 'dark' : 'light';
+			root.classList.remove('light', 'dark');
+			root.classList.add(systemTheme);
+			root.setAttribute('data-bs-theme', systemTheme);
+			root.setAttribute('data-theme', systemTheme);
+		};
+
+		media.addEventListener('change', handleChange);
+		return () => media.removeEventListener('change', handleChange);
 	}, [theme]);
 
 	const value = {
