@@ -110,10 +110,20 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 						</div>
 
 						{/* Country */}
-						<div className='space-y-3 border-t border-dashed border-slate-100 pt-4'>
-							<SectionLabel>Country</SectionLabel>
-							<Select value={filters.with_origin_country} onValueChange={(v) => update({ with_origin_country: v })}>
-								<SelectTrigger className='w-full bg-slate-50/80 border-slate-200 rounded-xl text-[13px]'>
+						<div className='space-y-3 border-t border-dashed border-slate-100 dark:border-slate-800 pt-4'>
+							<div className='flex items-center justify-between'>
+								<SectionLabel>Country</SectionLabel>
+								{filters.with_origin_country && (
+									<button 
+										onClick={() => update({ with_origin_country: '' })}
+										className='text-[10px] font-bold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors bg-red-50 dark:bg-red-500/10 px-2 py-0.5 rounded-full'
+									>
+										<X size={10} /> Clear
+									</button>
+								)}
+							</div>
+							<Select value={filters.with_origin_country || ''} onValueChange={(v) => update({ with_origin_country: v })}>
+								<SelectTrigger className='w-full bg-slate-50/80 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 rounded-xl text-[13px] dark:text-slate-200'>
 									<SelectValue placeholder='Select Country' />
 								</SelectTrigger>
 								<SelectContent>
@@ -135,31 +145,47 @@ const AdvancedSidebar = ({ filters, setFilters, onSearch }) => {
 						</div>
 
 						{/* Streaming Platforms */}
-						<div className='space-y-4 border-t border-dashed border-slate-100 pt-5 bg-slate-50/30 -mx-5 px-5 pb-2'>
+						<div className='space-y-4 border-t border-dashed border-slate-100 dark:border-slate-800 pt-5 bg-slate-50/30 dark:bg-slate-900/20 -mx-5 px-5 pb-2'>
 							<SectionLabel>Available Platforms</SectionLabel>
 							<div className='grid grid-cols-3 gap-3'>
 								{[
-									{ name: 'Netflix', icon: 'https://www.themoviedb.org/t/p/original/pTpxMq1S1vCqbDuZOKQ6fsTSR1f.jpg' },
-									{ name: 'Disney+', icon: 'https://www.themoviedb.org/t/p/original/97vSjCF9Zaoq7p36W0pFiPBqh29.jpg' },
-									{ name: 'Amazon', icon: 'https://www.themoviedb.org/t/p/original/dgPueyEdOisELs98EX6Gz6kH7u3.jpg' },
-									{ name: 'HBO Max', icon: 'https://www.themoviedb.org/t/p/original/68vAnUiqHjfiFdG9Zpt39PZZ9jO.jpg' },
-									{ name: 'Apple TV+', icon: 'https://www.themoviedb.org/t/p/original/68vAnUiqHjfiFdG9Zpt39PZZ9jO.jpg' }, // Generic placeholder if needed
-									{ name: 'Hulu', icon: 'https://www.themoviedb.org/t/p/original/giLR06v9SVPWfyY7YppF968lxZ9.jpg' },
-									{ name: 'Paramount+', icon: 'https://www.themoviedb.org/t/p/original/pk8vTz1fUpCq7m4X3RjD3ZfC8k4.jpg' },
-									{ name: 'Peacock', icon: 'https://www.themoviedb.org/t/p/original/87vUfF8f6Z7Y9W7h9h8h8h8h8h8.jpg' }, 
-									{ name: 'Crunchyroll', icon: 'https://www.themoviedb.org/t/p/original/m99F2e6q5p4nN1zR6z5p4nN1zR6.jpg' },
-								].map(({ name, icon }) => (
-									<button
-										key={name}
-										className='flex flex-col items-center gap-1.5 p-1 rounded-2xl border border-transparent hover:border-blue-200 hover:bg-white hover:shadow-sm transition-all group'
-										title={name}
-									>
-										<div className="w-11 h-11 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform border border-slate-100 bg-white">
-											<img src={icon} alt={name} className="w-full h-full object-cover" />
-										</div>
-										<span className='text-[10px] text-slate-400 font-bold truncate w-full text-center'>{name}</span>
-									</button>
-								))}
+									{ id: 8, name: 'Netflix', icon: 'https://image.tmdb.org/t/p/original/pTpxMq1S1vCqbDuZOKQ6fsTSR1f.jpg' },
+									{ id: 337, name: 'Disney+', icon: 'https://image.tmdb.org/t/p/original/78SUD9vYyS9fWIDo92p969p969p9.jpg' },
+									{ id: 119, name: 'Amazon', icon: 'https://image.tmdb.org/t/p/original/dgPueyEdOisELs98EX6Gz6kH7u3.jpg' },
+									{ id: 384, name: 'HBO Max', icon: 'https://image.tmdb.org/t/p/original/68vAnUiqHjfiFdG9Zpt39PZZ9jO.jpg' },
+									{ id: 350, name: 'Apple TV+', icon: 'https://image.tmdb.org/t/p/original/6hu9v9Yis9qS9uXmP2tM5S1qH1t.jpg' },
+									{ id: 15, name: 'Hulu', icon: 'https://image.tmdb.org/t/p/original/giLR06v9SVPWfyY7YppF968lxZ9.jpg' },
+									{ id: 531, name: 'Paramount+', icon: 'https://image.tmdb.org/t/p/original/pk8vTz1fUpCq7m4X3RjD3ZfC8k4.jpg' },
+									{ id: 386, name: 'Peacock', icon: 'https://image.tmdb.org/t/p/original/78SUD9vYyS9fWIDo92p969p969p9.jpg' }, 
+									{ id: 283, name: 'Crunchyroll', icon: 'https://image.tmdb.org/t/p/original/m99F2e6q5p4nN1zR6z5p4nN1zR6.jpg' },
+								].map(({ id, name, icon }) => {
+									const isSelected = (filters.with_watch_providers || '').split('|').includes(String(id));
+									return (
+										<button
+											key={id}
+											onClick={() => {
+												const cur = (filters.with_watch_providers || '').split('|').filter(Boolean);
+												const next = isSelected ? cur.filter(x => x !== String(id)) : [...cur, String(id)];
+												update({ with_watch_providers: next.join('|'), watch_region: filters.with_origin_country || 'US' });
+											}}
+											className={`flex flex-col items-center gap-1.5 p-1 rounded-2xl border transition-all group ${
+												isSelected 
+												? 'border-blue-500 bg-blue-50 dark:bg-blue-600/20 shadow-lg scale-105' 
+												: 'border-transparent hover:border-blue-200 dark:hover:border-blue-500/30 hover:bg-white dark:hover:bg-slate-800/50'
+											}`}
+											title={name}
+										>
+											<div className={`w-11 h-11 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform border bg-white ${
+												isSelected ? 'border-blue-400' : 'border-slate-100 dark:border-slate-800'
+											}`}>
+												<img src={icon} alt={name} className="w-full h-full object-cover" />
+											</div>
+											<span className={`text-[10px] font-bold truncate w-full text-center ${
+												isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'
+											}`}>{name}</span>
+										</button>
+									);
+								})}
 							</div>
 						</div>
 					</AccordionContent>
