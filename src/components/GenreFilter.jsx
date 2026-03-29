@@ -1,3 +1,4 @@
+// src/components/GenreFilter.jsx
 import { Badge } from '@/components/ui/badge';
 import { useGenres } from '@/hooks/useGenres';
 
@@ -8,7 +9,7 @@ const GenreFilter = ({ selectedGenre, onSelectGenre }) => {
 		return (
 			<div className='flex flex-wrap gap-2 mb-6'>
 				{Array.from({ length: 8 }).map((_, i) => (
-					<div key={i} className='h-6 w-16 bg-slate-200 animate-pulse rounded-full'></div>
+					<div key={i} className='h-6 w-16 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-full'></div>
 				))}
 			</div>
 		);
