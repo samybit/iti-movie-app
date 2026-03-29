@@ -29,12 +29,14 @@ export function ThemeProvider({
 			// 2. Apply Tailwind class AND Bootstrap attribute for System preference
 			root.classList.add(systemTheme);
 			root.setAttribute('data-bs-theme', systemTheme);
+			root.setAttribute('data-theme', systemTheme);
 			return;
 		}
 
 		// 3. Apply Tailwind class AND Bootstrap attribute for Manual preference
 		root.classList.add(theme);
 		root.setAttribute('data-bs-theme', theme);
+		root.setAttribute('data-theme', theme);
 	}, [theme]);
 
 	const value = {
