@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Moon, Sun, Monitor, Languages, Bell, Shield, ArrowLeft, Paintbrush, Loader2, CheckCircle2 } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router';
+import { useLanguage } from '@/contexts/LanguageContext';
 import usePageTitle from '@/hooks/usePageTitle';
 import toast from 'react-hot-toast';
 
@@ -15,6 +16,7 @@ const Settings = () => {
 	usePageTitle('Settings');
 	const { user, loading: authLoading } = useAuth();
 	const { theme, setTheme } = useTheme();
+	const { language, setLanguage } = useLanguage();
 	const navigate = useNavigate();
 
 	const [isSaving, setIsSaving] = useState(false);
@@ -103,15 +105,15 @@ const Settings = () => {
 						<CardContent className='p-8 space-y-6'>
 							<div className='space-y-3'>
 								<Label className='text-sm font-bold opacity-70'>Default Language</Label>
-								<Select defaultValue='en-US'>
+								<Select value={language} onValueChange={setLanguage}>
 									<SelectTrigger className='h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 font-bold'>
 										<SelectValue placeholder='Select Language' />
 									</SelectTrigger>
 									<SelectContent className='rounded-2xl border-slate-200 dark:border-slate-800'>
-										<SelectItem value='en-US'>English (System)</SelectItem>
-										<SelectItem value='tr-TR'>Turkish (Türkçe)</SelectItem>
-										<SelectItem value='ar-SA'>Arabic (العربية)</SelectItem>
-										<SelectItem value='es-ES'>Spanish (Español)</SelectItem>
+										<SelectItem value='en'>English</SelectItem>
+										<SelectItem value='ar'>Arabic (العربية)</SelectItem>
+										<SelectItem value='fr'>French (Français)</SelectItem>
+										<SelectItem value='zh'>Chinese (中文)</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>

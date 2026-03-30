@@ -20,7 +20,7 @@ const MediaDetail = ({ type }) => {
 	const [similar, setSimilar] = useState([]);
 
 	const [loading, setLoading] = useState(true);
-	const { t } = useLanguage();
+	const { t, language } = useLanguage();
 
 	usePageTitle(details?.title || details?.name || 'Loading details...');
 
@@ -65,7 +65,7 @@ const MediaDetail = ({ type }) => {
 
 		fetchData();
 		window.scrollTo(0, 0);
-	}, [id, type]);
+	}, [id, type, language]);
 
 	if (loading) {
 		return <MediaDetailSkeleton />;
