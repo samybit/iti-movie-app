@@ -193,7 +193,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
               w-full h-11 rounded-xl
               text-destructive font-semibold text-sm
               border border-destructive/20 bg-destructive/10
-              hover:bg-destructive hover:text-destructive-foreground hover:border-destructive
+              hover:bg-destructive hover:hover:text-white hover:border-destructive
               transition-all duration-200
             "
           >

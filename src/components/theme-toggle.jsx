@@ -9,7 +9,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  const menuItems = [
+    { value: 'light', label: 'Light', icon: <Sun className="h-4 w-4" /> },
+    { value: 'dark', label: 'Dark', icon: <Moon className="h-4 w-4" /> },
+    { value: 'system', label: 'System', icon: <Monitor className="h-4 w-4" /> },
+  ];
 
   return (
     <DropdownMenu modal={false}>
@@ -26,29 +32,18 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="min-w-[150px] p-1.5 rounded-2xl bg-white dark:bg-slate-950 border-slate-200/60 dark:border-slate-800/60 shadow-2xl">
-        <DropdownMenuItem
-          onClick={() => setTheme("light")}
-          className="flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-        >
-          <Sun className="h-4 w-4" />
-          <span className="text-sm font-semibold">Light</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => setTheme("dark")}
-          className="flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-        >
-          <Moon className="h-4 w-4" />
-          <span className="text-sm font-semibold">Dark</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => setTheme("system")}
-          className="flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-        >
-          <Monitor className="h-4 w-4" />
-          <span className="text-sm font-semibold">System</span>
-        </DropdownMenuItem>
+        {menuItems.map((item) => (
+          <DropdownMenuItem
+            key={item.value}
+            onClick={() => setTheme(item.value)}
+            className={`flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-xl transition-colors
+              hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400
+              ${theme === item.value ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'}`}
+          >
+            {item.icon}
+            <span className="text-sm font-semibold">{item.label}</span>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

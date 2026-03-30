@@ -86,7 +86,7 @@ const CommunityFooter = () => {
 				{/* Bottom bar */}
 				<div className='border-t border-slate-200 dark:border-slate-800 mt-16 pt-8 flex flex-col items-center justify-center text-sm gap-4 text-center'>
 					<p className='flex items-center justify-center gap-1 flex-wrap font-medium'>
-						© 2026 ITI by Group 5 (Belal Mahmoud, Shimaa Mohamed, Mostafa Nageh, Samy Barsome) with <Heart size={12} className='text-red-500 fill-current' /> All rights reserved.
+						© 2026 ITI by Group 5 (Belal Mahmoud, Shimaa Mohamed, Mostafa Nageh, Samy Barsoum) with <Heart size={12} className='text-red-500 fill-current' /> All rights reserved.
 					</p>
 					<p className='text-xs text-slate-500'>Powered by TMDB API</p>
 				</div>
