@@ -17,6 +17,7 @@ import NotFound404 from './pages/NotFound404';
 import ProtectedRoute from "./components/ProtectedRoute";
 import VerifyEmail from './pages/VerifyEmail';
 import HelpCenter from './pages/HelpCenter';
+import Profile from './pages/Profile';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -65,6 +66,14 @@ const router = createBrowserRouter([
 			{
 				path: 'help',
 				element: <HelpCenter />,
+			},
+			{
+				path: 'profile',
+				element: (
+					<ProtectedRoute>
+						<Profile />
+					</ProtectedRoute>
+				),
 			},
 		],
 	},
