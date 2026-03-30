@@ -29,8 +29,10 @@ const Profile = () => {
 				<Button variant='ghost' onClick={() => navigate(-1)} className='rounded-xl gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'>
 					<ArrowLeft size={18} /> Back
 				</Button>
-				<Button variant='outline' className='rounded-xl gap-2 border-slate-200 dark:border-slate-800 font-bold'>
-					<Settings size={18} /> Settings
+				<Button asChild variant='outline' className='rounded-xl gap-2 border-slate-200 dark:border-slate-800 font-bold'>
+					<Link to='/settings'>
+						<Settings size={18} /> Settings
+					</Link>
 				</Button>
 			</div>
 

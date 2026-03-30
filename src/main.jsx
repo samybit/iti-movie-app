@@ -18,6 +18,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import VerifyEmail from './pages/VerifyEmail';
 import HelpCenter from './pages/HelpCenter';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -72,6 +73,14 @@ const router = createBrowserRouter([
 				element: (
 					<ProtectedRoute>
 						<Profile />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'settings',
+				element: (
+					<ProtectedRoute>
+						<Settings />
 					</ProtectedRoute>
 				),
 			},
