@@ -130,7 +130,16 @@ export const translations = {
     latestTrailers: "Latest Trailers",
     match: "Match",
     season: "Season",
-    tba: "TBA"
+    tba: "TBA",
+    loadingDetails: "Loading details...",
+    minutes: "min",
+    noImage: "No Image",
+    statusReleased: "Released", 
+    statusEnded: "Ended", 
+    statusInProduction: "In Production", 
+    statusReturningSeries: "Returning Series", 
+    statusPostProduction: "Post Production", 
+    statusPlanned: "Planned"
   },
   ar: {
     home: "الرئيسية", browse: "تصفح", search: "بحث", wishlist: "المفضلة", login: "تسجيل الدخول", logout: "تسجيل الخروج",
@@ -204,7 +213,16 @@ export const translations = {
     latestTrailers: "أحدث المقاطع الدعائية",
     match: "تطابق",
     season: "موسم",
-    tba: "يحدد لاحقاً"
+    tba: "يحدد لاحقاً",
+    loadingDetails: "جاري تحميل التفاصيل...",
+    minutes: "دقيقة",
+    noImage: "لا توجد صورة",
+    statusReleased: "صدر", 
+    statusEnded: "انتهى", 
+    statusInProduction: "قيد الإنتاج", 
+    statusReturningSeries: "سلسلة متجددة", 
+    statusPostProduction: "في مرحلة ما بعد الإنتاج", 
+    statusPlanned: "مخطط له"
   },
   fr: {
     home: "Accueil", browse: "Parcourir", search: "Recherche", wishlist: "Favoris", login: "Connexion", logout: "Déconnexion",
@@ -278,7 +296,16 @@ export const translations = {
     latestTrailers: "Dernières Bandes-annonces",
     match: "Correspondance",
     season: "Saison",
-    tba: "À déterminer"
+    tba: "À déterminer",
+    loadingDetails: "Chargement des détails...",
+    minutes: "min",
+    noImage: "Pas d'image",
+    statusReleased: "Sorti", 
+    statusEnded: "Terminé", 
+    statusInProduction: "En production", 
+    statusReturningSeries: "Série renouvelée", 
+    statusPostProduction: "Post-production", 
+    statusPlanned: "Prévu"
   },
   zh: {
     home: "首页", browse: "浏览", search: "搜索", wishlist: "心愿单", login: "登录", logout: "登出",
@@ -352,6 +379,15 @@ export const translations = {
     latestTrailers: "最新预告片",
     match: "匹配",
     season: "季",
-    tba: "待定"
+    tba: "待定",
+    loadingDetails: "加载详情中...",
+    minutes: "分钟",
+    noImage: "无图片",
+    statusReleased: "已上映", 
+    statusEnded: "已完结", 
+    statusInProduction: "制作中", 
+    statusReturningSeries: "回归剧集", 
+    statusPostProduction: "后期制作中", 
+    statusPlanned: "计划中"
   }
 };
