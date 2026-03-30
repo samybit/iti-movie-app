@@ -3,15 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // TMDB image base URL
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist, viewMode = 'grid' }) => {
+	const { t, language } = useLanguage();
 	const { id, title, name, poster_path, vote_average, release_date, first_air_date, genre_ids } = movie;
 	const displayTitle = title || name || 'Unknown';
 	const displayDate = release_date || first_air_date;
-	const year = displayDate ? new Date(displayDate).getFullYear() : 'TBA';
+	const year = displayDate ? new Intl.NumberFormat(language === 'zh' ? 'zh-CN' : language, { useGrouping: false }).format(new Date(displayDate).getFullYear()) : t('tba') || 'TBA';
 	const mediaType = title ? 'movie' : 'tv';
 	const imageUrl = poster_path
 		? `https://image.tmdb.org/t/p/w500${poster_path}`
@@ -23,8 +25,9 @@ const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist, viewMode = '
 			vote_average >= 5 ? 'bg-yellow-400' :
 				'bg-red-500';
 
+	const ratingDisplay = new Intl.NumberFormat(language === 'zh' ? 'zh-CN' : language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(vote_average || 0);
 	// Simulated duration & provider for UI matching
-	const duration = mediaType === 'movie' ? '2h 15m' : '1 Season';
+	const duration = mediaType === 'movie' ? (language === 'ar' ? 'ساعتان و 15 د' : language === 'fr' ? '2h 15m' : language === 'zh' ? '2小时 15分钟' : '2h 15m') : `1 ${t('season') || 'Season'}`;
 	const providers = [
 		{ name: 'Netflix', color: 'bg-red-600' },
 		{ name: 'Amazon', color: 'bg-blue-900' },
@@ -60,12 +63,12 @@ const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist, viewMode = '
 					<div className='flex items-center gap-4'>
 						<div className='flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-green-500 text-white text-sm font-black'>
 							<Star size={14} className='fill-current' />
-							{vote_average?.toFixed(1)}
+							{ratingDisplay}
 						</div>
 						<div className='flex-grow h-1.5 bg-slate-800 rounded-full overflow-hidden'>
 							<div className='h-full bg-green-500 rounded-full' style={{ width: `${vote_average * 10}%` }} />
 						</div>
-						<span className='text-xs font-black text-slate-500 uppercase'>Match</span>
+						<span className='text-xs font-black text-slate-500 uppercase'>{t('match') || 'Match'}</span>
 					</div>
 				</div>
 			</Link>
@@ -96,7 +99,7 @@ const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist, viewMode = '
 				<div className='absolute bottom-5 left-5'>
 					<div className='flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-green-500 text-white text-xs font-black shadow-xl'>
 						<Star size={14} className='fill-current' />
-						{vote_average?.toFixed(1)}
+						{ratingDisplay}
 					</div>
 				</div>
 
@@ -135,7 +138,7 @@ const MovieCard = ({ movie, isWishlisted = false, onToggleWishlist, viewMode = '
                         <div className='h-full bg-green-500 rounded-full transition-all duration-1000 delay-300' style={{ width: `${vote_average * 10}%` }} />
                     </div>
                     <div className='flex justify-between items-center mt-1'>
-                        <span className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>Match</span>
+                        <span className='text-[10px] font-black text-slate-400 uppercase tracking-widest'>{t('match') || 'Match'}</span>
                     </div>
                 </div>
 			</div>

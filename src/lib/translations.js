@@ -127,7 +127,10 @@ export const translations = {
     trendingTV: "📺 Trending TV Shows",
     comingSoon: "⏳ Coming Soon",
     freeToWatch: "🎬 Free to Watch",
-    latestTrailers: "Latest Trailers"
+    latestTrailers: "Latest Trailers",
+    match: "Match",
+    season: "Season",
+    tba: "TBA"
   },
   ar: {
     home: "الرئيسية", browse: "تصفح", search: "بحث", wishlist: "المفضلة", login: "تسجيل الدخول", logout: "تسجيل الخروج",
@@ -198,7 +201,10 @@ export const translations = {
     trendingTV: "📺 مسلسلات رائجة",
     comingSoon: "⏳ قريباً",
     freeToWatch: "🎬 مجاني للمشاهدة",
-    latestTrailers: "أحدث المقاطع الدعائية"
+    latestTrailers: "أحدث المقاطع الدعائية",
+    match: "تطابق",
+    season: "موسم",
+    tba: "يحدد لاحقاً"
   },
   fr: {
     home: "Accueil", browse: "Parcourir", search: "Recherche", wishlist: "Favoris", login: "Connexion", logout: "Déconnexion",
@@ -269,7 +275,10 @@ export const translations = {
     trendingTV: "📺 Séries Tendances",
     comingSoon: "⏳ Bientôt Disponible",
     freeToWatch: "🎬 Gratuit à Regarder",
-    latestTrailers: "Dernières Bandes-annonces"
+    latestTrailers: "Dernières Bandes-annonces",
+    match: "Correspondance",
+    season: "Saison",
+    tba: "À déterminer"
   },
   zh: {
     home: "首页", browse: "浏览", search: "搜索", wishlist: "心愿单", login: "登录", logout: "登出",
@@ -340,6 +349,9 @@ export const translations = {
     trendingTV: "📺 热门剧集",
     comingSoon: "⏳ 即将推出",
     freeToWatch: "🎬 免费观看",
-    latestTrailers: "最新预告片"
+    latestTrailers: "最新预告片",
+    match: "匹配",
+    season: "季",
+    tba: "待定"
   }
 };
