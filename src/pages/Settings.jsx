@@ -1,22 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Moon, Sun, Monitor, Languages, Bell, Shield, ArrowLeft, Paintbrush } from 'lucide-react';
+import { Moon, Sun, Monitor, Languages, Bell, Shield, ArrowLeft, Paintbrush, Loader2, CheckCircle2 } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router';
 import usePageTitle from '@/hooks/usePageTitle';
+import toast from 'react-hot-toast';
 
 const Settings = () => {
 	usePageTitle('Settings');
-	const { user, loading } = useAuth();
+	const { user, loading: authLoading } = useAuth();
 	const { theme, setTheme } = useTheme();
 	const navigate = useNavigate();
 
-	if (loading) return null;
+	const [isSaving, setIsSaving] = useState(false);
+
+	const handleSave = () => {
+		setIsSaving(true);
+		// Simulate API call
+		setTimeout(() => {
+			setIsSaving(false);
+			toast.success('Settings updated successfully!', {
+				style: {
+					borderRadius: '1rem',
+					background: '#1e293b',
+					color: '#fff',
+					fontWeight: 'bold',
+				},
+				icon: <CheckCircle2 className='text-emerald-500' size={20} />,
+			});
+		}, 1500);
+	};
+
+	if (authLoading) return null;
 
 	return (
 		<div className='max-w-4xl mx-auto space-y-10 py-10 px-4'>
@@ -153,9 +173,20 @@ const Settings = () => {
 			</div>
 
 			{/* Footer Action */}
-			<div className='flex justify-end pt-10 border-t border-slate-200 dark:border-slate-800'>
-				<Button className='rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black px-10 h-14 shadow-2xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95'>
-					Save Changes
+			<div className='flex justify-end pt-10 border-t border-slate-200 dark:border-slate-800 shrink-0'>
+				<Button 
+					disabled={isSaving}
+					onClick={handleSave}
+					className='rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black px-10 h-14 shadow-2xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-70'
+				>
+					{isSaving ? (
+						<div className='flex items-center gap-3'>
+							<Loader2 className='animate-spin' size={20} />
+							Saving Changes...
+						</div>
+					) : (
+						'Save Changes'
+					)}
 				</Button>
 			</div>
 		</div>
