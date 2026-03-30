@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { movieService } from '../services/movieService';
 import { tvService } from '../services/tvService';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-/**
- * Enhanced custom hook to fetch movies or series based on different criteria.
- * Supports advanced filtering: Genres, Dates, Languages, Countries, Episode range (for TV).
- */
+
 export function useMovies({
 	type = 'now_playing', // 'now_playing', 'search', 'discover', 'trending'
 	mediaType = 'movie', // 'movie', 'tv'
@@ -14,7 +12,6 @@ export function useMovies({
 	sort_by = 'popularity.desc',
 	with_genres = '',
 	with_original_language = '',
-	language = 'en-US',
 	release_date_gte = '',
 	release_date_lte = '',
 	episode_count_gte = '',
@@ -32,6 +29,8 @@ export function useMovies({
 	const [totalResults, setTotalResults] = useState(0);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+
+	const { language } = useLanguage();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -54,7 +53,6 @@ export function useMovies({
 						sort_by,
 						with_genres,
 						with_original_language,
-						language,
 						'vote_average.gte': vote_average_gte,
 						'vote_count.gte': vote_count_gte,
 						'with_runtime.gte': with_runtime_gte,
@@ -112,7 +110,7 @@ export function useMovies({
 		sort_by,
 		with_genres,
 		with_original_language,
-		language,
+		language, // Re-runs API calls instantly whenever language context changes
 		release_date_gte,
 		release_date_lte,
 		episode_count_gte,

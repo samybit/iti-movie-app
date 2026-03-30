@@ -11,4 +11,20 @@ const api = axios.create({
 	},
 });
 
+// Intercept every request to dynamically append the active language
+api.interceptors.request.use((config) => {
+	const lang = localStorage.getItem('app-language') || 'en';
+	const tmdbLangMap = {
+		en: 'en-US',
+		ar: 'ar-SA',
+		fr: 'fr-FR',
+		zh: 'zh-CN',
+	};
+	config.params = {
+		...config.params,
+		language: tmdbLangMap[lang] || 'en-US',
+	};
+	return config;
+});
+
 export default api;

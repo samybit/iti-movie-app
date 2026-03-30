@@ -3,7 +3,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import BackToTop from '@/components/BackToTop';
 import CommunityFooter from '@/components/CommunityFooter';
-import { Film, Compass, Search, Heart, LogIn, Menu, X, User } from 'lucide-react';
+import { Film, Compass, Search, Heart, LogIn, Menu, X, User, Globe } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
@@ -12,6 +12,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import AccountSidebar from "@/components/AccountSidebar";
 import SearchModal from "@/components/SearchModal";
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const navItems = [
     { to: '/', label: 'Home', icon: <Film size={16} /> },
@@ -30,6 +31,7 @@ export default function MainLayout() {
     const [loadingUser, setLoadingUser] = useState(true);
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const { language, setLanguage } = useLanguage();
 
     // Listen to auth changes
     useEffect(() => {
@@ -154,6 +156,20 @@ export default function MainLayout() {
                             </Link>
                         )}
 
+                        <div className='flex items-center gap-1 ml-2 pl-4 border-l border-slate-200 dark:border-border'>
+                            <Globe size={16} className='text-slate-500 dark:text-muted-foreground' />
+                            <select
+                                value={language}
+                                onChange={(e) => setLanguage(e.target.value)}
+                                className='bg-transparent text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground cursor-pointer outline-none'
+                            >
+                                <option value="en" className="dark:bg-slate-900">EN</option>
+                                <option value="ar" className="dark:bg-slate-900">AR</option>
+                                <option value="fr" className="dark:bg-slate-900">FR</option>
+                                <option value="zh" className="dark:bg-slate-900">ZH</option>
+                            </select>
+                        </div>
+
                         <div className='ml-4 pl-4 border-l border-slate-200 dark:border-border'>
                             <ThemeToggle />
                         </div>
@@ -230,6 +246,20 @@ export default function MainLayout() {
                                     <LogIn size={16} /> Login
                                 </Link>
                             )}
+
+                            <div className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 dark:text-muted-foreground'>
+                                <Globe size={16} />
+                                <select
+                                    value={language}
+                                    onChange={(e) => { setLanguage(e.target.value); setMobileOpen(false); }}
+                                    className='bg-transparent cursor-pointer outline-none w-full'
+                                >
+                                    <option value="en" className="dark:bg-slate-900">English (EN)</option>
+                                    <option value="ar" className="dark:bg-slate-900">Arabic (AR)</option>
+                                    <option value="fr" className="dark:bg-slate-900">French (FR)</option>
+                                    <option value="zh" className="dark:bg-slate-900">Chinese (ZH)</option>
+                                </select>
+                            </div>
                         </nav>
                     </div>
                 )}
