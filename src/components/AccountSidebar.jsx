@@ -14,9 +14,11 @@ import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { History, Trash2, TrendingUp, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
 
+  const { t } = useLanguage();
   const [userName, setUserName] = useState(null);
   const [visitedHistory, setVisitedHistory] = useState([]);
 
@@ -59,7 +61,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
 
           <SheetHeader className="text-left mb-6">
             <SheetTitle className="text-white/80 text-sm font-medium tracking-wide uppercase">
-              My Account
+              {t('myAccount') || 'My Account'}
             </SheetTitle>
           </SheetHeader>
 
@@ -84,7 +86,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                 onClick={onClose}
                 className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest border border-white/20 transition-all"
               >
-                View Profile <ChevronRight size={10} />
+                {t('viewProfile')} <ChevronRight size={10} />
               </Link>
             </div>
           </div>
@@ -100,7 +102,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                 <Mail size={14} className="text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs text-muted-foreground font-medium">Email</p>
+                <p className="text-xs text-muted-foreground font-medium">{t('email')}</p>
                 <p className="text-sm font-semibold text-foreground truncate">
                   {user?.email || "—"}
                 </p>
@@ -119,9 +121,9 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                 }
               </div>
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Email Verified</p>
+                <p className="text-xs text-muted-foreground font-medium">{t('emailVerified')}</p>
                 <p className={`text-sm font-semibold ${user?.emailVerified ? "text-emerald-500" : "text-destructive"}`}>
-                  {user?.emailVerified ? "Verified" : "Not verified"}
+                  {user?.emailVerified ? t('verified') : t('notVerified')}
                 </p>
               </div>
             </div>
@@ -135,14 +137,14 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                 <div className="p-1.5 rounded-lg bg-primary/20 text-primary">
                   <History size={14} />
                 </div>
-                <h3 className="text-[11px] font-black tracking-widest text-foreground uppercase italic">Your Activity</h3>
+                <h3 className="text-[11px] font-black tracking-widest text-foreground uppercase italic">{t('yourActivity')}</h3>
               </div>
               {visitedHistory.length > 0 && (
                 <button 
                   onClick={clearHistory}
                   className="p-1 px-2 rounded-lg text-[10px] text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                 >
-                  <Trash2 size={12} className="inline mr-1" /> Clear
+                  <Trash2 size={12} className="inline mr-1" /> {t('clearHistory')}
                 </button>
               )}
             </div>
@@ -184,7 +186,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                    <div className="p-4 rounded-full bg-muted text-muted-foreground">
                      <Clock size={24} />
                    </div>
-                   <p className="text-xs text-muted-foreground font-medium max-w-[140px] leading-relaxed tracking-tight">You haven't viewed any movies yet.</p>
+                   <p className="text-xs text-muted-foreground font-medium max-w-[140px] leading-relaxed tracking-tight">{t('noActivity') || "You haven't viewed any movies yet."}</p>
                 </div>
               )}
             </div>
@@ -205,7 +207,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
             "
           >
             <LogOut size={15} className="mr-2" />
-            Sign Out
+            {t('logout')}
           </Button>
         </div>
 

@@ -9,9 +9,11 @@ import PaginationControls from '@/components/PaginationControls';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Search as SearchIcon, Film, Tv, TrendingUp, History, Sparkles } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Search = () => {
-	usePageTitle('Search');
+	const { t } = useLanguage();
+	usePageTitle(t('search'));
 	const [urlParams] = useSearchParams();
 	const initialQuery = urlParams.get('q') || '';
 	const [query, setQuery] = useState(initialQuery);
@@ -76,16 +78,16 @@ const Search = () => {
 
 				<div className='relative text-center space-y-4 max-w-2xl'>
 					<div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2'>
-						<Sparkles size={12} strokeWidth={3} className='animate-bounce' /> Cinematic Discoveries
+						<Sparkles size={12} strokeWidth={3} className='animate-bounce' /> {t('cinematicDiscoveries')}
 					</div>
 					<h1 className='text-5xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-slate-100 leading-[1.1]'>
-						Find your next <br />
+						{t('findYourNext')} <br />
 						<span className='bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400 bg-clip-text text-transparent'>
-							masterpiece.
+							{t('masterpiece')}
 						</span>
 					</h1>
 					<p className='text-slate-400 dark:text-slate-300 font-medium text-lg leading-relaxed'>
-						Search millions of cinematic stories. Filter by type and see the results instantly in premium quality.
+						{t('searchMillions')}
 					</p>
 				</div>
 
@@ -93,15 +95,15 @@ const Search = () => {
 					<SearchInput
 						value={query}
 						onChange={handleSearchChange}
-						placeholder={`What are you looking for?`}
+						placeholder={t('whatLooking')}
 						className="max-w-2xl h-20 shadow-2xl shadow-blue-500/10 dark:shadow-none"
 					/>
 
 					{/* Media Type Segmented Toggle */}
 					<div className='flex p-1.5 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-inner max-w-sm w-full transition-colors'>
 						{[
-							{ key: 'movie', label: 'Movies', icon: <Film size={16} /> },
-							{ key: 'tv', label: 'TV Series', icon: <Tv size={16} /> },
+							{ key: 'movie', label: t('movies'), icon: <Film size={16} /> },
+							{ key: 'tv', label: t('tvSeries'), icon: <Tv size={16} /> },
 						].map(({ key, label, icon }) => (
 							<button
 								key={key}
@@ -121,15 +123,15 @@ const Search = () => {
 			{error && (
 				<Alert variant='destructive' className='rounded-[32px] border-red-100 dark:border-red-900/50 bg-red-50/50 dark:bg-red-900/10 p-6'>
 					<AlertCircle className='h-5 w-5' />
-					<AlertTitle className='font-black'>System Alert</AlertTitle>
+					<AlertTitle className='font-black'>{t('systemAlert')}</AlertTitle>
 					<AlertDescription className='text-sm opacity-80'>
-						{error}. We're having trouble reaching the movie databases.
+						{error}. {t('troubleReaching')}
 					</AlertDescription>
 				</Alert>
 			)}
 
 			{!loading && debouncedQuery && movies.length === 0 ? (
-				<EmptyState message={`No ${mediaType === 'movie' ? 'movies' : 'series'} found for "${debouncedQuery}"`} />
+				<EmptyState message={`${t('noMatchesQuery')} "${debouncedQuery}"`} />
 			) : !debouncedQuery && !loading ? (
 				<div className='animate-in fade-in slide-in-from-top-8 duration-700 delay-200'>
 					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10'>
@@ -140,7 +142,7 @@ const Search = () => {
 									<div className='p-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800'>
 										<History className='text-slate-400 dark:text-slate-500' size={18} />
 									</div>
-									<h3 className='text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest'>Jump Back In</h3>
+									<h3 className='text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest'>{t('jumpBack')}</h3>
 								</div>
 								<div className='flex flex-wrap gap-2.5'>
 									{recentSearches.map(term => (
@@ -162,7 +164,7 @@ const Search = () => {
 								<div className='p-2 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20'>
 									<TrendingUp className='text-orange-500 dark:text-orange-400' size={18} />
 								</div>
-								<h3 className='text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest'>Trending Discoveries</h3>
+								<h3 className='text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest'>{t('trendingDiscoveries')}</h3>
 							</div>
 							<div className='flex flex-wrap gap-2.5'>
 								{['Marvel', 'Academy Awards', 'Animation', 'Horror classics', 'Netflix', 'IMDb TOP 250'].map(tag => (
@@ -181,8 +183,8 @@ const Search = () => {
 					{/* Trending Preview Grid */}
 					<div className='mt-20 pt-12 border-t border-slate-100 dark:border-slate-800'>
 						<div className='flex items-center justify-between mb-8 px-2'>
-							<h4 className='text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]'>Recommended for you</h4>
-							<span className='px-3 py-1 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-black rounded-lg border border-green-100 dark:border-green-500/20'>Updated Live</span>
+							<h4 className='text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]'>{t('recommended')}</h4>
+							<span className='px-3 py-1 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-black rounded-lg border border-green-100 dark:border-green-500/20'>{t('live')}</span>
 						</div>
 						<MovieList movies={trendingMovies.slice(0, 8)} isLoading={loading} />
 					</div>
@@ -192,17 +194,17 @@ const Search = () => {
 					<div className='flex items-end justify-between px-2 pt-4 border-b border-slate-100/50 dark:border-slate-800/50 pb-6'>
 						<div>
 							<span className='text-[10px] font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100 dark:border-blue-500/20 mb-3 inline-block'>
-								Database Match
+								{t('databaseMatch')}
 							</span>
 							<h3 className='text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight'>
-								{debouncedQuery ? `Showing results for "${debouncedQuery}"` : ''}
+								{debouncedQuery ? `${t('showingResults')} "${debouncedQuery}"` : ''}
 							</h3>
 						</div>
 						{movies.length > 0 && (
 							<div className='flex flex-col items-end gap-1'>
-								<span className='text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest'>Collection Size</span>
+								<span className='text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest'>{t('collectionSize')}</span>
 								<span className='text-lg font-black text-slate-800 dark:text-slate-100'>
-									{movies.length} <span className='text-slate-300 dark:text-slate-600 font-bold'>Titles</span>
+									{movies.length} <span className='text-slate-300 dark:text-slate-600 font-bold'>{t('titles')}</span>
 								</span>
 							</div>
 						)}

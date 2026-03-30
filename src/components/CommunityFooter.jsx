@@ -1,8 +1,10 @@
 import { Link } from 'react-router';
 import { Button } from './ui/button';
 import { Film, Facebook, Twitter, Instagram, Github, Youtube, Heart } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CommunityFooter = () => {
+	const { t } = useLanguage();
 	return (
 		<footer className='bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 mt-20 border-t border-slate-200 dark:border-slate-800 transition-colors duration-300'>
 			{/* Top gradient bar */}
@@ -20,7 +22,7 @@ const CommunityFooter = () => {
 							<span className='text-xl font-extrabold text-slate-900 dark:text-white'>MovieApp</span>
 						</div>
 						<p className='leading-relaxed text-sm'>
-							Your ultimate guide to movies and TV shows. Explore, discover, and build your perfect watchlist.
+							{t('footerDesc')}
 						</p>
 						<div className='flex gap-2'>
 							{[Facebook, Twitter, Instagram, Github].map((Icon, i) => (
@@ -33,13 +35,13 @@ const CommunityFooter = () => {
 
 					{/* Quick Links */}
 					<div className='space-y-5'>
-						<h4 className='font-bold text-sm uppercase tracking-widest text-slate-900 dark:text-white'>Quick Links</h4>
+						<h4 className='font-bold text-sm uppercase tracking-widest text-slate-900 dark:text-white'>{t('quickLinks')}</h4>
 						<ul className='space-y-3'>
 							{[
-								{ to: '/', label: 'Home' },
-								{ to: '/browse', label: 'Browse' },
-								{ to: '/search', label: 'Search' },
-								{ to: '/wishlist', label: 'Wishlist' },
+								{ to: '/', label: t('home') },
+								{ to: '/browse', label: t('browse') },
+								{ to: '/search', label: t('search') },
+								{ to: '/wishlist', label: t('wishlist') },
 							].map(({ to, label }) => (
 								<li key={to}>
 									<Link to={to} className='hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm flex items-center gap-2'>
@@ -53,13 +55,13 @@ const CommunityFooter = () => {
 
 					{/* Help */}
 					<div className='space-y-5'>
-						<h4 className='font-bold text-sm uppercase tracking-widest text-slate-900 dark:text-white'>Help & Support</h4>
+						<h4 className='font-bold text-sm uppercase tracking-widest text-slate-900 dark:text-white'>{t('helpSupport')}</h4>
 						<ul className='space-y-3'>
 							{[
-								{ label: 'FAQ', to: '/help#faq' },
-								{ label: 'API Documentation', to: '/help#api' },
-								{ label: 'Support Center', to: '/help#support' },
-								{ label: 'Privacy Policy', to: '/help#privacy' },
+								{ label: t('faq'), to: '/help#faq' },
+								{ label: t('apiDoc'), to: '/help#api' },
+								{ label: t('supportCenter'), to: '/help#support' },
+								{ label: t('privacyPolicy'), to: '/help#privacy' },
 							].map(({ label, to }) => (
 								<li key={label}>
 									<Link to={to} className='hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm flex items-center gap-2'>
@@ -73,13 +75,13 @@ const CommunityFooter = () => {
 
 					{/* Community */}
 					<div className='space-y-5'>
-						<h4 className='font-bold text-sm uppercase tracking-widest text-slate-900 dark:text-white'>Join Community</h4>
+						<h4 className='font-bold text-sm uppercase tracking-widest text-slate-900 dark:text-white'>{t('joinCommunity')}</h4>
 						<p className='text-sm leading-relaxed'>
-							Subscribe to our newsletter and join our Discord group for the latest updates.
+							{t('newsletterDesc')}
 						</p>
 						<div className='flex gap-2'>
 							<Button className='flex-grow rounded-xl bg-blue-600 hover:bg-blue-700 font-bold shadow-lg shadow-blue-500/20 text-white'>
-								Join Community
+								{t('joinCommunity')}
 							</Button>
 							<Button size='icon' className='rounded-xl bg-red-600 hover:bg-red-700 text-white'>
 								<Youtube size={16} />
@@ -91,9 +93,9 @@ const CommunityFooter = () => {
 				{/* Bottom bar */}
 				<div className='border-t border-slate-200 dark:border-slate-800 mt-16 pt-8 flex flex-col items-center justify-center text-sm gap-4 text-center'>
 					<p className='flex items-center justify-center gap-1 flex-wrap font-medium'>
-						© 2026 ITI by Group 5 (Belal Mahmoud, Shimaa Mohamed, Mostafa Nageh, Samy Barsoum) with <Heart size={12} className='text-red-500 fill-current' /> All rights reserved.
+						© 2026 ITI by Group 5 (Belal Mahmoud, Shimaa Mohamed, Mostafa Nageh, Samy Barsoum) with <Heart size={12} className='text-red-500 fill-current' /> {t('allRightsReserved')}
 					</p>
-					<p className='text-xs text-slate-500'>Powered by TMDB API</p>
+					<p className='text-xs text-slate-500'>{t('poweredBy')}</p>
 				</div>
 			</div>
 		</footer>

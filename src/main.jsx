@@ -4,6 +4,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ThemeProvider } from '@/components/theme-provider';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from '@/components/ui/sonner';
 import App from './App';
 import Search from './pages/Search';
@@ -95,8 +96,10 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
 		<ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
-			<RouterProvider router={router} />
-			<Toaster position="top-center" richColors />
+			<LanguageProvider>
+				<RouterProvider router={router} />
+				<Toaster position="top-center" richColors />
+			</LanguageProvider>
 		</ThemeProvider>
 	</StrictMode>
 );

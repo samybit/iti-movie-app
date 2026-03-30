@@ -10,12 +10,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { useMovies } from '@/hooks/useMovies';
 import useDebounce from '@/hooks/useDebounce';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const SearchModal = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
   const navigate = useNavigate();
   const debouncedQuery = useDebounce(query, 500);
+  const { t } = useLanguage();
 
   // Fetch Trending data for when search is empty
   const { data: trendingResults } = useMovies({
@@ -70,7 +72,7 @@ const SearchModal = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden border-none shadow-2xl bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl rounded-3xl">
         <DialogHeader className="sr-only">
-          <DialogTitle>Search Movies & TV Shows</DialogTitle>
+          <DialogTitle>{t('searchMoviesTv')}</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col max-h-[85vh]">
@@ -82,7 +84,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search movies, TV shows..."
+                placeholder={t('searchMoviesTv')}
                 className="flex-1 bg-transparent border-none outline-none text-xl font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600"
               />
               {loading && query && (
@@ -107,8 +109,8 @@ const SearchModal = ({ isOpen, onClose }) => {
                 {results.length > 0 ? (
                   <div className="space-y-1">
                     <div className="px-4 py-2 flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suggestions</span>
-                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full uppercase">Dynamic</span>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('suggestions')}</span>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full uppercase">{t('dynamic')}</span>
                     </div>
                     {results.slice(0, 6).map((item) => {
                       const mediaType = item.title ? 'movie' : 'tv';
@@ -138,7 +140,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                                   : 'bg-indigo-50 text-indigo-600 border-indigo-100 dark:bg-indigo-500/10 dark:border-indigo-500/20'
                                 }`}>
                                 {mediaType === 'movie' ? <Film size={10} strokeWidth={3} /> : <Tv size={10} strokeWidth={3} />}
-                                {mediaType === 'movie' ? 'MOVIE' : 'TV SHOW'}
+                                {mediaType === 'movie' ? t('movie').toUpperCase() : t('tvShow').toUpperCase()}
                               </span>
                               <span className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
                                 <Calendar size={12} strokeWidth={2.5} />
@@ -166,7 +168,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                         onClick={handleSearch}
                         className="w-full py-5 text-center text-xs font-black text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 tracking-widest uppercase transition-colors"
                       >
-                        + View all {results.length} matches
+                        + {t('viewAll')} {results.length} {t('matches')}
                       </button>
                     )}
                   </div>
@@ -175,13 +177,13 @@ const SearchModal = ({ isOpen, onClose }) => {
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-slate-50 border border-slate-100 dark:bg-slate-900 dark:border-slate-800 mb-4">
                       <Search className="text-slate-200 dark:text-slate-700" size={32} />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">No matches found</h3>
-                    <p className="text-sm text-slate-400 mt-1">Try different keywords or check spelling.</p>
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t('noMatches')}</h3>
+                    <p className="text-sm text-slate-400 mt-1">{t('tryDiff')}</p>
                   </div>
                 ) : (
                   <div className="py-20 flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 space-y-4">
                     <Loader2 className="w-10 h-10 animate-spin text-blue-500/20" />
-                    <span className="text-xs font-bold tracking-widest uppercase">Searching Universe...</span>
+                    <span className="text-xs font-bold tracking-widest uppercase">{t('searching')}</span>
                   </div>
                 )}
               </div>
@@ -190,7 +192,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                 {/* Recent Searches */}
                 {recentSearches.length > 0 && (
                   <div className="p-6 pb-2">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recent Searches</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('recentSearches')}</span>
                     <div className="flex flex-wrap gap-2 mt-3">
                       {recentSearches.map(term => (
                         <button
@@ -208,7 +210,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                         }}
                         className="text-[10px] font-bold text-red-400 hover:text-red-600 px-2 py-1 transition-colors"
                       >
-                        Clear History
+                        {t('clearHistory')}
                       </button>
                     </div>
                   </div>
@@ -217,10 +219,10 @@ const SearchModal = ({ isOpen, onClose }) => {
                 {/* Trending Section */}
                 <div className="p-6 pt-4">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Trending Now</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('trendingNow')}</span>
                     <div className="flex items-center gap-1.5">
                       <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
-                      <span className="text-[10px] font-bold text-red-500 uppercase">Live</span>
+                      <span className="text-[10px] font-bold text-red-500 uppercase">{t('live')}</span>
                     </div>
                   </div>
 
@@ -243,7 +245,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                               {title}
                             </p>
                             <p className="text-[10px] font-medium text-slate-400 uppercase mt-0.5">
-                              {type === 'movie' ? 'Movie' : 'TV Series'}
+                              {type === 'movie' ? t('movie') : t('tvShow')}
                             </p>
                           </div>
                         </button>
@@ -254,7 +256,7 @@ const SearchModal = ({ isOpen, onClose }) => {
 
                 {/* Quick Categories */}
                 <div className="p-6 pt-0">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Discover Categories</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('discoverCat')}</span>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {['Marvel', 'Disney+', 'Action', 'Horror', 'Sci-Fi', 'Netflix Original'].map(tag => (
                       <button
@@ -276,12 +278,12 @@ const SearchModal = ({ isOpen, onClose }) => {
             <div className="flex items-center justify-between px-2">
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 shadow-sm">Enter</div>
-                  <span className="text-[11px] font-bold text-slate-400">Search</span>
+                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 shadow-sm">{t('enter')}</div>
+                  <span className="text-[11px] font-bold text-slate-400">{t('search')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-500 dark:text-slate-400 shadow-sm">Esc</div>
-                  <span className="text-[11px] font-bold text-slate-400">Close</span>
+                  <span className="text-[11px] font-bold text-slate-400">{t('close')}</span>
                 </div>
               </div>
 
@@ -290,7 +292,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                 disabled={!query.trim()}
                 className="rounded-xl px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/25 transition-all active:scale-95 disabled:opacity-50"
               >
-                Full Search
+                {t('fullSearch')}
               </Button>
             </div>
           </div>

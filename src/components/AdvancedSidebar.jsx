@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { ChevronRight, Search, SlidersHorizontal, Tv, Film, X, MoreHorizontal } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // ── Reusable sub-heading ────────────────────────────────────────────────────
 const SectionLabel = ({ children }) => (
@@ -57,6 +58,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 	const { genres } = useGenres(filters.mediaType, filters.language);
 	const { languages } = useLanguages();
 	const { countries } = useCountries();
+	const { t } = useLanguage();
 
 	const update = (patch) => setFilters((p) => ({ ...p, ...patch }));
 
@@ -109,8 +111,8 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 			{/* ── Media Type Toggle ────────────────────────────────────────── */}
 			<div className='flex p-1 bg-slate-100 dark:bg-slate-800/50 rounded-xl gap-1'>
 				{[
-					{ key: 'movie', label: 'Movies' },
-					{ key: 'tv', label: 'TV Series' },
+					{ key: 'movie', label: t('movies') },
+					{ key: 'tv', label: t('tvSeries') },
 				].map(({ key, label }) => (
 					<button
 						key={key}
@@ -128,13 +130,13 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Sort By ─────────────────────────────────────────────────── */}
 			<div className='space-y-3'>
-				<SectionLabel>Sort By</SectionLabel>
+				<SectionLabel>{t('sortBy')}</SectionLabel>
 				<div className='grid grid-cols-2 gap-2'>
 					{[
-						{ label: 'Popularity', val: 'popularity.desc' },
-						{ label: 'Rating', val: 'vote_average.desc' },
-						{ label: 'Latest', val: 'primary_release_date.desc' },
-						{ label: 'Revenue', val: 'revenue.desc' },
+						{ label: t('popularity'), val: 'popularity.desc' },
+						{ label: t('rating'), val: 'vote_average.desc' },
+						{ label: t('latest'), val: 'primary_release_date.desc' },
+						{ label: t('revenue') || 'Revenue', val: 'revenue.desc' },
 					].map(({ label, val }) => (
 						<button
 							key={val}
@@ -153,7 +155,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Decade ──────────────────────────────────────────────────── */}
 			<div className='space-y-3'>
-				<SectionLabel>Decade</SectionLabel>
+				<SectionLabel>{t('decade')}</SectionLabel>
 				<div className='flex flex-wrap gap-2'>
 					{[
 						{ label: '80s', val: '1980-1989' },
@@ -179,7 +181,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Genre ───────────────────────────────────────────────────── */}
 			<div className='space-y-3'>
-				<SectionLabel>Genre</SectionLabel>
+				<SectionLabel>{t('genre')}</SectionLabel>
 				<div className='flex flex-wrap gap-2'>
 					{genres.slice(0, 10).map((g) => {
 						const active = (filters.with_genres || '').split('|').includes(String(g.id));
@@ -202,16 +204,16 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Language ────────────────────────────────────────────────── */}
 			<div className='space-y-3'>
-				<SectionLabel>Language</SectionLabel>
+				<SectionLabel>{t('languageLabel')}</SectionLabel>
 				<div className='flex flex-wrap gap-2'>
 					{[
-						{ label: 'English', id: 'en' },
-						{ label: 'Arabic', id: 'ar' },
-						{ label: 'Turkish', id: 'tr' },
-						{ label: 'Spanish', id: 'es' },
-						{ label: 'French', id: 'fr' },
-						{ label: 'Korean', id: 'ko' },
-						{ label: 'Japanese', id: 'ja' },
+						{ label: t('english'), id: 'en' },
+						{ label: t('arabic'), id: 'ar' },
+						{ label: t('turkish'), id: 'tr' },
+						{ label: t('spanish'), id: 'es' },
+						{ label: t('french'), id: 'fr' },
+						{ label: t('korean'), id: 'ko' },
+						{ label: t('japanese'), id: 'ja' },
 					].map(({ label, id }) => {
 						const active = (filters.with_original_language || '').split('|').includes(id);
 						return (
@@ -237,14 +239,14 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Mood ────────────────────────────────────────────────────── */}
 			<div className='space-y-3'>
-				<SectionLabel>Mood</SectionLabel>
+				<SectionLabel>{t('mood')}</SectionLabel>
 				<div className='flex flex-wrap gap-2'>
 					{[
-						{ label: 'Feel-good', id: 'feel-good' },
-						{ label: 'Dark', id: 'dark' },
-						{ label: 'Funny', id: 'funny' },
-						{ label: 'Emotional', id: 'emotional' },
-						{ label: 'Mind-bending', id: 'mind-bending' },
+						{ label: t('feelGood'), id: 'feel-good' },
+						{ label: t('dark') || 'Dark', id: 'dark' },
+						{ label: t('funny'), id: 'funny' },
+						{ label: t('emotional'), id: 'emotional' },
+						{ label: t('mindBending'), id: 'mind-bending' },
 					].map(({ label, id }) => {
 						const active = (filters.with_keywords || '').split(',').includes(id);
 						return (
@@ -266,7 +268,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Runtime ─────────────────────────────────────────────────── */}
 			<SliderWithTicks
-				label='Runtime (Max)'
+				label={t('runtimeMax')}
 				min={30}
 				max={180}
 				step={5}
@@ -277,7 +279,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Min User Score ────────────────────────────────────────── */}
 			<SliderWithTicks
-				label='Min User Score'
+				label={t('minUserScore')}
 				min={0}
 				max={10}
 				step={0.5}
@@ -287,7 +289,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 
 			{/* ── Content Rating ─────────────────────────────────────────── */}
 			<div className='space-y-3'>
-				<SectionLabel>Content Rating</SectionLabel>
+				<SectionLabel>{t('contentRating')}</SectionLabel>
 				<div className='flex flex-wrap gap-3'>
 					{['G', 'PG', 'PG-13', 'R', 'TV-MA'].map((r) => (
 						<button
@@ -329,7 +331,7 @@ const AdvancedSidebar = ({ filters, setFilters }) => {
 					})}
 					className='text-[11px] font-black text-blue-500 hover:underline uppercase tracking-widest transition-all'
 				>
-					Clear all filters
+					{t('clearAllFilters')}
 				</button>
 			</div>
 		</div>

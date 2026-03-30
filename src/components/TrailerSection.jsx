@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { movieService } from '../services/movieService';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Play } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const TrailerSection = () => {
 	const [trailers, setTrailers] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const { t } = useLanguage();
 
 	useEffect(() => {
 		const fetchTrailers = async () => {
@@ -35,7 +37,7 @@ const TrailerSection = () => {
 
 	return (
 		<div className='my-10 space-y-4'>
-			<h3 className='text-2xl font-bold tracking-tight'>Latest Trailers</h3>
+			<h3 className='text-2xl font-bold tracking-tight'>{t('latestTrailers')}</h3>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 				{trailers.map((movie) => (
 					<div key={movie.id} className='relative group rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-slate-800 shadow-xl'>
@@ -55,7 +57,7 @@ const TrailerSection = () => {
 							</a>
 							<div className='mt-4'>
 								<h4 className='text-white font-bold text-lg line-clamp-1'>{movie.title}</h4>
-								<p className='text-slate-300 text-sm'>Official Trailer</p>
+								<p className='text-slate-300 text-sm'>{t('officialTrailer')}</p>
 							</div>
 						</div>
 					</div>

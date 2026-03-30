@@ -13,9 +13,11 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Filter, Search, X } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Browse = () => {
-	usePageTitle('Browse');
+	const { t } = useLanguage();
+	usePageTitle(t('browse'));
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [browseQuery, setBrowseQuery] = useState('');
@@ -145,11 +147,11 @@ const Browse = () => {
 				<div className='relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 w-full'>
 					<div className='space-y-4'>
 						<Badge className='bg-blue-600/20 text-blue-400 border-blue-600/30 font-black uppercase tracking-widest px-3 py-1 rounded-full text-[10px] animate-pulse'>
-							Weekly Spotlight
+							{t('weeklySpotlight') || 'Weekly Spotlight'}
 						</Badge>
-						<h2 className='text-4xl lg:text-5xl font-black text-white tracking-tight'>New this week</h2>
+						<h2 className='text-4xl lg:text-5xl font-black text-white tracking-tight'>{t('newThisWeek')}</h2>
 						<p className='text-blue-100/70 max-w-md text-lg leading-relaxed font-medium'>
-							Explore the highest-rated releases and fan favorites currently taking the world by storm.
+							{t('exploreHighestRated') || 'Explore the highest-rated releases and fan favorites currently taking the world by storm.'}
 						</p>
 					</div>
 					<Button 
@@ -159,7 +161,7 @@ const Browse = () => {
 						}}
 						className='bg-white/10 hover:bg-white/20 text-white rounded-2xl h-14 px-8 border border-white/20 backdrop-blur-md transition-all active:scale-95 text-lg font-bold'
 					>
-						Start Browsing
+						{t('startBrowsing')}
 					</Button>
 				</div>
 			</div>
@@ -169,11 +171,11 @@ const Browse = () => {
 				
 				{/* Mobile Header */}
 				<div className='lg:hidden flex justify-between items-center mb-6'>
-					<h2 className='text-3xl font-black tracking-tight text-foreground'>Browse</h2>
+					<h2 className='text-3xl font-black tracking-tight text-foreground'>{t('browse')}</h2>
 					<Sheet>
 						<SheetTrigger asChild>
 							<Button variant='outline' size='sm' className='gap-2 rounded-xl border-slate-700 bg-slate-900'>
-								<Filter size={16} /> Filters
+								<Filter size={16} /> {t('filters')}
 							</Button>
 						</SheetTrigger>
 						<SheetContent side='left' className='w-80 overflow-y-auto bg-slate-950 border-r-slate-800 pt-12'>
@@ -203,10 +205,10 @@ const Browse = () => {
 						<div className='flex flex-col sm:flex-row items-start sm:items-baseline justify-between gap-4'>
 							<div>
 								<h1 className='text-5xl font-black tracking-tighter text-foreground mb-2'>
-									{activeFilters.mediaType === 'movie' ? 'Movies' : 'TV Series'}
+									{activeFilters.mediaType === 'movie' ? t('movies') : t('tvSeries')}
 								</h1>
 								<p className='text-muted-foreground text-lg font-medium'>
-									Discover the perfect {activeFilters.mediaType === 'movie' ? 'movie' : 'series'}.
+									{t('discoverPerfect')} {activeFilters.mediaType === 'movie' ? t('movie') : t('series')}.
 								</p>
 							</div>
 						
@@ -219,7 +221,7 @@ const Browse = () => {
 									className={`rounded-xl h-9 px-4 font-bold text-xs ${viewMode === 'grid' ? 'bg-white shadow-lg text-slate-900 hover:bg-white' : 'text-slate-500'}`}
 									onClick={() => setViewMode('grid')}
 								>
-									Grid
+									{t('grid')}
 								</Button>
 								<Button 
 									variant={viewMode === 'list' ? 'default' : 'ghost'} 
@@ -227,7 +229,7 @@ const Browse = () => {
 									className={`rounded-xl h-9 px-4 font-bold text-xs ${viewMode === 'list' ? 'bg-white shadow-lg text-slate-900 hover:bg-white' : 'text-slate-500'}`}
 									onClick={() => setViewMode('list')}
 								>
-									List
+									{t('list')}
 								</Button>
 							</div>
 							<div className='hidden sm:block w-px h-6 bg-slate-700 mx-1 flex-shrink-0' />
@@ -277,14 +279,14 @@ const Browse = () => {
 								onClick={() => handleFilterChange({ ...activeFilters, with_genres: '', release_date_gte: '', release_date_lte: '', certification: '', with_keywords: '', with_original_language: '' })}
 								className='text-xs font-black text-slate-500 hover:text-foreground ml-2 transition-colors underline underline-offset-4'
 							>
-								Clear all
+								{t('clearAll')}
 							</button>
 						)}
 					</div>
 
 					<div className='flex items-center gap-2'>
 						<span className='text-sm font-black text-foreground'>{totalResults.toLocaleString()}</span>
-						<span className='text-sm font-bold text-slate-500'>results found</span>
+						<span className='text-sm font-bold text-slate-500'>{t('resultsFound')}</span>
 					</div>
 				</div>
 
@@ -292,7 +294,7 @@ const Browse = () => {
 				<div className='relative group'>
 					<Search size={20} className='absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors' />
 					<Input
-						placeholder="Search in the output categories..."
+						placeholder={t('searchOutput')}
 						value={browseQuery}
 						onChange={(e) => setBrowseQuery(e.target.value)}
 						className='pl-14 pr-12 h-16 rounded-3xl bg-slate-100 dark:bg-slate-900 border-white/5 shadow-xl text-lg font-medium placeholder:text-slate-500 focus-visible:ring-blue-500/30'
@@ -310,8 +312,8 @@ const Browse = () => {
 				{/* Movie Grid */}
 				<div className='space-y-10'>
 					<div className='flex items-center justify-between'>
-						<h3 className='text-xl font-black text-foreground tracking-tight'>All results</h3>
-						<button className='text-sm font-bold text-blue-500 hover:underline'>See all</button>
+						<h3 className='text-xl font-black text-foreground tracking-tight'>{t('allResults')}</h3>
+						<button className='text-sm font-bold text-blue-500 hover:underline'>{t('seeAll')}</button>
 					</div>
 					
 					{(() => {
@@ -321,7 +323,7 @@ const Browse = () => {
 						});
 						
 						if (filteredMovies.length === 0 && !loading) {
-							return <EmptyState message='No matches found' description='Try adjusting filters.' />;
+							return <EmptyState message={t('noMatches')} description={t('tryAdjusting')} />;
 						}
 						
 						return (

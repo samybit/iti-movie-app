@@ -8,13 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Moon, Sun, Monitor, Languages, Bell, Shield, ArrowLeft, Paintbrush, Loader2, CheckCircle2 } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import { useNavigate } from 'react-router';
+import { useLanguage } from '@/contexts/LanguageContext';
 import usePageTitle from '@/hooks/usePageTitle';
 import toast from 'react-hot-toast';
 
 const Settings = () => {
-	usePageTitle('Settings');
 	const { user, loading: authLoading } = useAuth();
 	const { theme, setTheme } = useTheme();
+	const { t, language, setLanguage } = useLanguage();
+	usePageTitle(t('settings'));
 	const navigate = useNavigate();
 
 	const [isSaving, setIsSaving] = useState(false);
@@ -24,7 +26,7 @@ const Settings = () => {
 		// Simulate API call
 		setTimeout(() => {
 			setIsSaving(false);
-			toast.success('Settings updated successfully!', {
+			toast.success(t('settings') + ' updated successfully!', {
 				style: {
 					borderRadius: '1rem',
 					background: '#1e293b',
@@ -43,9 +45,9 @@ const Settings = () => {
 			{/* Header Nav */}
 			<div className='flex items-center gap-4'>
 				<Button variant='ghost' onClick={() => navigate(-1)} className='rounded-xl gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'>
-					<ArrowLeft size={18} /> Back
+					<ArrowLeft size={18} /> {t('back')}
 				</Button>
-				<h1 className='text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase'>Settings</h1>
+				<h1 className='text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase'>{t('settings')}</h1>
 			</div>
 
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
@@ -54,17 +56,17 @@ const Settings = () => {
 				<section className='space-y-6'>
 					<div className='flex items-center gap-3 px-2'>
 						<Paintbrush size={20} className='text-blue-500' />
-						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>Appearance</h2>
+						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>{t('appearance')}</h2>
 					</div>
 					<Card className='rounded-[2.5rem] border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-xl overflow-hidden'>
 						<CardContent className='p-8 space-y-8'>
 							<div className='space-y-4'>
-								<Label className='text-sm font-bold opacity-70'>Interface Theme</Label>
+								<Label className='text-sm font-bold opacity-70'>{t('interfaceTheme')}</Label>
 								<div className='grid grid-cols-3 gap-3'>
 									{[
-										{ id: 'light', icon: <Sun size={16} />, label: 'Light' },
-										{ id: 'dark', icon: <Moon size={16} />, label: 'Dark' },
-										{ id: 'system', icon: <Monitor size={16} />, label: 'System' },
+										{ id: 'light', icon: <Sun size={16} />, label: t('light') },
+										{ id: 'dark', icon: <Moon size={16} />, label: t('dark') },
+										{ id: 'system', icon: <Monitor size={16} />, label: t('systemTheme') },
 									].map((t) => (
 										<button
 											key={t.id}
@@ -84,8 +86,8 @@ const Settings = () => {
 
 							<div className='flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800'>
 								<div className='space-y-0.5'>
-									<Label className='text-sm font-bold'>Glassmorphism Effects</Label>
-									<p className='text-[10px] text-slate-400 font-medium'>Enable blurred backgrounds on UI elements.</p>
+									<Label className='text-sm font-bold'>{t('glassmorphism')}</Label>
+									<p className='text-[10px] text-slate-400 font-medium'>{t('glassmorphismDesc')}</p>
 								</div>
 								<Switch defaultChecked />
 							</div>
@@ -97,21 +99,21 @@ const Settings = () => {
 				<section className='space-y-6'>
 					<div className='flex items-center gap-3 px-2'>
 						<Languages size={20} className='text-purple-500' />
-						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>Regional & Language</h2>
+						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>{t('regional')}</h2>
 					</div>
 					<Card className='rounded-[2.5rem] border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-xl overflow-hidden'>
 						<CardContent className='p-8 space-y-6'>
 							<div className='space-y-3'>
-								<Label className='text-sm font-bold opacity-70'>Default Language</Label>
-								<Select defaultValue='en-US'>
+								<Label className='text-sm font-bold opacity-70'>{t('defaultLang')}</Label>
+								<Select value={language} onValueChange={setLanguage}>
 									<SelectTrigger className='h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 font-bold'>
 										<SelectValue placeholder='Select Language' />
 									</SelectTrigger>
 									<SelectContent className='rounded-2xl border-slate-200 dark:border-slate-800'>
-										<SelectItem value='en-US'>English (System)</SelectItem>
-										<SelectItem value='tr-TR'>Turkish (Türkçe)</SelectItem>
-										<SelectItem value='ar-SA'>Arabic (العربية)</SelectItem>
-										<SelectItem value='es-ES'>Spanish (Español)</SelectItem>
+										<SelectItem value='en'>{t('english')}</SelectItem>
+										<SelectItem value='ar'>Arabic (العربية)</SelectItem>
+										<SelectItem value='fr'>{t('french')} (Français)</SelectItem>
+										<SelectItem value='zh'>Chinese (中文)</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
@@ -123,21 +125,21 @@ const Settings = () => {
 				<section className='space-y-6'>
 					<div className='flex items-center gap-3 px-2'>
 						<Bell size={20} className='text-amber-500' />
-						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>Notifications</h2>
+						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>{t('notifications')}</h2>
 					</div>
 					<Card className='rounded-[2.5rem] border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-xl overflow-hidden'>
 						<CardContent className='p-8 space-y-6'>
 							<div className='flex items-center justify-between'>
 								<div className='space-y-0.5'>
-									<Label className='text-sm font-bold'>Email Alerts</Label>
-									<p className='text-[10px] text-slate-400 font-medium'>Receive monthly movie recommendations.</p>
+									<Label className='text-sm font-bold'>{t('emailAlerts')}</Label>
+									<p className='text-[10px] text-slate-400 font-medium'>{t('emailAlertsDesc')}</p>
 								</div>
 								<Switch defaultChecked />
 							</div>
 							<div className='flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800'>
 								<div className='space-y-0.5'>
-									<Label className='text-sm font-bold'>New Releases</Label>
-									<p className='text-[10px] text-slate-400 font-medium'>Notify when movies in your watchlist release.</p>
+									<Label className='text-sm font-bold'>{t('newReleases')}</Label>
+									<p className='text-[10px] text-slate-400 font-medium'>{t('newReleasesDesc')}</p>
 								</div>
 								<Switch defaultChecked />
 							</div>
@@ -149,21 +151,21 @@ const Settings = () => {
 				<section className='space-y-6'>
 					<div className='flex items-center gap-3 px-2'>
 						<Shield size={20} className='text-emerald-500' />
-						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>Security</h2>
+						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em]'>{t('security')}</h2>
 					</div>
 					<Card className='rounded-[2.5rem] border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-xl overflow-hidden'>
 						<CardContent className='p-8 space-y-6'>
 							<div className='flex items-center justify-between'>
 								<div className='space-y-0.5'>
-									<Label className='text-sm font-bold'>Public Profile</Label>
-									<p className='text-[10px] text-slate-400 font-medium'>Allow others to see your watchlist.</p>
+									<Label className='text-sm font-bold'>{t('publicProfile')}</Label>
+									<p className='text-[10px] text-slate-400 font-medium'>{t('publicProfileDesc')}</p>
 								</div>
 								<Switch />
 							</div>
 							<div className='flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800'>
 								<div className='space-y-0.5'>
-									<Label className='text-sm font-bold'>Activity Logging</Label>
-									<p className='text-[10px] text-slate-400 font-medium'>Keep record of your sign-ins.</p>
+									<Label className='text-sm font-bold'>{t('activityLogging')}</Label>
+									<p className='text-[10px] text-slate-400 font-medium'>{t('activityLoggingDesc')}</p>
 								</div>
 								<Switch defaultChecked />
 							</div>
@@ -182,10 +184,10 @@ const Settings = () => {
 					{isSaving ? (
 						<div className='flex items-center gap-3'>
 							<Loader2 className='animate-spin' size={20} />
-							Saving Changes...
+							{t('savingChanges')}
 						</div>
 					) : (
-						'Save Changes'
+						t('saveChanges')
 					)}
 				</Button>
 			</div>

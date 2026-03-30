@@ -36,6 +36,7 @@ import { Link, useNavigate } from "react-router-dom"
 import registerImage from "../assets/registerImage.webp"
 
 import toast, { Toaster } from "react-hot-toast"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 /////////////////////////////
 // Validation Schema
@@ -83,6 +84,7 @@ const FieldStatus = ({ name, errors, dirtyFields }) => {
 /////////////////////////////
 
 function SignupForm(props) {
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const {
     register,
@@ -185,9 +187,9 @@ function SignupForm(props) {
         <div className="flex w-full md:w-1/2 items-center justify-center p-10 bg-card text-card-foreground">
           <Card className="w-full max-w-md border-0 shadow-none bg-transparent">
             <CardHeader>
-              <CardTitle>Create an account</CardTitle>
+              <CardTitle>{t('createAccount')}</CardTitle>
               <CardDescription>
-                Enter your information below to create your account
+                {t('enterInfo')}
               </CardDescription>
             </CardHeader>
 
@@ -196,14 +198,14 @@ function SignupForm(props) {
                 <FieldGroup>
                   {/* Name */}
                   <Field>
-                    <FieldLabel>Full Name</FieldLabel>
+                    <FieldLabel>{t('fullName')}</FieldLabel>
                     <Input placeholder="Your name" {...register("name")} />
                     <FieldStatus name="name" errors={errors} dirtyFields={dirtyFields} />
                   </Field>
 
                   {/* Email */}
                   <Field>
-                    <FieldLabel>Email</FieldLabel>
+                    <FieldLabel>{t('email')}</FieldLabel>
                     <Input
                       type="email"
                       placeholder="m@example.com"
@@ -214,21 +216,21 @@ function SignupForm(props) {
 
                   {/* Password */}
                   <Field>
-                    <FieldLabel>Password</FieldLabel>
+                    <FieldLabel>{t('password')}</FieldLabel>
                     <Input type="password" {...register("password")} />
                     <FieldStatus name="password" errors={errors} dirtyFields={dirtyFields} />
                   </Field>
 
                   {/* Confirm Password */}
                   <Field>
-                    <FieldLabel>Confirm Password</FieldLabel>
+                    <FieldLabel>{t('confirmPass')}</FieldLabel>
                     <Input type="password" {...register("confirm")} />
                     <FieldStatus name="confirm" errors={errors} dirtyFields={dirtyFields} />
                   </Field>
 
                   {/* Submit */}
                   <Button type="submit" disabled={isSubmitting} className="w-full">
-                    {isSubmitting ? "Creating Account..." : "Create Account"}
+                    {isSubmitting ? t('creatingAccount') : t('createAccountBtn')}
                   </Button>
 
                   {/* Google */}
@@ -239,14 +241,14 @@ function SignupForm(props) {
                     onClick={handleGoogleSignup}
                   >
                     <FontAwesomeIcon icon={faGoogle} className="text-[#DB4437]" />
-                    Sign up with Google
+                    {t('signUpGoogle')}
                   </Button>
 
                   {/* Login Link */}
                   <p className="text-center text-sm text-muted-foreground">
-                    Already have an account?{" "}
+                    {t('haveAccount')}{" "}
                     <Link to="/login" className="text-indigo-600 hover:underline">
-                      Sign in
+                      {t('signIn')}
                     </Link>
                   </p>
                 </FieldGroup>
