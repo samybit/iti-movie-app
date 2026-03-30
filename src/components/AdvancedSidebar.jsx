@@ -55,10 +55,10 @@ const SliderWithTicks = ({ label, min = 0, max, step, value, onChange, format })
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 const AdvancedSidebar = ({ filters, setFilters }) => {
-	const { genres } = useGenres(filters.mediaType, filters.language);
+	const { t, language } = useLanguage();
+	const { genres } = useGenres(filters.mediaType, language);
 	const { languages } = useLanguages();
 	const { countries } = useCountries();
-	const { t } = useLanguage();
 
 	const update = (patch) => setFilters((p) => ({ ...p, ...patch }));
 
