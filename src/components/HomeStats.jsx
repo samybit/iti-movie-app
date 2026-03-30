@@ -1,7 +1,8 @@
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Clapperboard, MonitorPlay, UsersRound, Activity, ArrowRight } from 'lucide-react';
+import { Clapperboard, MonitorPlay, UsersRound, Activity, ArrowRight, Heart } from 'lucide-react';
 import { Link } from 'react-router';
+import { useAuth } from '@/hooks/useAuth';
 
 const HomeStats = () => {
 	const stats = [
@@ -35,6 +36,10 @@ const HomeStats = () => {
 		},
 	];
 
+	const { user, userName, loading } = useAuth();
+
+	if (loading) return null;
+
 	return (
 		<div className='space-y-16'>
 			{/* ── Stats Grid ──────────────────────────────────── */}
@@ -56,30 +61,63 @@ const HomeStats = () => {
 				))}
 			</div>
 
-			{/* ── CTA Banner ──────────────────────────────────── */}
-			<div className='relative rounded-3xl overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white p-10 md:p-16 flex flex-col items-center text-center space-y-6 shadow-2xl shadow-blue-500/20'>
-				{/* Decorative elements */}
-				<div className='absolute top-0 right-0 -translate-y-1/3 translate-x-1/3 w-72 h-72 bg-white/5 rounded-full blur-3xl' />
-				<div className='absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 w-72 h-72 bg-purple-400/10 rounded-full blur-3xl' />
-				
-				<div className='relative space-y-6'>
-					<h2 className='text-3xl md:text-5xl font-black max-w-2xl leading-tight tracking-tight'>
-						Join Today & Start Building Your
-						<span className='bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent'> Watchlist</span>
-					</h2>
-					<p className='text-blue-100 max-w-lg mx-auto text-lg leading-relaxed'>
-						Get access to maintain your own custom personal lists, track what you've seen and search and filter for what to watch next.
-					</p>
-					<div className='flex flex-wrap gap-4 pt-4 justify-center'>
-						<Button asChild size='lg' className='rounded-full px-8 bg-white text-blue-600 hover:bg-slate-100 font-bold shadow-xl gap-2'>
-							<Link to='/register'>Sign Up Now <ArrowRight size={16} /></Link>
+			{/* ── Contextual CTA / Welcome Banner ──────────────────────────────────── */}
+			{!user ? (
+				<div className='relative rounded-3xl overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white p-10 md:p-16 flex flex-col items-center text-center space-y-6 shadow-2xl shadow-blue-500/20'>
+					{/* Decorative elements */}
+					<div className='absolute top-0 right-0 -translate-y-1/3 translate-x-1/3 w-72 h-72 bg-white/5 rounded-full blur-3xl' />
+					<div className='absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 w-72 h-72 bg-purple-400/10 rounded-full blur-3xl' />
+					
+					<div className='relative space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700'>
+						<h2 className='text-3xl md:text-5xl font-black max-w-2xl leading-tight tracking-tight'>
+							Join Today & Start Building Your
+							<span className='bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent'> Watchlist</span>
+						</h2>
+						<p className='text-blue-100 max-w-lg mx-auto text-lg leading-relaxed'>
+							Get access to maintain your own custom personal lists, track what you've seen and search and filter for what to watch next.
+						</p>
+						<div className='flex flex-wrap gap-4 pt-4 justify-center'>
+							<Button asChild size='lg' className='rounded-xl px-8 bg-white text-blue-600 hover:bg-slate-100 font-bold shadow-xl gap-2 transition-all hover:scale-105 active:scale-95'>
+								<Link to='/register'>Sign Up Now <ArrowRight size={16} /></Link>
+							</Button>
+							<Button asChild size='lg' variant='ghost' className='rounded-xl px-8 text-white hover:bg-white/10 border border-white/20 font-bold'>
+								<Link to='/browse'>Learn More</Link>
+							</Button>
+						</div>
+					</div>
+				</div>
+			) : (
+				<div className='relative rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl group transition-all duration-500'>
+					{/* Background Decorations */}
+					<div className='absolute -left-10 -top-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-1000' />
+					<div className='absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-colors duration-1000' />
+					
+					<div className='relative z-10 space-y-6 text-center md:text-left animate-in fade-in slide-in-from-left-4 duration-700'>
+						<div className='space-y-4'>
+							<span className='inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] animate-pulse'>Available Updates Inbox</span>
+							<h2 className='text-3xl md:text-5xl font-black text-white leading-[1.1] tracking-tighter'>
+								Welcome back, <br />
+								<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>{userName || 'Friend'}!</span>
+							</h2>
+						</div>
+						<p className='text-slate-400 max-w-md text-lg leading-relaxed font-medium'>
+							Your library is growing! You have movies in your watchlist waiting to be discovered. Check them out or find something new to add.
+						</p>
+					</div>
+
+					<div className='relative z-10 flex flex-col sm:flex-row gap-4 w-full md:w-auto animate-in fade-in slide-in-from-right-4 duration-700'>
+						<Button asChild size='lg' className='h-16 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-2xl shadow-blue-500/20 px-10 transition-all hover:scale-105 active:scale-95 group'>
+							<Link to='/wishlist' className='flex items-center gap-3'>
+								<Heart className='fill-current' size={18} />
+								View Your Watchlist
+							</Link>
 						</Button>
-						<Button asChild size='lg' variant='ghost' className='rounded-full px-8 text-white hover:bg-white/10 border border-white/20 font-bold'>
-							<Link to='/browse'>Learn More</Link>
+						<Button asChild size='lg' variant='outline' className='h-16 rounded-2xl bg-white/5 border-white/10 hover:bg-white/10 text-white font-bold backdrop-blur-sm transition-all px-10'>
+							<Link to='/browse'>Start Discovering</Link>
 						</Button>
 					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };
