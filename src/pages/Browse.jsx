@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { useMovies } from '../hooks/useMovies';
 import { useGenres } from '../hooks/useGenres';
@@ -19,8 +19,25 @@ const Browse = () => {
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [browseQuery, setBrowseQuery] = useState('');
-	const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+	const [viewMode, setViewMode] = useState('grid');
+	const [bannerIndex, setBannerIndex] = useState(0);
 	const resultRef = useRef(null);
+
+	// Fetch top-rated for banner background
+	const { data: topRated } = useMovies({
+		type: 'top_rated',
+		mediaType: 'movie'
+	});
+
+	// Cycle banner every 4 seconds
+	useEffect(() => {
+		if (topRated?.length > 0) {
+			const interval = setInterval(() => {
+				setBannerIndex((prev) => (prev + 1) % Math.min(topRated.length, 10));
+			}, 4000);
+			return () => clearInterval(interval);
+		}
+	}, [topRated]);
 
 	// These are the active filters being used for the API call
 	const activeFilters = {
@@ -136,12 +153,34 @@ const Browse = () => {
 			<div className='flex-grow space-y-10'>
 				
 				{/* Promotional Banner */}
-				<div className='relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 p-10 lg:p-14 border border-white/10 shadow-3xl group'>
-					<div className='relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8'>
+				<div className='relative overflow-hidden rounded-[2.5rem] bg-slate-900 p-10 lg:p-14 border border-white/10 shadow-3xl group min-h-[350px] flex items-center'>
+					{/* Cinematic Background Layers */}
+					{topRated?.slice(0, 10).map((movie, index) => (
+						<div 
+							key={movie.id}
+							className={`absolute inset-0 z-0 transition-all duration-[3000ms] ease-in-out ${
+								index === bannerIndex ? 'opacity-40 scale-100 rotate-0' : 'opacity-0 scale-110 rotate-1'
+							}`}
+						>
+							<img 
+								src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+								alt=""
+								className='w-full h-full object-cover'
+							/>
+							{/* Multi-layered overlays for depth and readability */}
+							<div className='absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/60 to-transparent' />
+							<div className='absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent' />
+						</div>
+					))}
+
+					<div className='relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 w-full'>
 						<div className='space-y-4'>
+							<Badge className='bg-blue-600/20 text-blue-400 border-blue-600/30 font-black uppercase tracking-widest px-3 py-1 rounded-full text-[10px] animate-pulse'>
+								Weekly Spotlight
+							</Badge>
 							<h2 className='text-4xl lg:text-5xl font-black text-white tracking-tight'>New this week</h2>
-							<p className='text-blue-100/70 max-w-md text-lg leading-relaxed'>
-								Fresh releases added across all your favorite streaming platforms.
+							<p className='text-blue-100/70 max-w-md text-lg leading-relaxed font-medium'>
+								Explore the highest-rated releases and fan favorites currently taking the world by storm.
 							</p>
 						</div>
 						<Button 
@@ -151,11 +190,9 @@ const Browse = () => {
 							}}
 							className='bg-white/10 hover:bg-white/20 text-white rounded-2xl h-14 px-8 border border-white/20 backdrop-blur-md transition-all active:scale-95 text-lg font-bold'
 						>
-							Browse new arrivals
+							Start Browsing
 						</Button>
 					</div>
-					{/* Abstract Background Element */}
-					<div className='absolute -right-20 -top-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-1000' />
 				</div>
 
 				{/* Header Section */}
