@@ -1,29 +1,78 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Mail, ShieldCheck, ShieldX, Calendar, ArrowLeft, Camera, Settings } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { User, Mail, ShieldCheck, ShieldX, Calendar, ArrowLeft, Camera, Settings, Pencil, Check, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import usePageTitle from '@/hooks/usePageTitle';
+import { updateProfile } from 'firebase/auth';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Profile = () => {
 	usePageTitle('My Profile');
 	const { user, userName, loading } = useAuth();
 	const navigate = useNavigate();
 
+	const [localName, setLocalName] = useState(null);
+	const [isEditing, setIsEditing] = useState(false);
+	const [newName, setNewName] = useState('');
+	const [isSaving, setIsSaving] = useState(false);
+
 	if (loading) return null;
 
-	const displayName = userName || user?.displayName || user?.email?.split('@')[0] || 'Friend';
+	const displayName = localName ?? userName ?? user?.displayName ?? user?.email?.split('@')[0] ?? 'Friend';
 	const initials = displayName !== 'Friend'
 		? displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 		: 'U';
 
-	const creationDate = user?.metadata?.creationTime 
+	const creationDate = user?.metadata?.creationTime
 		? new Date(user.metadata.creationTime).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 		: 'TBA';
 
+	const handleEditStart = () => {
+		setNewName(displayName);
+		setIsEditing(true);
+	};
+
+	const handleSave = async () => {
+		const trimmed = newName.trim();
+
+		if (!trimmed) {
+			toast.error('Name cannot be empty ❌');
+			return;
+		}
+		if (trimmed === displayName) {
+			setIsEditing(false);
+			return;
+		}
+
+		setIsSaving(true);
+		try {
+			await updateProfile(user, { displayName: trimmed });
+			await updateDoc(doc(db, 'users', user.uid), { name: trimmed });
+
+			setLocalName(trimmed);
+			toast.success('Name updated successfully ✅');
+			setIsEditing(false);
+		} catch (error) {
+			toast.error('Something went wrong ❌');
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
+	const handleCancel = () => {
+		setIsEditing(false);
+		setNewName('');
+	};
+
 	return (
 		<div className='max-w-4xl mx-auto space-y-10 py-10 px-4'>
+			<Toaster position="top-center" />
+
 			{/* Header Nav */}
 			<div className='flex items-center justify-between'>
 				<Button variant='ghost' onClick={() => navigate(-1)} className='rounded-xl gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold'>
@@ -48,10 +97,54 @@ const Profile = () => {
 								<Camera size={16} />
 							</button>
 						</div>
-						<div className='space-y-2'>
-							<h1 className='text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase'>{displayName}</h1>
+
+						{/* الاسم مع زرار التعديل */}
+						<div className='space-y-2 w-full px-4'>
+							{isEditing ? (
+								<div className='flex items-center gap-2'>
+									<Input
+										value={newName}
+										onChange={(e) => setNewName(e.target.value)}
+										className='text-center font-bold rounded-xl'
+										autoFocus
+										onKeyDown={(e) => {
+											if (e.key === 'Enter') handleSave();
+											if (e.key === 'Escape') handleCancel();
+										}}
+									/>
+									<button
+										onClick={handleSave}
+										disabled={isSaving}
+										className='p-2 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 transition-colors'
+									>
+										<Check size={16} />
+									</button>
+									<button
+										onClick={handleCancel}
+										className='p-2 rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors'
+									>
+										<X size={16} />
+									</button>
+								</div>
+							) : (
+								<div className='flex items-center justify-center gap-2'>
+									<h1 className='text-3xl font-black text-slate-900 dark:text-white tracking-tight uppercase'>
+										{displayName}
+									</h1>
+									<button
+										onClick={handleEditStart}
+										className='p-3 rounded-xl text-slate-800 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all'
+									>
+										edit
+										<Pencil size={14} />
+										
+
+									</button>
+								</div>
+							)}
 							<p className='text-slate-500 dark:text-slate-400 font-medium'>{user?.email}</p>
 						</div>
+
 						<div className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest ${user?.emailVerified ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500 animate-pulse'}`}>
 							{user?.emailVerified ? <ShieldCheck size={14} /> : <ShieldX size={14} />}
 							{user?.emailVerified ? 'Verified Account' : 'Pending Verification'}
@@ -59,44 +152,42 @@ const Profile = () => {
 					</CardContent>
 				</Card>
 
-				{/* Right Side: Detailed Stats & Info */}
+				{/* Right Side */}
 				<div className='lg:col-span-2 space-y-8'>
-					{/* Personal Details Section */}
 					<section className='space-y-4'>
 						<h2 className='text-sm font-black text-slate-500 uppercase tracking-[0.2em] px-4'>Personal Details</h2>
 						<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-							<DetailCard 
-								icon={<User size={18} />} 
-								label='Full Name' 
-								value={displayName} 
+							<DetailCard
+								icon={<User size={18} />}
+								label='Full Name'
+								value={displayName}
 								color='text-blue-500'
 								bg='bg-blue-500/5'
 							/>
-							<DetailCard 
-								icon={<Mail size={18} />} 
-								label='Email Address' 
-								value={user?.email || '—'} 
+							<DetailCard
+								icon={<Mail size={18} />}
+								label='Email Address'
+								value={user?.email || '—'}
 								color='text-purple-500'
 								bg='bg-purple-500/5'
 							/>
-							<DetailCard 
-								icon={<Calendar size={18} />} 
-								label='Member Since' 
-								value={creationDate} 
+							<DetailCard
+								icon={<Calendar size={18} />}
+								label='Member Since'
+								value={creationDate}
 								color='text-emerald-500'
 								bg='bg-emerald-500/5'
 							/>
-							<DetailCard 
-								icon={<ShieldCheck size={18} />} 
-								label='Account Rank' 
-								value='Movie Enthusiast' 
+							<DetailCard
+								icon={<ShieldCheck size={18} />}
+								label='Account Rank'
+								value='Movie Enthusiast'
 								color='text-amber-500'
 								bg='bg-amber-500/5'
 							/>
 						</div>
 					</section>
 
-					{/* Account Activity / Stats Summary */}
 					<Card className='rounded-[2.5rem] border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 overflow-hidden p-8'>
 						<div className='flex flex-col sm:flex-row items-center justify-between gap-6'>
 							<div className='space-y-1 text-center sm:text-left'>
@@ -115,7 +206,7 @@ const Profile = () => {
 };
 
 const DetailCard = ({ icon, label, value, color, bg }) => (
-	<div className={`p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center gap-5 group transition-all hover:shadow-lg hover:-translate-y-1`}>
+	<div className='p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center gap-5 group transition-all hover:shadow-lg hover:-translate-y-1'>
 		<div className={`p-3.5 rounded-2xl ${bg} ${color} group-hover:scale-110 transition-transform duration-500`}>
 			{icon}
 		</div>
