@@ -120,7 +120,7 @@ const MediaDetail = ({ type }) => {
 								{details.title || details.name}
 							</h1>
 							{details.tagline && (
-								<p className='text-xl text-blue-400 font-medium italic'>{details.tagline}</p>
+								<p className='text-xl text-blue-600 dark:text-blue-400 font-medium italic'>{details.tagline}</p>
 							)}
 						</div>
 
@@ -129,19 +129,19 @@ const MediaDetail = ({ type }) => {
 								<Star size={16} fill="currentColor" />
 								{ratingDisplay}
 							</div>
-							<div className='flex items-center gap-1.5 text-slate-400 text-sm'>
+							<div className='flex items-center gap-1.5 text-slate-600 dark:text-slate-400 text-sm'>
 								<Calendar size={16} />
 								{yearDisplay}
 							</div>
 							{details.runtime && (
-								<div className='flex items-center gap-1.5 text-slate-400 text-sm'>
+								<div className='flex items-center gap-1.5 text-slate-600 dark:text-slate-400 text-sm'>
 									<Clock size={16} />
 									{details.runtime} {t('minutes')}
 								</div>
 							)}
 							<div className='flex gap-2'>
 								{details.genres?.map(g => (
-									<Badge key={g.id} variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700">
+									<Badge key={g.id} variant="secondary" className="bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
 										{g.name}
 									</Badge>
 								))}
@@ -149,8 +149,8 @@ const MediaDetail = ({ type }) => {
 						</div>
 
 						<div className='max-w-3xl space-y-4'>
-							<h3 className='text-xl font-bold uppercase tracking-widest text-slate-500'>{t('overview')}</h3>
-							<p className='text-slate-300 leading-relaxed text-lg'>
+							<h3 className='text-xl font-bold uppercase tracking-widest text-slate-700 dark:text-slate-500'>{t('overview')}</h3>
+							<p className='text-slate-700 dark:text-slate-300 leading-relaxed text-lg'>
 								{details.overview}
 							</p>
 						</div>
@@ -159,7 +159,7 @@ const MediaDetail = ({ type }) => {
 							{trailer && (
 								<Button 
 									size="lg" 
-									className="h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 gap-2 font-black px-8 shadow-2xl shadow-blue-500/20"
+									className="h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white gap-2 font-black px-8 shadow-2xl shadow-blue-500/20"
 									onClick={() => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank')}
 								>
 									<Play fill="currentColor" size={18} /> {t('watchTrailer')}
@@ -168,7 +168,7 @@ const MediaDetail = ({ type }) => {
 							<Button 
 								size="lg" 
 								variant={isWishlisted(details.id) ? 'default' : 'outline'}
-								className={`h-12 rounded-xl gap-2 text-sm font-bold px-6 transition-all duration-300 active:scale-95 ${isWishlisted(details.id) ? 'bg-rose-500 hover:bg-rose-600 border-rose-500 text-white shadow-xl shadow-rose-500/20' : 'bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-sm'}`}
+								className={`h-12 rounded-xl gap-2 text-sm font-bold px-6 transition-all duration-300 active:scale-95 ${isWishlisted(details.id) ? 'bg-rose-500 hover:bg-rose-600 border-rose-500 text-white shadow-xl shadow-rose-500/20' : 'bg-slate-200 border-slate-300 text-slate-900 hover:bg-slate-300 dark:bg-white/5 dark:border-white/20 dark:text-white dark:hover:bg-white/10 dark:hover:border-white/40 backdrop-blur-sm'}`}
 								onClick={() => toggleWishlist({
 									id: details.id,
 									title: details.title || details.name,
