@@ -85,7 +85,20 @@ export const translations = {
     signUpGoogle: "Sign up with Google",
     haveAccount: "Already have an account?",
     signIn: "Sign in",
-    noMatchesQuery: "No movies or series found for"
+    noMatchesQuery: "No movies or series found for",
+    light: "Light", dark: "Dark", systemTheme: "System", toggleTheme: "Toggle theme",
+    sortBy: "Sort By", popularity: "Popularity", rating: "Rating", latest: "Latest",
+    decade: "Decade", genre: "Genre", languageLabel: "Language",
+    english: "English", arabic: "Arabic", turkish: "Turkish", spanish: "Spanish", french: "French", korean: "Korean", japanese: "Japanese",
+    mood: "Mood", feelGood: "Feel-good", funny: "Funny", emotional: "Emotional", mindBending: "Mind-bending",
+    runtimeMax: "Runtime (Max)", minUserScore: "Min User Score", contentRating: "Content Rating", clearAllFilters: "Clear all filters",
+    footerDesc: "Your ultimate guide to movies and TV shows. Explore, discover, and build your perfect watchlist.",
+    quickLinks: "Quick Links", helpSupport: "Help & Support", faq: "FAQ", apiDoc: "API Documentation", supportCenter: "Support Center", privacyPolicy: "Privacy Policy",
+    joinCommunity: "Join Community", newsletterDesc: "Subscribe to our newsletter and join our Discord group for the latest updates.",
+    allRightsReserved: "All rights reserved.", poweredBy: "Powered by TMDB API",
+    moviesCatalog: "Movies Catalog", globalMembers: "Global Members", dailyActivity: "Daily Activity",
+    joinToday: "Join Today & Start Building Your", watchlistText: "Watchlist", getAccess: "Get access to maintain your own custom personal lists, track what you've seen and search and filter for what to watch next.",
+    signUpNow: "Sign Up Now", learnMore: "Learn More", availableUpdates: "Available Updates Inbox", welcomeBack: "Welcome back,", friend: "Friend", libraryGrowing: "Your library is growing! You have movies in your watchlist waiting to be discovered. Check them out or find something new to add.", viewWatchlist: "View Your Watchlist", startDiscovering: "Start Discovering"
   },
   ar: {
     home: "الرئيسية", browse: "تصفح", search: "بحث", wishlist: "المفضلة", login: "تسجيل الدخول", logout: "تسجيل الخروج",
@@ -114,7 +127,20 @@ export const translations = {
     createAccount: "إنشاء حساب", enterInfo: "أدخل معلوماتك لإنشاء حساب", fullName: "الاسم الكامل",
     confirmPass: "تأكيد كلمة المرور", createAccountBtn: "إنشاء حساب", creatingAccount: "جاري إنشاء الحساب...",
     signUpGoogle: "الاشتراك باستخدام جوجل", haveAccount: "لديك حساب بالفعل؟", signIn: "تسجيل الدخول",
-    noMatchesQuery: "لم يتم العثور على أفلام أو مسلسلات لـ"
+    noMatchesQuery: "لم يتم العثور على أفلام أو مسلسلات لـ",
+    light: "فاتح", dark: "داكن", systemTheme: "النظام", toggleTheme: "تبديل المظهر",
+    sortBy: "ترتيب حسب", popularity: "الرواج", rating: "التقييم", latest: "الأحدث",
+    decade: "العقد", genre: "النوع", languageLabel: "اللغة",
+    english: "الإنجليزية", arabic: "العربية", turkish: "التركية", spanish: "الإسبانية", french: "الفرنسية", korean: "الكورية", japanese: "اليابانية",
+    mood: "المزاج", feelGood: "مبهج", funny: "مضحك", emotional: "عاطفي", mindBending: "محير للعقل",
+    runtimeMax: "المدة (الحد الأقصى)", minUserScore: "الحد الأدنى لتقييم المستخدم", contentRating: "التصنيف العائلي", clearAllFilters: "مسح كل الفلاتر",
+    footerDesc: "دليلك النهائي للأفلام والمسلسلات. استكشف، واكتشف، وابنِ قائمة مشاهدتك المثالية.",
+    quickLinks: "روابط سريعة", helpSupport: "المساعدة والدعم", faq: "الأسئلة الشائعة", apiDoc: "واجهة برمجة التطبيقات", supportCenter: "مركز الدعم", privacyPolicy: "سياسة الخصوصية",
+    joinCommunity: "انضم للمجتمع", newsletterDesc: "اشترك في النشرة الإخبارية وانضم إلى مجموعة ديسكورد للحصول على أحدث التحديثات.",
+    allRightsReserved: "جميع الحقوق محفوظة.", poweredBy: "مدعوم من TMDB API",
+    moviesCatalog: "دليل الأفلام", globalMembers: "الأعضاء العالميين", dailyActivity: "النشاط اليومي",
+    joinToday: "انضم اليوم وابدأ في بناء", watchlistText: "قائمة مشاهدتك", getAccess: "احصل على وصول لإنشاء قوائمك الشخصية، وتتبع ما شاهدته، وابحث وفلتر ما تريد مشاهدته لاحقاً.",
+    signUpNow: "سجل الآن", learnMore: "اعرف المزيد", availableUpdates: "صندوق التحديثات المتاحة", welcomeBack: "مرحباً بعودتك،", friend: "يا صديقي", libraryGrowing: "مكتبتك تنمو! لديك أفلام في قائمة مشاهدتك تنتظر من يكتشفها. تفقدها أو ابحث عن شيء جديد لإضافته.", viewWatchlist: "عرض قائمة مشاهدتك", startDiscovering: "ابدأ الاكتشاف"
   },
   fr: {
     home: "Accueil", browse: "Parcourir", search: "Recherche", wishlist: "Favoris", login: "Connexion", logout: "Déconnexion",
@@ -143,7 +169,20 @@ export const translations = {
     createAccount: "Créer un compte", enterInfo: "Entrez vos informations ci-dessous", fullName: "Nom complet",
     confirmPass: "Confirmer le mot de passe", createAccountBtn: "Créer un compte", creatingAccount: "Création du compte...",
     signUpGoogle: "S'inscrire avec Google", haveAccount: "Vous avez déjà un compte ?", signIn: "Se connecter",
-    noMatchesQuery: "Aucun résultat pour"
+    noMatchesQuery: "Aucun résultat pour",
+    light: "Clair", dark: "Sombre", systemTheme: "Système", toggleTheme: "Changer le thème",
+    sortBy: "Trier par", popularity: "Popularité", rating: "Évaluation", latest: "Plus récent",
+    decade: "Décennie", genre: "Genre", languageLabel: "Langue",
+    english: "Anglais", arabic: "Arabe", turkish: "Turc", spanish: "Espagnol", french: "Français", korean: "Coréen", japanese: "Japonais",
+    mood: "Ambiance", feelGood: "Bien-être", funny: "Drôle", emotional: "Émotionnel", mindBending: "Casse-tête",
+    runtimeMax: "Durée (Max)", minUserScore: "Score Utilisateur Min", contentRating: "Classification", clearAllFilters: "Effacer tous les filtres",
+    footerDesc: "Votre guide ultime pour les films et séries. Explorez, découvrez et créez votre liste de lecture parfaite.",
+    quickLinks: "Liens Rapides", helpSupport: "Aide & Support", faq: "FAQ", apiDoc: "Documentation API", supportCenter: "Centre de Support", privacyPolicy: "Politique de Confidentialité",
+    joinCommunity: "Rejoindre la communauté", newsletterDesc: "Abonnez-vous à notre newsletter et rejoignez notre groupe Discord pour les dernières mises à jour.",
+    allRightsReserved: "Tous droits réservés.", poweredBy: "Propulsé par TMDB API",
+    moviesCatalog: "Catalogue de Films", globalMembers: "Membres Mondiaux", dailyActivity: "Activité Quotidienne",
+    joinToday: "Rejoignez-nous aujourd'hui et commencez votre", watchlistText: "Liste de lecture", getAccess: "Obtenez un accès pour créer vos propres listes, suivre ce que vous avez vu et trouver quoi regarder ensuite.",
+    signUpNow: "S'inscrire maintenant", learnMore: "En savoir plus", availableUpdates: "Mises à jour disponibles", welcomeBack: "Bon retour,", friend: "l'ami", libraryGrowing: "Votre bibliothèque s'agrandit ! Vous avez des films en attente. Découvrez-les ou trouvez de nouvelles choses.", viewWatchlist: "Voir votre liste", startDiscovering: "Commencer à découvrir"
   },
   zh: {
     home: "首页", browse: "浏览", search: "搜索", wishlist: "心愿单", login: "登录", logout: "登出",
@@ -172,6 +211,19 @@ export const translations = {
     createAccount: "创建帐户", enterInfo: "在下方输入您的信息以创建帐户", fullName: "全名",
     confirmPass: "确认密码", createAccountBtn: "创建帐户", creatingAccount: "创建帐户中...",
     signUpGoogle: "使用 Google 注册", haveAccount: "已有帐户？", signIn: "登录",
-    noMatchesQuery: "未找到电影或电视剧："
+    noMatchesQuery: "未找到电影或电视剧：",
+    light: "浅色", dark: "深色", systemTheme: "系统", toggleTheme: "切换主题",
+    sortBy: "排序方式", popularity: "受欢迎程度", rating: "评分", latest: "最新",
+    decade: "年代", genre: "类型", languageLabel: "语言",
+    english: "英语", arabic: "阿拉伯语", turkish: "土耳其语", spanish: "西班牙语", french: "法语", korean: "韩语", japanese: "日语",
+    mood: "氛围", feelGood: "轻松愉快", funny: "搞笑", emotional: "感人", mindBending: "烧脑",
+    runtimeMax: "最长时长", minUserScore: "最低用户评分", contentRating: "内容分级", clearAllFilters: "清除所有筛选",
+    footerDesc: "您的终极影视指南。探索、发现并建立完美的观看列表。",
+    quickLinks: "快速链接", helpSupport: "帮助与支持", faq: "常见问题", apiDoc: "API 文档", supportCenter: "支持中心", privacyPolicy: "隐私政策",
+    joinCommunity: "加入社区", newsletterDesc: "订阅我们的时事通讯并加入Discord群组以获取最新动态。",
+    allRightsReserved: "版权所有。", poweredBy: "由 TMDB API 提供支持",
+    moviesCatalog: "电影目录", globalMembers: "全球会员", dailyActivity: "日活跃度",
+    joinToday: "今天加入并开始建立您的", watchlistText: "观看列表", getAccess: "获得创建个人列表、跟踪观看记录以及搜索下一步观看内容的权限。",
+    signUpNow: "立即注册", learnMore: "了解更多", availableUpdates: "可用更新收件箱", welcomeBack: "欢迎回来，", friend: "朋友", libraryGrowing: "您的库正在成长！观看列表中有电影等您发现。去看看或添加新内容吧。", viewWatchlist: "查看观看列表", startDiscovering: "开始探索"
   }
 };

@@ -3,32 +3,34 @@ import { Card, CardContent } from './ui/card';
 import { Clapperboard, MonitorPlay, UsersRound, Activity, ArrowRight, Heart } from 'lucide-react';
 import { Link } from 'react-router';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const HomeStats = () => {
+	const { t } = useLanguage();
 	const stats = [
 		{ 
-			label: 'Movies Catalog', 
+			label: t('moviesCatalog'), 
 			value: '850K+', 
 			icon: <Clapperboard size={24} className='fill-blue-500/10 dark:fill-blue-400/10' />, 
 			color: 'text-blue-600 dark:text-blue-400', 
 			bg: 'bg-blue-50/50 dark:bg-blue-500/10' 
 		},
 		{ 
-			label: 'TV Series', 
+			label: t('tvSeries'), 
 			value: '150K+', 
 			icon: <MonitorPlay size={24} className='fill-purple-500/10 dark:fill-purple-400/10' />, 
 			color: 'text-purple-600 dark:text-purple-400', 
 			bg: 'bg-purple-50/50 dark:bg-purple-500/10' 
 		},
 		{ 
-			label: 'Global Members', 
+			label: t('globalMembers'), 
 			value: '4.2M+', 
 			icon: <UsersRound size={24} className='fill-emerald-500/10 dark:fill-emerald-400/10' />, 
 			color: 'text-emerald-600 dark:text-emerald-400', 
 			bg: 'bg-emerald-50/50 dark:bg-emerald-500/10' 
 		},
 		{ 
-			label: 'Daily Activity', 
+			label: t('dailyActivity'), 
 			value: '1.2B+', 
 			icon: <Activity size={24} className='fill-amber-500/10 dark:fill-amber-400/10' />, 
 			color: 'text-amber-600 dark:text-amber-400', 
@@ -70,18 +72,18 @@ const HomeStats = () => {
 					
 					<div className='relative space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700'>
 						<h2 className='text-3xl md:text-5xl font-black max-w-2xl leading-tight tracking-tight'>
-							Join Today & Start Building Your
-							<span className='bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent'> Watchlist</span>
+							{t('joinToday')}
+							<span className='bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent'> {t('watchlistText')}</span>
 						</h2>
 						<p className='text-blue-100 max-w-lg mx-auto text-lg leading-relaxed'>
-							Get access to maintain your own custom personal lists, track what you've seen and search and filter for what to watch next.
+							{t('getAccess')}
 						</p>
 						<div className='flex flex-wrap gap-4 pt-4 justify-center'>
 							<Button asChild size='lg' className='rounded-xl px-8 bg-white text-blue-600 hover:bg-slate-100 font-bold shadow-xl gap-2 transition-all hover:scale-105 active:scale-95'>
-								<Link to='/register'>Sign Up Now <ArrowRight size={16} /></Link>
+								<Link to='/register'>{t('signUpNow')} <ArrowRight size={16} /></Link>
 							</Button>
 							<Button asChild size='lg' variant='ghost' className='rounded-xl px-8 text-white hover:bg-white/10 border border-white/20 font-bold'>
-								<Link to='/browse'>Learn More</Link>
+								<Link to='/browse'>{t('learnMore')}</Link>
 							</Button>
 						</div>
 					</div>
@@ -94,14 +96,14 @@ const HomeStats = () => {
 					
 					<div className='relative z-10 space-y-6 text-center md:text-left animate-in fade-in slide-in-from-left-4 duration-700'>
 						<div className='space-y-4'>
-							<span className='inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] animate-pulse'>Available Updates Inbox</span>
+							<span className='inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] animate-pulse'>{t('availableUpdates')}</span>
 							<h2 className='text-3xl md:text-5xl font-black text-white leading-[1.1] tracking-tighter'>
-								Welcome back, <br />
-								<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>{userName || 'Friend'}!</span>
+								{t('welcomeBack')} <br />
+								<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>{userName || t('friend')}!</span>
 							</h2>
 						</div>
 						<p className='text-slate-400 max-w-md text-lg leading-relaxed font-medium'>
-							Your library is growing! You have movies in your watchlist waiting to be discovered. Check them out or find something new to add.
+							{t('libraryGrowing')}
 						</p>
 					</div>
 
@@ -109,11 +111,11 @@ const HomeStats = () => {
 						<Button asChild size='lg' className='h-16 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-2xl shadow-blue-500/20 px-10 transition-all hover:scale-105 active:scale-95 group'>
 							<Link to='/wishlist' className='flex items-center gap-3'>
 								<Heart className='fill-current' size={18} />
-								View Your Watchlist
+								{t('viewWatchlist')}
 							</Link>
 						</Button>
 						<Button asChild size='lg' variant='outline' className='h-16 rounded-2xl bg-white/5 border-white/10 hover:bg-white/10 text-white font-bold backdrop-blur-sm transition-all px-10'>
-							<Link to='/browse'>Start Discovering</Link>
+							<Link to='/browse'>{t('startDiscovering')}</Link>
 						</Button>
 					</div>
 				</div>
