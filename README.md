@@ -78,7 +78,7 @@ npm run dev
     <td>UI/UX Lead</td>
     <td>
       - Shadcn components<br/>
-      - Dark Mode<br/>
+      - Dark Mode & i18n<br/>
       - Loading Skeleton
     </td>
   </tr>
