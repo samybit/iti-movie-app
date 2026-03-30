@@ -13,7 +13,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Profile = () => {
-	const { t } = useLanguage();
+	const { t, language } = useLanguage();
 	usePageTitle(t('myProfile'));
 	const { user, userName, loading } = useAuth();
 	const navigate = useNavigate();
@@ -30,8 +30,15 @@ const Profile = () => {
 		? displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 		: 'U';
 
+	const localeMap = {
+		en: 'en-US',
+		ar: 'ar-EG',
+		fr: 'fr-FR',
+		zh: 'zh-CN',
+	};
+
 	const creationDate = user?.metadata?.creationTime
-		? new Date(user.metadata.creationTime).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+		? new Date(user.metadata.creationTime).toLocaleDateString(localeMap[language] || 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 		: 'TBA';
 
 	const handleEditStart = () => {
@@ -43,7 +50,7 @@ const Profile = () => {
 		const trimmed = newName.trim();
 
 		if (!trimmed) {
-			toast.error('Name cannot be empty ❌');
+			toast.error(t('nameEmptyError'));
 			return;
 		}
 		if (trimmed === displayName) {
@@ -57,10 +64,10 @@ const Profile = () => {
 			await updateDoc(doc(db, 'users', user.uid), { name: trimmed });
 
 			setLocalName(trimmed);
-			toast.success('Name updated successfully ✅');
+			toast.success(t('nameUpdateSuccess'));
 			setIsEditing(false);
 		} catch (error) {
-			toast.error('Something went wrong ❌');
+			toast.error(t('somethingWentWrong'));
 		} finally {
 			setIsSaving(false);
 		}
@@ -183,7 +190,7 @@ const Profile = () => {
 							<DetailCard
 								icon={<ShieldCheck size={18} />}
 								label={t('accountRank')}
-								value='Movie Enthusiast'
+								value={t('movieEnthusiast')}
 								color='text-amber-500'
 								bg='bg-amber-500/5'
 							/>

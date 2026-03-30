@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -38,32 +39,7 @@ import registerImage from "../assets/registerImage.webp"
 import toast, { Toaster } from "react-hot-toast"
 import { useLanguage } from "@/contexts/LanguageContext"
 
-/////////////////////////////
-// Validation Schema
-/////////////////////////////
-
-const signupSchema = z
-  .object({
-    name: z
-      .string()
-      .min(7, "Full name must be at least two words")
-      .regex(/^[\u0600-\u06FFa-zA-Z]{3,}\s[\u0600-\u06FFa-zA-Z]{3,}/, "Enter first and last name (each at least 4 letters)"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    ,
-    confirm: z.string(),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords do not match",
-    path: ["confirm"],
-  })
-
-/////////////////////////////
-// FieldStatus Helper
-/////////////////////////////
-
-const FieldStatus = ({ name, errors, dirtyFields }) => {
+const FieldStatus = ({ name, errors, dirtyFields, t }) => {
   if (!dirtyFields[name]) return null
   if (errors[name]) {
     return (
@@ -74,7 +50,7 @@ const FieldStatus = ({ name, errors, dirtyFields }) => {
   }
   return (
     <FieldDescription className="text-green-500 flex items-center gap-1 text-sm">
-      ✅ Looks good!
+      {t('looksGood')}
     </FieldDescription>
   )
 }
@@ -85,6 +61,23 @@ const FieldStatus = ({ name, errors, dirtyFields }) => {
 
 function SignupForm(props) {
   const { t } = useLanguage()
+  const signupSchema = useMemo(() => z
+    .object({
+      name: z
+        .string()
+        .min(7, t('zod_name_min'))
+        .regex(/^[\u0600-\u06FFa-zA-Z]{3,}\s[\u0600-\u06FFa-zA-Z]{3,}/, t('zod_name_regex')),
+      email: z.string().email(t('zod_email_invalid')),
+      password: z.string().min(6, t('zod_password_min'))
+        .regex(/[A-Z]/, t('zod_password_regex'))
+      ,
+      confirm: z.string(),
+    })
+    .refine((data) => data.password === data.confirm, {
+      message: t('zod_confirm_match'),
+      path: ["confirm"],
+    }), [t]);
+
   const navigate = useNavigate()
   const {
     register,
@@ -117,22 +110,22 @@ function SignupForm(props) {
 
       await sendEmailVerification(user)
 
-      toast.success("Account created successfully ✅ Please verify your email 📩")
+      toast.success(t('accountCreateSuccess'))
 
       navigate("/verify-email")
     } catch (error) {
       switch (error.code) {
         case "auth/email-already-in-use":
-          toast.error("This email is already registered ❌")
+          toast.error(t('emailInUseError'))
           break
         case "auth/invalid-email":
-          toast.error("Invalid email format ❌")
+          toast.error(t('invalidEmailError'))
           break
         case "auth/weak-password":
-          toast.error("Password should be at least 6 characters ❌")
+          toast.error(t('weakPasswordError'))
           break
         default:
-          toast.error("Something went wrong. Try again later ❌")
+          toast.error(t('somethingWentWrong'))
       }
     }
   }
@@ -157,7 +150,7 @@ function SignupForm(props) {
         { merge: true }
       )
 
-      toast.success("Account created successfully ✅ Please verify your email 📩", {
+      toast.success(t('accountCreateSuccess'), {
         duration: 7000,
         position: "top-center",
       })
@@ -199,8 +192,8 @@ function SignupForm(props) {
                   {/* Name */}
                   <Field>
                     <FieldLabel>{t('fullName')}</FieldLabel>
-                    <Input placeholder="Your name" {...register("name")} />
-                    <FieldStatus name="name" errors={errors} dirtyFields={dirtyFields} />
+                    <Input placeholder={t('fullName')} {...register("name")} />
+                    <FieldStatus name="name" errors={errors} dirtyFields={dirtyFields} t={t} />
                   </Field>
 
                   {/* Email */}
@@ -211,21 +204,21 @@ function SignupForm(props) {
                       placeholder="m@example.com"
                       {...register("email")}
                     />
-                    <FieldStatus name="email" errors={errors} dirtyFields={dirtyFields} />
+                    <FieldStatus name="email" errors={errors} dirtyFields={dirtyFields} t={t} />
                   </Field>
 
                   {/* Password */}
                   <Field>
                     <FieldLabel>{t('password')}</FieldLabel>
                     <Input type="password" {...register("password")} />
-                    <FieldStatus name="password" errors={errors} dirtyFields={dirtyFields} />
+                    <FieldStatus name="password" errors={errors} dirtyFields={dirtyFields} t={t} />
                   </Field>
 
                   {/* Confirm Password */}
                   <Field>
                     <FieldLabel>{t('confirmPass')}</FieldLabel>
                     <Input type="password" {...register("confirm")} />
-                    <FieldStatus name="confirm" errors={errors} dirtyFields={dirtyFields} />
+                    <FieldStatus name="confirm" errors={errors} dirtyFields={dirtyFields} t={t} />
                   </Field>
 
                   {/* Submit */}

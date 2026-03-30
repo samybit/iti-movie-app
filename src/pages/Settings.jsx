@@ -26,7 +26,7 @@ const Settings = () => {
 		// Simulate API call
 		setTimeout(() => {
 			setIsSaving(false);
-			toast.success(t('settings') + ' updated successfully!', {
+			toast.success(t('settingsUpdateSuccess'), {
 				style: {
 					borderRadius: '1rem',
 					background: '#1e293b',
@@ -110,10 +110,10 @@ const Settings = () => {
 										<SelectValue placeholder='Select Language' />
 									</SelectTrigger>
 									<SelectContent className='rounded-2xl border-slate-200 dark:border-slate-800'>
-										<SelectItem value='en'>{t('english')}</SelectItem>
-										<SelectItem value='ar'>Arabic (العربية)</SelectItem>
-										<SelectItem value='fr'>{t('french')} (Français)</SelectItem>
-										<SelectItem value='zh'>Chinese (中文)</SelectItem>
+										<SelectItem value='en'>{t('english')} (English)</SelectItem>
+										<SelectItem value='ar'>{t('lang_ar')}</SelectItem>
+										<SelectItem value='fr'>{t('lang_fr')}</SelectItem>
+										<SelectItem value='zh'>{t('lang_zh')}</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>

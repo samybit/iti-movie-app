@@ -42,35 +42,35 @@ function LoginForm({ className, ...props }) {
 
       // Check if email is verified
       if (!user.emailVerified) {
-        toast.error("Please verify your email before logging in ❌")
+        toast.error(t('verifyEmailError'))
         await auth.signOut()
         setIsSubmitting(false)
         return
       }
 
-      toast.success("Logged in successfully ✅")
+      toast.success(t('loginSuccess'))
       navigate("/wishlist") // redirect after successful login
 
     } catch (error) {
       switch (error.code) {
         case "auth/user-not-found":
-          toast.error("No account found with this email ❌")
+          toast.error(t('userNotFoundError'))
           break
         case "auth/wrong-password":
         case "auth/invalid-credential":
-          toast.error("Incorrect email or password ❌")
+          toast.error(t('wrongPasswordError'))
           break
         case "auth/invalid-email":
-          toast.error("Invalid email format ❌")
+          toast.error(t('invalidEmailError'))
           break
         case "auth/network-request-failed":
-          toast.error("Check your internet connection 🌐")
+          toast.error(t('networkError'))
           break
         case "auth/too-many-requests":
-          toast.error("Too many attempts. Try again later ⏳")
+          toast.error(t('tooManyRequestsError'))
           break
         default:
-          toast.error("Login failed. Please try again ❌")
+          toast.error(t('loginFailedError'))
       }
     } finally {
       setIsSubmitting(false)
@@ -87,13 +87,13 @@ function LoginForm({ className, ...props }) {
 
       // Optional: Check if Google email is verified
       if (!user.emailVerified) {
-        toast.error("Please verify your Google email before logging in ❌")
+        toast.error(t('verifyEmailError'))
         await auth.signOut()
         setIsSubmitting(false)
         return
       }
 
-      toast.success("Logged in with Google ✅")
+      toast.success(t('loginGoogleSuccess'))
       navigate("/wishlist") // redirect after Google login
 
     } catch (error) {

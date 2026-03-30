@@ -10,7 +10,7 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
-	const { language } = useLanguage();
+	const { t } = useLanguage();
 	if (totalPages <= 1) return null;
 
 	const handlePrevious = (e) => {
@@ -37,7 +37,9 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
 					
 					<PaginationItem>
 						<span className='px-4 py-2 text-sm'>
-							{language === 'ar' ? `صفحة ${currentPage} من ${Math.min(totalPages, 500)}` : language === 'fr' ? `Page ${currentPage} sur ${Math.min(totalPages, 500)}` : `Page ${currentPage} of ${Math.min(totalPages, 500)}`}
+							{t('paginationPageInfo')
+								.replace('{currentPage}', currentPage)
+								.replace('{totalPages}', Math.min(totalPages, 500))}
 						</span>
 					</PaginationItem>
 
