@@ -43,20 +43,21 @@ import { useLanguage } from "@/contexts/LanguageContext"
 // Validation Schema
 /////////////////////////////
 
-const signupSchema = z
-  .object({
-    name: z
-      .string()
-      .min(7, "Full name must be at least two words")
-      .regex(/^[A-Za-z]{3,}\s[A-Za-z]{3,}/, "Enter first and last name (each at least 4 letters)"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirm: z.string(),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords do not match",
-    path: ["confirm"],
-  })
+const createSignupSchema = (t) =>
+  z
+    .object({
+      name: z
+        .string()
+        .min(7, t('nameMin'))
+        .regex(/^[A-Za-z]{3,}\s[A-Za-z]{3,}/, t('namePattern')),
+      email: z.string().email(t('emailInvalid')),
+      password: z.string().min(6, t('passwordMin')),
+      confirm: z.string(),
+    })
+    .refine((data) => data.password === data.confirm, {
+      message: t('passwordMatch'),
+      path: ["confirm"],
+    });
 
 /////////////////////////////
 // Component
@@ -64,6 +65,8 @@ const signupSchema = z
 
 function SignupForm(props) {
   const navigate = useNavigate()
+  const { t } = useLanguage()
+  const signupSchema = createSignupSchema(t);
   const {
     register,
     handleSubmit,
@@ -71,7 +74,6 @@ function SignupForm(props) {
   } = useForm({
     resolver: zodResolver(signupSchema),
   })
-  const { t } = useLanguage()
 
   /////////////////////////////
   // Email Signup

@@ -7,9 +7,11 @@ import { AlertCircle, TrendingUp, Search as SearchIcon, Sparkles } from 'lucide-
 import usePageTitle from '@/hooks/usePageTitle';
 import { Link, useOutletContext } from 'react-router';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Home = () => {
-	usePageTitle('Home');
+	const { t } = useLanguage();
+	usePageTitle(t('home'));
 	const { setIsSearchOpen } = useOutletContext();
 	
 	const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useMovies({
@@ -59,14 +61,14 @@ const Home = () => {
 				
 				<div className='relative z-10 w-full p-8 md:p-14 lg:p-20 max-w-4xl space-y-6'>
 					<span className='inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-black backdrop-blur-md border border-blue-500/20 uppercase tracking-widest'>
-						<TrendingUp size={12} /> Trending Now
+						<TrendingUp size={12} /> {t('trendingNow')}
 					</span>
 					<h1 className='text-4xl md:text-7xl font-black tracking-tighter leading-[0.9] uppercase'>
-						Discover Your Next<br />
-						<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>Favorite Movie</span>
+						{t('discoverYourNext')}<br />
+						<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>{t('favoriteMovie')}</span>
 					</h1>
 					<p className='text-slate-300 text-lg md:text-xl max-w-xl leading-relaxed font-medium'>
-						Explore millions of movies and TV shows. Build your library, track ratings, and find hidden gems in high definition.
+						{t('exploreMillionsHome')}
 					</p>
 					<div className='flex flex-col sm:flex-row gap-4 pt-8 w-full max-w-2xl'>
 						{/* Real Search Trigger (Above-Tab style) */}
@@ -78,8 +80,8 @@ const Home = () => {
 								<SearchIcon size={18} strokeWidth={2.5} />
 							</div>
 							<div className='flex flex-col items-start'>
-								<span className='text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity'>Quick Discover</span>
-								<span className='text-slate-200 text-sm font-bold opacity-80 group-hover:opacity-100'>Search for movies, TV shows...</span>
+								<span className='text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity'>{t('quickDiscover')}</span>
+								<span className='text-slate-200 text-sm font-bold opacity-80 group-hover:opacity-100'>{t('searchMoviesTv')}</span>
 							</div>
 							<div className='ml-auto px-2 py-0.5 rounded border border-white/10 bg-white/5 text-[9px] font-bold text-white/40 group-hover:text-blue-300 transition-colors uppercase'>⌘ K</div>
 						</button>
@@ -88,7 +90,7 @@ const Home = () => {
 							<Link to='/browse'>
 								<div className="flex items-center gap-2">
 									<Sparkles size={18} className="animate-bounce" />
-									Start Browsing
+									{t('startBrowsing')}
 								</div>
 							</Link>
 						</Button>
@@ -100,9 +102,9 @@ const Home = () => {
 			{trendingError && (
 				<Alert variant='destructive' className='rounded-2xl'>
 					<AlertCircle className='h-4 w-4' />
-					<AlertTitle>Error</AlertTitle>
+					<AlertTitle>{t('error')}</AlertTitle>
 					<AlertDescription>
-						Failed to load trending content. Check your API key.
+						{t('failedToLoad')}
 					</AlertDescription>
 				</Alert>
 			)}
@@ -110,7 +112,7 @@ const Home = () => {
 			{/* ── Trending Movies ─────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='🔥 Trending Movies' 
+					title={t('trendingMovies')} 
 					data={trendingMovies} 
 					isLoading={trendingLoading} 
 				/>
@@ -122,7 +124,7 @@ const Home = () => {
 			{/* ── Trending TV Shows ────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='📺 Trending TV Shows' 
+					title={t('trendingTV')} 
 					data={trendingTV} 
 					isLoading={tvLoading} 
 					mediaType='tv'
@@ -132,7 +134,7 @@ const Home = () => {
 			{/* ── Coming Soon ─────────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='⏳ Coming Soon' 
+					title={t('comingSoon')} 
 					data={upcomingMovies} 
 					isLoading={upcomingLoading} 
 				/>
@@ -141,7 +143,7 @@ const Home = () => {
 			{/* ── Free to Watch ────────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='🎬 Free to Watch' 
+					title={t('freeToWatch')} 
 					data={freeMovies} 
 					isLoading={freeLoading} 
 				/>

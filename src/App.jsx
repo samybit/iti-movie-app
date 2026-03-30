@@ -8,10 +8,12 @@ import { AlertCircle, TrendingUp } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function App() {
 	const [bgIndex, setBgIndex] = useState(0);
-	usePageTitle('Home');
+	const { t } = useLanguage();
+	usePageTitle(t('home'));
 	
 	const { data: trendingMovies, loading: trendingLoading, error: trendingError } = useMovies({
 		type: 'trending',
@@ -70,21 +72,21 @@ export default function App() {
 				{/* Foreground Content */}
 				<div className='relative z-10 w-full p-8 md:p-14 lg:p-20 max-w-4xl space-y-8'>
 					<span className='inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-black backdrop-blur-xl border border-white/10 uppercase tracking-widest animate-in slide-in-from-left-4 duration-1000'>
-						<TrendingUp size={12} /> Currently trending now
+						<TrendingUp size={12} /> {t('currentlyTrendingNow')}
 					</span>
 					<h1 className='text-4xl md:text-7xl font-black tracking-tighter leading-[0.9] uppercase'>
-						Discover Your Next<br />
-						<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>Favorite Movie</span>
+						{t('discoverYourNext')}<br />
+						<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>{t('favoriteMovie')}</span>
 					</h1>
 					<p className='text-slate-300 text-lg md:text-xl max-w-xl leading-relaxed font-medium'>
-						Explore millions of movies and TV shows. Build your library, track ratings, and find hidden gems in high definition.
+						{t('exploreMillionsHome')}
 					</p>
 					<div className='flex flex-wrap gap-4 pt-4'>
 						<Button asChild size='lg' className='h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-2xl shadow-blue-500/40 px-10 transition-all hover:scale-105 active:scale-95'>
-							<Link to='/browse'>Start Browsing</Link>
+							<Link to='/browse'>{t('startBrowsing')}</Link>
 						</Button>
 						<Button asChild size='lg' variant='ghost' className='h-14 rounded-2xl text-white hover:bg-white/10 border-2 border-white/20 px-10 font-bold backdrop-blur-sm transition-all hover:border-white/40'>
-							<Link to='/search'>Quick Search</Link>
+							<Link to='/search'>{t('quickSearch')}</Link>
 						</Button>
 					</div>
 				</div>
@@ -94,9 +96,9 @@ export default function App() {
 			{trendingError && (
 				<Alert variant='destructive' className='rounded-2xl'>
 					<AlertCircle className='h-4 w-4' />
-					<AlertTitle>Error</AlertTitle>
+					<AlertTitle>{t('error')}</AlertTitle>
 					<AlertDescription>
-						Failed to load trending content. Check your API key.
+						{t('failedToLoad')}
 					</AlertDescription>
 				</Alert>
 			)}
@@ -104,7 +106,7 @@ export default function App() {
 			{/* ── Trending Movies ─────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='🔥 Trending Movies' 
+					title={t('trendingMovies')} 
 					data={trendingMovies} 
 					isLoading={trendingLoading} 
 				/>
@@ -116,7 +118,7 @@ export default function App() {
 			{/* ── Trending TV Shows ────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='📺 Trending TV Shows' 
+					title={t('trendingTV')} 
 					data={trendingTV} 
 					isLoading={tvLoading} 
 					mediaType='tv'
@@ -126,7 +128,7 @@ export default function App() {
 			{/* ── Coming Soon ─────────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='⏳ Coming Soon' 
+					title={t('comingSoon')} 
 					data={upcomingMovies} 
 					isLoading={upcomingLoading} 
 				/>
@@ -135,7 +137,7 @@ export default function App() {
 			{/* ── Free to Watch ────────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
-					title='🎬 Free to Watch' 
+					title={t('freeToWatch')} 
 					data={freeMovies} 
 					isLoading={freeLoading} 
 				/>
