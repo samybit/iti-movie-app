@@ -1,8 +1,10 @@
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { FileQuestion, Home } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function NotFound() {
+	const { t } = useLanguage();
 	return (
 		<div className='flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8'>
 			<div className='mx-auto flex max-w-md flex-col items-center justify-center text-center'>
