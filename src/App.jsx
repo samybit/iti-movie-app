@@ -44,15 +44,23 @@ export default function App() {
 		mediaType: 'movie'
 	});
 
+	const animations = [
+		'fade-in zoom-in-125',
+		'fade-in slide-in-from-right-20',
+		'fade-in slide-in-from-left-20',
+		'fade-in slide-in-from-bottom-20',
+		'fade-in zoom-in-110'
+	];
+
 	return (
 		<div className='space-y-16 pb-20'>
 			{/* ── Hero Banner ─────────────────────────────────────────────── */}
-			<section className='relative overflow-hidden rounded-3xl min-h-[600px] flex items-center bg-slate-900 text-white shadow-2xl'>
-				{/* Dynamic Background Image avec transition */}
+			<section className='relative overflow-hidden rounded-3xl min-h-[600px] flex items-center bg-slate-950 text-white shadow-2xl'>
+				{/* Dynamic Background Image avec transition aléatoire */}
 				{trendingMovies?.[bgIndex]?.backdrop_path && (
 					<div 
 						key={bgIndex}
-						className='absolute inset-0 z-0 animate-in fade-in zoom-in-105 duration-[2000ms] ease-out'
+						className={`absolute inset-0 z-0 animate-in duration-[2500ms] ease-out ${animations[bgIndex % animations.length]}`}
 					>
 						<div 
 							className='w-full h-full bg-cover bg-center bg-no-repeat'
@@ -61,8 +69,8 @@ export default function App() {
 							}}
 						/>
 						{/* Multi-layered overlays for depth and readability */}
-						<div className='absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/40 to-transparent' />
-						<div className='absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent' />
+						<div className='absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent' />
+						<div className='absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80' />
 						<div className='absolute inset-0 backdrop-blur-[1px]' />
 					</div>
 				)}
