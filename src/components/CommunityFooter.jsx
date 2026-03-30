@@ -55,9 +55,14 @@ const CommunityFooter = () => {
 					<div className='space-y-5'>
 						<h4 className='font-bold text-sm uppercase tracking-widest text-slate-900 dark:text-white'>Help & Support</h4>
 						<ul className='space-y-3'>
-							{['FAQ', 'API Documentation', 'Support Center', 'Privacy Policy'].map(label => (
+							{[
+								{ label: 'FAQ', to: '/help#faq' },
+								{ label: 'API Documentation', to: '/help#api' },
+								{ label: 'Support Center', to: '/help#support' },
+								{ label: 'Privacy Policy', to: '/help#privacy' },
+							].map(({ label, to }) => (
 								<li key={label}>
-									<Link to='#' className='hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm flex items-center gap-2'>
+									<Link to={to} className='hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm flex items-center gap-2'>
 										<span className='w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600' />
 										{label}
 									</Link>

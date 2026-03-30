@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { useMovies } from '../hooks/useMovies';
 import { useGenres } from '../hooks/useGenres';
@@ -19,8 +19,25 @@ const Browse = () => {
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [browseQuery, setBrowseQuery] = useState('');
-	const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+	const [viewMode, setViewMode] = useState('grid');
+	const [bannerIndex, setBannerIndex] = useState(0);
 	const resultRef = useRef(null);
+
+	// Fetch top-rated for banner background
+	const { data: topRated } = useMovies({
+		type: 'top_rated',
+		mediaType: 'movie'
+	});
+
+	// Cycle banner every 4 seconds
+	useEffect(() => {
+		if (topRated?.length > 0) {
+			const interval = setInterval(() => {
+				setBannerIndex((prev) => (prev + 1) % Math.min(topRated.length, 10));
+			}, 4000);
+			return () => clearInterval(interval);
+		}
+	}, [topRated]);
 
 	// These are the active filters being used for the API call
 	const activeFilters = {
@@ -102,73 +119,96 @@ const Browse = () => {
 	};
 
 	return (
-		<div className='flex flex-col lg:flex-row gap-8 py-8 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto min-h-screen bg-transparent'>
+		<div className='py-8 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto min-h-screen bg-transparent'>
 			
-			{/* Mobile Header */}
-			<div className='lg:hidden flex justify-between items-center mb-6'>
-				<h2 className='text-3xl font-black tracking-tight text-foreground'>Browse</h2>
-				<Sheet>
-					<SheetTrigger asChild>
-						<Button variant='outline' size='sm' className='gap-2 rounded-xl border-slate-700 bg-slate-900'>
-							<Filter size={16} /> Filters
-						</Button>
-					</SheetTrigger>
-					<SheetContent side='left' className='w-80 overflow-y-auto bg-slate-950 border-r-slate-800 pt-12'>
+			{/* Promotional Banner (Full width above sidebar & results) */}
+			<div className='relative overflow-hidden rounded-[2.5rem] bg-slate-900 p-10 lg:p-14 border border-white/10 shadow-3xl group min-h-[350px] flex items-center mb-10'>
+				{/* Cinematic Background Layers */}
+				{topRated?.slice(0, 10).map((movie, index) => (
+					<div 
+						key={movie.id}
+						className={`absolute inset-0 z-0 transition-all duration-[3000ms] ease-in-out ${
+							index === bannerIndex ? 'opacity-40 scale-100 rotate-0' : 'opacity-0 scale-110 rotate-1'
+						}`}
+					>
+						<img 
+							src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+							alt=""
+							className='w-full h-full object-cover'
+						/>
+						{/* Multi-layered overlays for depth and readability */}
+						<div className='absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/60 to-transparent' />
+						<div className='absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent' />
+					</div>
+				))}
+
+				<div className='relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 w-full'>
+					<div className='space-y-4'>
+						<Badge className='bg-blue-600/20 text-blue-400 border-blue-600/30 font-black uppercase tracking-widest px-3 py-1 rounded-full text-[10px] animate-pulse'>
+							Weekly Spotlight
+						</Badge>
+						<h2 className='text-4xl lg:text-5xl font-black text-white tracking-tight'>New this week</h2>
+						<p className='text-blue-100/70 max-w-md text-lg leading-relaxed font-medium'>
+							Explore the highest-rated releases and fan favorites currently taking the world by storm.
+						</p>
+					</div>
+					<Button 
+						size='lg' 
+						onClick={() => {
+							resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+						}}
+						className='bg-white/10 hover:bg-white/20 text-white rounded-2xl h-14 px-8 border border-white/20 backdrop-blur-md transition-all active:scale-95 text-lg font-bold'
+					>
+						Start Browsing
+					</Button>
+				</div>
+			</div>
+
+			{/* Main Content Area (Sidebar + Results) */}
+			<div className='flex flex-col lg:flex-row gap-8'>
+				
+				{/* Mobile Header */}
+				<div className='lg:hidden flex justify-between items-center mb-6'>
+					<h2 className='text-3xl font-black tracking-tight text-foreground'>Browse</h2>
+					<Sheet>
+						<SheetTrigger asChild>
+							<Button variant='outline' size='sm' className='gap-2 rounded-xl border-slate-700 bg-slate-900'>
+								<Filter size={16} /> Filters
+							</Button>
+						</SheetTrigger>
+						<SheetContent side='left' className='w-80 overflow-y-auto bg-slate-950 border-r-slate-800 pt-12'>
+							<AdvancedSidebar 
+								filters={activeFilters} 
+								setFilters={handleFilterChange} 
+							/>
+						</SheetContent>
+					</Sheet>
+				</div>
+
+				{/* Sidebar Desktop */}
+				<aside className='hidden lg:block w-72 flex-shrink-0'>
+					<div className='sticky top-24 bg-card/50 backdrop-blur-xl rounded-[2rem] border border-white/5 p-8 shadow-2xl max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar flex flex-col'>
 						<AdvancedSidebar 
 							filters={activeFilters} 
 							setFilters={handleFilterChange} 
 						/>
-					</SheetContent>
-				</Sheet>
-			</div>
-
-			{/* Sidebar Desktop */}
-			<aside className='hidden lg:block w-72 flex-shrink-0'>
-				<div className='sticky top-24 bg-card/50 backdrop-blur-xl rounded-[2rem] border border-white/5 p-8 shadow-2xl'>
-					<AdvancedSidebar 
-						filters={activeFilters} 
-						setFilters={handleFilterChange} 
-					/>
-				</div>
-			</aside>
-
-			{/* Results Content */}
-			<div className='flex-grow space-y-10'>
-				
-				{/* Promotional Banner */}
-				<div className='relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 p-10 lg:p-14 border border-white/10 shadow-3xl group'>
-					<div className='relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8'>
-						<div className='space-y-4'>
-							<h2 className='text-4xl lg:text-5xl font-black text-white tracking-tight'>New this week</h2>
-							<p className='text-blue-100/70 max-w-md text-lg leading-relaxed'>
-								Fresh releases added across all your favorite streaming platforms.
-							</p>
-						</div>
-						<Button 
-							size='lg' 
-							onClick={() => {
-								resultRef.current?.scrollIntoView({ behavior: 'smooth' });
-							}}
-							className='bg-white/10 hover:bg-white/20 text-white rounded-2xl h-14 px-8 border border-white/20 backdrop-blur-md transition-all active:scale-95 text-lg font-bold'
-						>
-							Browse new arrivals
-						</Button>
 					</div>
-					{/* Abstract Background Element */}
-					<div className='absolute -right-20 -top-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] group-hover:bg-blue-500/20 transition-all duration-1000' />
-				</div>
+				</aside>
 
-				{/* Header Section */}
-				<div ref={resultRef} className='flex flex-col gap-6 pt-4'>
-					<div className='flex flex-col sm:flex-row items-start sm:items-baseline justify-between gap-4'>
-						<div>
-							<h1 className='text-5xl font-black tracking-tighter text-foreground mb-2'>
-								{activeFilters.mediaType === 'movie' ? 'Movies' : 'TV Series'}
-							</h1>
-							<p className='text-muted-foreground text-lg font-medium'>
-								Discover the perfect {activeFilters.mediaType === 'movie' ? 'movie' : 'series'}.
-							</p>
-						</div>
+				{/* Results Content */}
+				<div className='flex-grow space-y-10'>
+					
+					{/* Header Section */}
+					<div ref={resultRef} className='flex flex-col gap-6'>
+						<div className='flex flex-col sm:flex-row items-start sm:items-baseline justify-between gap-4'>
+							<div>
+								<h1 className='text-5xl font-black tracking-tighter text-foreground mb-2'>
+									{activeFilters.mediaType === 'movie' ? 'Movies' : 'TV Series'}
+								</h1>
+								<p className='text-muted-foreground text-lg font-medium'>
+									Discover the perfect {activeFilters.mediaType === 'movie' ? 'movie' : 'series'}.
+								</p>
+							</div>
 						
 						{/* View Toggle & Mini Sort */}
 						<div className='flex items-center gap-2 sm:gap-4 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-white/5 w-full sm:w-auto overflow-x-auto scrollbar-hide'>
@@ -304,6 +344,7 @@ const Browse = () => {
 						);
 					})()}
 				</div>
+			</div>
 			</div>
 		</div>
 	);

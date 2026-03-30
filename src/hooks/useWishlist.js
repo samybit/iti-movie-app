@@ -33,7 +33,7 @@ export function useWishlist() {
 	}, []);
 
 	const isWishlisted = (movieId) => {
-		return wishlist.some((item) => item.id === movieId);
+		return wishlist.some((item) => Number(item.id) === Number(movieId));
 	};
 
 	const toggleWishlist = async (movie) => {
@@ -44,11 +44,11 @@ export function useWishlist() {
 
 		try {
 			const userDocRef = doc(db, 'users', user.uid);
-			const alreadyIn = isWishlisted(movie.id);
+			const existingItem = wishlist.find((item) => Number(item.id) === Number(movie.id));
 
-			if (alreadyIn) {
+			if (existingItem) {
 				await updateDoc(userDocRef, {
-					wishlist: arrayRemove(movie)
+					wishlist: arrayRemove(existingItem)
 				});
 				toast.info(`Removed from wishlist`);
 			} else {

@@ -5,11 +5,13 @@ import { tvService } from '../services/tvService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Star, Clock, Calendar, Play } from 'lucide-react';
+import { Star, Clock, Calendar, Globe, DollarSign, Play, Heart } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
+import { useWishlist } from '@/hooks/useWishlist';
 
 const MediaDetail = ({ type }) => {
 	const { id } = useParams();
+	const { isWishlisted, toggleWishlist } = useWishlist();
 	const [details, setDetails] = useState(null);
 	const [credits, setCredits] = useState(null);
 	const [videos, setVideos] = useState([]);
@@ -125,15 +127,41 @@ const MediaDetail = ({ type }) => {
 							<p className='text-slate-300 leading-relaxed text-lg'>{details.overview}</p>
 						</div>
 
-						{trailer && (
-							<Button
-								size="lg"
-								className="rounded-full bg-blue-600 hover:bg-blue-700 gap-2 font-bold px-8"
-								onClick={() => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank')}
+						<div className='flex flex-wrap gap-4 pt-4'>
+							{trailer && (
+								<Button 
+									size="lg" 
+									className="h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 gap-2 font-black px-8 shadow-2xl shadow-blue-500/20"
+									onClick={() => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank')}
+								>
+									<Play fill="currentColor" size={18} /> Watch Trailer
+								</Button>
+							)}
+							<Button 
+								size="lg" 
+								variant={isWishlisted(details.id) ? 'default' : 'outline'}
+								className={`h-12 rounded-xl gap-2 text-sm font-bold px-6 transition-all duration-300 active:scale-95 ${isWishlisted(details.id) ? 'bg-rose-500 hover:bg-rose-600 border-rose-500 text-white shadow-xl shadow-rose-500/20' : 'bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-sm'}`}
+								onClick={() => toggleWishlist({
+									id: details.id,
+									title: details.title || details.name,
+									poster_path: details.poster_path,
+									mediaType: type,
+									vote_average: details.vote_average
+								})}
 							>
-								<Play fill="white" size={18} /> Watch Trailer
+								{isWishlisted(details.id) ? (
+									<span className='flex items-center gap-2'>
+										<Heart size={16} className='fill-current scale-110' />
+										Remove from wishlist
+									</span>
+								) : (
+									<span className='flex items-center gap-2'>
+										<Heart size={16} />
+										Add to wishlist
+									</span>
+								)}
 							</Button>
-						)}
+						</div>
 					</div>
 				</div>
 			</div>

@@ -79,6 +79,13 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
               <p className="text-white/60 text-sm mt-0.5">
                 {user?.email}
               </p>
+              <Link
+                to="/profile"
+                onClick={onClose}
+                className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest border border-white/20 transition-all"
+              >
+                View Profile <ChevronRight size={10} />
+              </Link>
             </div>
           </div>
         </div>

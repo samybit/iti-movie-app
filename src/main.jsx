@@ -16,6 +16,9 @@ import MediaDetail from './pages/MediaDetail';
 import NotFound404 from './pages/NotFound404';
 import ProtectedRoute from "./components/ProtectedRoute";
 import VerifyEmail from './pages/VerifyEmail';
+import HelpCenter from './pages/HelpCenter';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -61,6 +64,26 @@ const router = createBrowserRouter([
 				path: 'tv/:id',
 				element: <MediaDetail type='tv' />,
 			},
+			{
+				path: 'help',
+				element: <HelpCenter />,
+			},
+			{
+				path: 'profile',
+				element: (
+					<ProtectedRoute>
+						<Profile />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'settings',
+				element: (
+					<ProtectedRoute>
+						<Settings />
+					</ProtectedRoute>
+				),
+			},
 		],
 	},
 	{
@@ -71,7 +94,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
+		<ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
 			<RouterProvider router={router} />
 			<Toaster position="top-center" richColors />
 		</ThemeProvider>
