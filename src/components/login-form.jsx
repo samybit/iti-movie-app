@@ -22,12 +22,14 @@ import { auth } from "../lib/firebase"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGoogle } from "@fortawesome/free-brands-svg-icons"
 import toast, { Toaster } from "react-hot-toast"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 function LoginForm({ className, ...props }) {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { t } = useLanguage()
 
   // Email login
   const handleLogin = async (e) => {
@@ -108,9 +110,9 @@ function LoginForm({ className, ...props }) {
 
       <Card className="w-full max-w-md mx-auto p-6">
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>{t('loginAccount')}</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            {t('enterEmail')}
           </CardDescription>
         </CardHeader>
 
@@ -119,7 +121,7 @@ function LoginForm({ className, ...props }) {
             <FieldGroup>
               {/* Email */}
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">{t('email')}</FieldLabel>
                 <Input
                   id="email"
                   type="email"
@@ -133,12 +135,12 @@ function LoginForm({ className, ...props }) {
               {/* Password */}
               <Field>
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <FieldLabel htmlFor="password">{t('password')}</FieldLabel>
                   <Link
                     to="/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
+                    {t('forgotPass')}
                   </Link>
                 </div>
                 <Input
@@ -153,7 +155,7 @@ function LoginForm({ className, ...props }) {
               {/* Buttons */}
               <Field className="flex flex-col gap-3 mt-4">
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Logging in..." : "Login"}
+                  {isSubmitting ? t('loggingIn') : t('login')}
                 </Button>
 
                 <Button
@@ -164,13 +166,13 @@ function LoginForm({ className, ...props }) {
                   className="flex items-center justify-center gap-2"
                 >
                   <FontAwesomeIcon icon={faGoogle} className="text-[#DB4437]" />
-                  Login with Google
+                  {t('loginGoogle')}
                 </Button>
 
                 <FieldDescription className="text-center mt-2">
-                  Don&apos;t have an account?{" "}
+                  {t('noAccount')}{" "}
                   <Link to="/register" className="text-indigo-600 hover:underline">
-                    Sign up
+                    {t('signUp')}
                   </Link>
                 </FieldDescription>
               </Field>

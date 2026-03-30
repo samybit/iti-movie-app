@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MovieCard } from '@/components/MovieCard';
 import { MovieCardSkeleton } from '@/components/MovieCardSkeleton';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Dummy data for layout testing
 const DUMMY_MOVIES = [
@@ -36,14 +37,15 @@ const GENRES = ["All", "Action", "Anime", "Sci-Fi", "Drama", "Gaming"];
 export default function SearchPage() {
     // UI state for demonstration to show where to plug in
     const [activeGenre, setActiveGenre] = useState("All");
+    const { t } = useLanguage();
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* Search Header */}
             <div className="flex flex-col items-center space-y-4 text-center max-w-2xl mx-auto mt-8">
-                <h1 className="text-3xl font-bold tracking-tight">Explore</h1>
+                <h1 className="text-3xl font-bold tracking-tight">{t('explore')}</h1>
                 <p className="text-muted-foreground">
-                    Search by title or filter by genre to find your next watch.
+                    {t('searchDesc')}
                 </p>
 
                 {/* Search Bar */}
@@ -52,11 +54,11 @@ export default function SearchPage() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="search"
-                            placeholder="Search..."
+                            placeholder={`${t('search')}...`}
                             className="pl-10"
                         />
                     </div>
-                    <Button type="submit">Search</Button>
+                    <Button type="submit">{t('search')}</Button>
                 </div>
             </div>
 

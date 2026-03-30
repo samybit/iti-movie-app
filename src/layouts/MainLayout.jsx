@@ -15,10 +15,10 @@ import SearchModal from "@/components/SearchModal";
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const navItems = [
-    { to: '/', label: 'Home', icon: <Film size={16} /> },
-    { to: '/browse', label: 'Browse', icon: <Compass size={16} /> },
-    { to: '/search', label: 'Search', icon: <Search size={16} /> },
-    { to: '/wishlist', label: 'Wishlist', icon: <Heart size={16} /> },
+    { to: '/', labelKey: 'home', icon: <Film size={16} /> },
+    { to: '/browse', labelKey: 'browse', icon: <Compass size={16} /> },
+    { to: '/search', labelKey: 'search', icon: <Search size={16} /> },
+    { to: '/wishlist', labelKey: 'wishlist', icon: <Heart size={16} /> },
 ];
 
 export default function MainLayout() {
@@ -31,7 +31,7 @@ export default function MainLayout() {
     const [loadingUser, setLoadingUser] = useState(true);
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const { language, setLanguage } = useLanguage();
+    const { language, setLanguage, t } = useLanguage();
 
     // Listen to auth changes
     useEffect(() => {
@@ -106,8 +106,8 @@ export default function MainLayout() {
 
                     {/* Desktop Navigation */}
                     <nav className='hidden md:flex items-center gap-1'>
-                        {navItems.map(({ to, label, icon }) => {
-                            if (label === 'Search') {
+                        {navItems.map(({ to, labelKey, icon }) => {
+                            if (labelKey === 'search') {
                                 return (
                                     <button
                                         key={to}
@@ -120,7 +120,7 @@ export default function MainLayout() {
                                         }}
                                         className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all duration-200'
                                     >
-                                        {icon} {label}
+                                        {icon} {t(labelKey)}
                                     </button>
                                 );
                             }
@@ -134,7 +134,7 @@ export default function MainLayout() {
                                             : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
                                         }`}
                                 >
-                                    {icon} {label}
+                                    {icon} {t(labelKey)}
                                 </Link>
                             );
                         })}
@@ -152,7 +152,7 @@ export default function MainLayout() {
                                 to='/login'
                                 className='flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all'
                             >
-                                <LogIn size={16} /> Login
+                                <LogIn size={16} /> {t('login')}
                             </Link>
                         )}
 
@@ -191,8 +191,8 @@ export default function MainLayout() {
                 {mobileOpen && (
                     <div className='md:hidden border-t border-slate-100 dark:border-border bg-white/95 dark:bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200'>
                         <nav className='container mx-auto flex flex-col gap-1 p-4'>
-                            {navItems.map(({ to, label, icon }) => {
-                                if (label === 'Search') {
+                            {navItems.map(({ to, labelKey, icon }) => {
+                                if (labelKey === 'search') {
                                     return (
                                         <button
                                             key={to}
@@ -206,7 +206,7 @@ export default function MainLayout() {
                                             }}
                                             className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all'
                                         >
-                                            {icon} {label}
+                                            {icon} {t(labelKey)}
                                         </button>
                                     );
                                 }
@@ -221,7 +221,7 @@ export default function MainLayout() {
                                                 : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
                                             }`}
                                     >
-                                        {icon} {label}
+                                        {icon} {t(labelKey)}
                                     </Link>
                                 );
                             })}
@@ -243,7 +243,7 @@ export default function MainLayout() {
                                     onClick={() => setMobileOpen(false)}
                                     className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all'
                                 >
-                                    <LogIn size={16} /> Login
+                                    <LogIn size={16} /> {t('login')}
                                 </Link>
                             )}
 

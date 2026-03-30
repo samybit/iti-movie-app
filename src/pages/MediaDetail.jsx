@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Star, Clock, Calendar, Globe, DollarSign, Play, Heart } from 'lucide-react';
 import usePageTitle from '@/hooks/usePageTitle';
 import { useWishlist } from '@/hooks/useWishlist';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const MediaDetail = ({ type }) => {
 	const { id } = useParams();
@@ -19,6 +20,7 @@ const MediaDetail = ({ type }) => {
 	const [similar, setSimilar] = useState([]);
 
 	const [loading, setLoading] = useState(true);
+	const { t } = useLanguage();
 
 	usePageTitle(details?.title || details?.name || 'Loading details...');
 
@@ -130,7 +132,7 @@ const MediaDetail = ({ type }) => {
 						</div>
 
 						<div className='max-w-3xl space-y-4'>
-							<h3 className='text-xl font-bold uppercase tracking-widest text-slate-500'>Overview</h3>
+							<h3 className='text-xl font-bold uppercase tracking-widest text-slate-500'>{t('overview')}</h3>
 							<p className='text-slate-300 leading-relaxed text-lg'>
 								{details.overview}
 							</p>
@@ -143,7 +145,7 @@ const MediaDetail = ({ type }) => {
 									className="h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 gap-2 font-black px-8 shadow-2xl shadow-blue-500/20"
 									onClick={() => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank')}
 								>
-									<Play fill="currentColor" size={18} /> Watch Trailer
+									<Play fill="currentColor" size={18} /> {t('watchTrailer')}
 								</Button>
 							)}
 							<Button 
@@ -161,12 +163,12 @@ const MediaDetail = ({ type }) => {
 								{isWishlisted(details.id) ? (
 									<span className='flex items-center gap-2'>
 										<Heart size={16} className='fill-current scale-110' />
-										Remove from wishlist
+										{t('removeWishlist')}
 									</span>
 								) : (
 									<span className='flex items-center gap-2'>
 										<Heart size={16} />
-										Add to wishlist
+										{t('addWishlist')}
 									</span>
 								)}
 							</Button>
@@ -180,7 +182,7 @@ const MediaDetail = ({ type }) => {
 				<div className='lg:col-span-3 space-y-12'>
 					{/* Cast Section */}
 					<section className='space-y-6'>
-						<h2 className='text-2xl font-bold'>Top Billed Cast</h2>
+						<h2 className='text-2xl font-bold'>{t('topCast')}</h2>
 						<div className='flex gap-4 overflow-x-auto pb-4 custom-scrollbar'>
 							{credits?.cast?.slice(0, 10).map(person => (
 								<div key={person.id} className='w-32 shrink-0 space-y-3 group'>
@@ -209,7 +211,7 @@ const MediaDetail = ({ type }) => {
 					{/* Trailer Section (Embedded) */}
 					{trailer && (
 						<section className='space-y-6'>
-							<h2 className='text-2xl font-bold'>Official Trailer</h2>
+							<h2 className='text-2xl font-bold'>{t('officialTrailer')}</h2>
 							<div className='aspect-video rounded-3xl overflow-hidden shadow-2xl border-8 border-slate-900'>
 								<iframe
 									className='w-full h-full'
@@ -227,7 +229,7 @@ const MediaDetail = ({ type }) => {
 					{similar.length > 0 && (
 						<section className='space-y-6'>
 							<h2 className='text-2xl font-bold'>
-								Similar {type === 'movie' ? 'Movies' : 'TV Shows'}
+								{t('similar')} {type === 'movie' ? t('movies') : t('tvSeries')}
 							</h2>
 
 							<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6'>
@@ -266,27 +268,27 @@ const MediaDetail = ({ type }) => {
 				<aside className='space-y-8'>
 					<div className='p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 text-slate-800 dark:text-slate-200'>
 						<div className='space-y-1'>
-							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Status</p>
+							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>{t('status')}</p>
 							<p className='font-semibold'>{details.status}</p>
 						</div>
 						<div className='space-y-1'>
-							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Original Language</p>
+							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>{t('originalLang')}</p>
 							<p className='font-semibold uppercase'>{details.original_language}</p>
 						</div>
 						{details.budget > 0 && (
 							<div className='space-y-1'>
-								<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Budget</p>
+								<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>{t('budget')}</p>
 								<p className='font-semibold'>${details.budget.toLocaleString()}</p>
 							</div>
 						)}
 						{details.revenue > 0 && (
 							<div className='space-y-1'>
-								<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Revenue</p>
+								<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>{t('revenue')}</p>
 								<p className='font-semibold'>${details.revenue.toLocaleString()}</p>
 							</div>
 						)}
 						<div className='space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800'>
-							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>Keywords</p>
+							<p className='text-xs font-bold uppercase text-slate-500 dark:text-slate-400'>{t('keywords')}</p>
 							<div className='flex flex-wrap gap-2'>
 								{(details.keywords?.keywords || details.keywords?.results)?.slice(0, 10).map(k => (
 									<Badge key={k.id} variant="outline" className="rounded-sm font-normal text-[10px] text-slate-500 dark:text-slate-400">
