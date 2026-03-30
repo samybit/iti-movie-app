@@ -187,7 +187,7 @@ const Browse = () => {
 
 				{/* Sidebar Desktop */}
 				<aside className='hidden lg:block w-72 flex-shrink-0'>
-					<div className='sticky top-24 bg-card/50 backdrop-blur-xl rounded-[2rem] border border-white/5 p-8 shadow-2xl'>
+					<div className='sticky top-24 bg-card/50 backdrop-blur-xl rounded-[2rem] border border-white/5 p-8 shadow-2xl max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar flex flex-col'>
 						<AdvancedSidebar 
 							filters={activeFilters} 
 							setFilters={handleFilterChange} 
