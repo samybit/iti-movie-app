@@ -163,10 +163,10 @@ export default function MainLayout() {
                                 onChange={(e) => setLanguage(e.target.value)}
                                 className='bg-transparent text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground cursor-pointer outline-none'
                             >
-                                <option value="en" className="dark:bg-slate-900">EN</option>
-                                <option value="ar" className="dark:bg-slate-900">AR</option>
-                                <option value="fr" className="dark:bg-slate-900">FR</option>
-                                <option value="zh" className="dark:bg-slate-900">ZH</option>
+                            <option value="en" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">EN</option>
+                            <option value="ar" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">AR</option>
+                            <option value="fr" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">FR</option>
+                            <option value="zh" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">ZH</option>
                             </select>
                         </div>
 
@@ -254,10 +254,10 @@ export default function MainLayout() {
                                     onChange={(e) => { setLanguage(e.target.value); setMobileOpen(false); }}
                                     className='bg-transparent cursor-pointer outline-none w-full'
                                 >
-                                    <option value="en" className="dark:bg-slate-900">English (EN)</option>
-                                    <option value="ar" className="dark:bg-slate-900">Arabic (AR)</option>
-                                    <option value="fr" className="dark:bg-slate-900">French (FR)</option>
-                                    <option value="zh" className="dark:bg-slate-900">Chinese (ZH)</option>
+                                <option value="en" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">English (EN)</option>
+                                <option value="ar" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">Arabic (AR)</option>
+                                <option value="fr" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">French (FR)</option>
+                                <option value="zh" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">Chinese (ZH)</option>
                                 </select>
                             </div>
                         </nav>

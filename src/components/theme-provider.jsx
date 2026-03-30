@@ -37,6 +37,7 @@ export function ThemeProvider({
 		root.classList.add(resolvedTheme);
 		root.setAttribute('data-bs-theme', resolvedTheme);
 		root.setAttribute('data-theme', resolvedTheme);
+		root.style.colorScheme = resolvedTheme;
 
 		// 4. Force browser to repaint, then remove the style tag to re-enable transitions
 		const _ = document.documentElement.offsetHeight; // Force a synchronous layout reflow
