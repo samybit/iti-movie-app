@@ -19,8 +19,6 @@ import VerifyEmail from './pages/VerifyEmail';
 import HelpCenter from './pages/HelpCenter';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import { LanguageProvider } from '@/contexts/LanguageContext';
-
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -96,11 +94,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<LanguageProvider>
-			<ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
-				<RouterProvider router={router} />
-				<Toaster position="top-center" richColors />
-			</ThemeProvider>
-		</LanguageProvider>
+		<ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+			<RouterProvider router={router} />
+			<Toaster position="top-center" richColors />
+		</ThemeProvider>
 	</StrictMode>
 );
