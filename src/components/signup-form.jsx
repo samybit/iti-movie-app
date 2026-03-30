@@ -35,7 +35,6 @@ import { Link, useNavigate } from "react-router-dom"
 
 import registerImage from "../assets/registerImage.webp"
 
-// Toast
 import toast, { Toaster } from "react-hot-toast"
 
 /////////////////////////////
@@ -58,6 +57,26 @@ const signupSchema = z
   })
 
 /////////////////////////////
+// FieldStatus Helper
+/////////////////////////////
+
+const FieldStatus = ({ name, errors, dirtyFields }) => {
+  if (!dirtyFields[name]) return null
+  if (errors[name]) {
+    return (
+      <FieldDescription className="text-red-500 flex items-center gap-1 text-sm">
+        ❌ {errors[name].message}
+      </FieldDescription>
+    )
+  }
+  return (
+    <FieldDescription className="text-green-500 flex items-center gap-1 text-sm">
+      ✅ Looks good!
+    </FieldDescription>
+  )
+}
+
+/////////////////////////////
 // Component
 /////////////////////////////
 
@@ -66,9 +85,10 @@ function SignupForm(props) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, dirtyFields }, // 👈 أضفنا dirtyFields
   } = useForm({
     resolver: zodResolver(signupSchema),
+    mode: "onChange", // 👈 live validation
   })
 
   /////////////////////////////
@@ -77,7 +97,6 @@ function SignupForm(props) {
 
   const submitLogic = async (data) => {
     try {
-      // create user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
@@ -86,21 +105,16 @@ function SignupForm(props) {
 
       const user = userCredential.user
 
-      // save data in firebase
       await setDoc(doc(db, "users", user.uid), {
         name: data.name,
         email: data.email,
         wishlist: [],
       })
 
-      // send verification email
       await sendEmailVerification(user)
 
-      toast.success(
-        "Account created successfully ✅ Please verify your email 📩"
-      )
+      toast.success("Account created successfully ✅ Please verify your email 📩")
 
-      // redirect to login after signup
       navigate("/verify-email")
     } catch (error) {
       switch (error.code) {
@@ -139,16 +153,12 @@ function SignupForm(props) {
         { merge: true }
       )
 
-      toast.success(
-        "Account created successfully ✅ Please verify your email 📩",
-        {
-          duration: 7000, // 
-          position: "top-center",
-        }
-      );
+      toast.success("Account created successfully ✅ Please verify your email 📩", {
+        duration: 7000,
+        position: "top-center",
+      })
 
-      navigate("/login");
-      // navigate("/wishlist") 
+      navigate("/login")
     } catch (error) {
       toast.error(error.message)
     }
@@ -160,10 +170,8 @@ function SignupForm(props) {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      {/* Toast Container */}
       <Toaster position="top-center" reverseOrder={false} />
 
-      {/* Main Container */}
       <div className="flex w-full max-w-5xl overflow-hidden rounded-2xl shadow-2xl">
         {/* Left Image */}
         <div
@@ -172,7 +180,7 @@ function SignupForm(props) {
         />
 
         {/* Right Form */}
-      <div className="flex w-full md:w-1/2 items-center justify-center p-10 bg-card text-card-foreground">
+        <div className="flex w-full md:w-1/2 items-center justify-center p-10 bg-card text-card-foreground">
           <Card className="w-full max-w-md border-0 shadow-none bg-transparent">
             <CardHeader>
               <CardTitle>Create an account</CardTitle>
@@ -188,11 +196,7 @@ function SignupForm(props) {
                   <Field>
                     <FieldLabel>Full Name</FieldLabel>
                     <Input placeholder="Your name" {...register("name")} />
-                    {errors.name && (
-                      <FieldDescription className="text-red-600">
-                        {errors.name.message}
-                      </FieldDescription>
-                    )}
+                    <FieldStatus name="name" errors={errors} dirtyFields={dirtyFields} />
                   </Field>
 
                   {/* Email */}
@@ -203,41 +207,29 @@ function SignupForm(props) {
                       placeholder="m@example.com"
                       {...register("email")}
                     />
-                    {errors.email && (
-                      <FieldDescription className="text-red-600">
-                        {errors.email.message}
-                      </FieldDescription>
-                    )}
+                    <FieldStatus name="email" errors={errors} dirtyFields={dirtyFields} />
                   </Field>
 
                   {/* Password */}
                   <Field>
                     <FieldLabel>Password</FieldLabel>
                     <Input type="password" {...register("password")} />
-                    {errors.password && (
-                      <FieldDescription className="text-red-600">
-                        {errors.password.message}
-                      </FieldDescription>
-                    )}
+                    <FieldStatus name="password" errors={errors} dirtyFields={dirtyFields} />
                   </Field>
 
                   {/* Confirm Password */}
                   <Field>
                     <FieldLabel>Confirm Password</FieldLabel>
                     <Input type="password" {...register("confirm")} />
-                    {errors.confirm && (
-                      <FieldDescription className="text-red-600">
-                        {errors.confirm.message}
-                      </FieldDescription>
-                    )}
+                    <FieldStatus name="confirm" errors={errors} dirtyFields={dirtyFields} />
                   </Field>
 
-                  {/* Submit Button */}
+                  {/* Submit */}
                   <Button type="submit" disabled={isSubmitting} className="w-full">
                     {isSubmitting ? "Creating Account..." : "Create Account"}
                   </Button>
 
-                  {/* Google Button */}
+                  {/* Google */}
                   <Button
                     type="button"
                     variant="outline"
@@ -249,7 +241,7 @@ function SignupForm(props) {
                   </Button>
 
                   {/* Login Link */}
-              <p className="text-center text-sm text-muted-foreground">
+                  <p className="text-center text-sm text-muted-foreground">
                     Already have an account?{" "}
                     <Link to="/login" className="text-indigo-600 hover:underline">
                       Sign in
