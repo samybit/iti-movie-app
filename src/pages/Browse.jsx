@@ -25,6 +25,16 @@ const Browse = () => {
 	const [bannerIndex, setBannerIndex] = useState(0);
 	const resultRef = useRef(null);
 
+	const [isMobile, setIsMobile] = useState(false);
+	useEffect(() => {
+		const handleResize = () => setIsMobile(window.innerWidth < 640);
+		handleResize();
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	const activeViewMode = isMobile ? 'grid' : viewMode;
+
 	// Fetch top-rated for banner background
 	const { data: topRated } = useMovies({
 		type: 'top_rated',
@@ -216,17 +226,18 @@ const Browse = () => {
 						<div className='flex items-center gap-2 sm:gap-4 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-white/5 w-full sm:w-auto overflow-x-auto scrollbar-hide'>
 							<div className='flex gap-1 flex-shrink-0'>
 								<Button 
-									variant={viewMode === 'grid' ? 'default' : 'ghost'} 
+									variant={activeViewMode === 'grid' ? 'default' : 'ghost'} 
 									size='sm' 
-									className={`rounded-xl h-9 px-4 font-bold text-xs ${viewMode === 'grid' ? 'bg-white shadow-lg text-slate-900 hover:bg-white' : 'text-slate-500'}`}
+									className={`rounded-xl h-9 px-4 font-bold text-xs ${activeViewMode === 'grid' ? 'bg-white shadow-lg text-slate-900 hover:bg-white' : 'text-slate-500'}`}
 									onClick={() => setViewMode('grid')}
 								>
 									{t('grid')}
 								</Button>
 								<Button 
-									variant={viewMode === 'list' ? 'default' : 'ghost'} 
-									size='sm' 
-									className={`rounded-xl h-9 px-4 font-bold text-xs ${viewMode === 'list' ? 'bg-white shadow-lg text-slate-900 hover:bg-white' : 'text-slate-500'}`}
+									variant={activeViewMode === 'list' ? 'default' : 'ghost'} 
+									size='sm'
+									disabled={isMobile}
+									className={`rounded-xl h-9 px-4 font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed ${activeViewMode === 'list' ? 'bg-white shadow-lg text-slate-900 hover:bg-white' : 'text-slate-500'}`}
 									onClick={() => setViewMode('list')}
 								>
 									{t('list')}
@@ -328,7 +339,7 @@ const Browse = () => {
 						
 						return (
 							<div className='space-y-12'>
-								<MovieList movies={filteredMovies} isLoading={loading} viewMode={viewMode} />
+								<MovieList movies={filteredMovies} isLoading={loading} viewMode={activeViewMode} />
 								{!browseQuery && (
 									<div className='flex justify-center pt-8'>
 										<PaginationControls
