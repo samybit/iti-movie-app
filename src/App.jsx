@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { useMovies } from '@/hooks/useMovies';
 import HorizontalScroll from '@/components/HorizontalScroll';
 import TrailerSection from '@/components/TrailerSection';
@@ -9,8 +10,28 @@ import usePageTitle from '@/hooks/usePageTitle';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Toaster } from 'react-hot-toast';
+import { TMDBAuthProvider } from '@/contexts/TMDBAuthContext';
+import TMDBCallback from '@/pages/TMDBCallback';
 
-export default function App() {
+// Import all pages
+import Home from '@/pages/Home';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import Browse from '@/pages/Browse';
+import Search from '@/pages/Search';
+import SearchPage from '@/pages/SearchPage';
+import MediaDetail from '@/pages/MediaDetail';
+import Wishlist from '@/pages/Wishlist';
+import Profile from '@/pages/Profile';
+import Settings from '@/pages/Settings';
+import History from '@/pages/History';
+import HelpCenter from '@/pages/HelpCenter';
+import UserPage from '@/pages/UserPage';
+import VerifyEmail from '@/pages/VerifyEmail';
+import NotFound404 from '@/pages/NotFound404';
+
+function AppContent() {
 	const { t } = useLanguage();
 	const [bgIndex, setBgIndex] = useState(0);
 	usePageTitle(t('home'));
@@ -20,7 +41,6 @@ export default function App() {
 		mediaType: 'movie'
 	});
 
-	// Cycle background every 4 seconds
 	useEffect(() => {
 		if (trendingMovies?.length > 0) {
 			const interval = setInterval(() => {
@@ -56,9 +76,7 @@ export default function App() {
 
 	return (
 		<div className='space-y-16 pb-20'>
-			{/* ── Hero Banner ─────────────────────────────────────────────── */}
 			<section className='relative overflow-hidden rounded-3xl min-h-[600px] flex items-center bg-slate-950 text-white shadow-2xl'>
-				{/* Dynamic Background Image avec transition aléatoire */}
 				{trendingMovies?.[bgIndex]?.backdrop_path && (
 					<div 
 						key={bgIndex}
@@ -70,14 +88,12 @@ export default function App() {
 								backgroundImage: `url(https://image.tmdb.org/t/p/original${trendingMovies[bgIndex].backdrop_path})`
 							}}
 						/>
-						{/* Multi-layered overlays for depth and readability */}
 						<div className='absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/40 to-transparent' />
 						<div className='absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80' />
 						<div className='absolute inset-0 backdrop-blur-[1px]' />
 					</div>
 				)}
 
-				{/* Foreground Content */}
 				<div className='relative z-10 w-full p-8 md:p-14 lg:p-20 max-w-4xl space-y-8'>
 					<span className='inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-black backdrop-blur-xl border border-white/10 uppercase tracking-widest animate-in slide-in-from-left-4 duration-1000'>
 						<TrendingUp size={12} /> {t('currentlyTrendingNow')}
@@ -100,7 +116,6 @@ export default function App() {
 				</div>
 			</section>
 
-			{/* ── Error Alert ────────────────────────────────────────────── */}
 			{trendingError && (
 				<Alert variant='destructive' className='rounded-2xl'>
 					<AlertCircle className='h-4 w-4' />
@@ -111,7 +126,6 @@ export default function App() {
 				</Alert>
 			)}
 
-			{/* ── Trending Movies ─────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
 					title={t('trendingMovies')} 
@@ -120,10 +134,8 @@ export default function App() {
 				/>
 			</section>
 
-			{/* ── Trailers ────────────────────────────────────────────────── */}
 			<TrailerSection />
 
-			{/* ── Trending TV Shows ────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
 					title={t('trendingTV')} 
@@ -133,7 +145,6 @@ export default function App() {
 				/>
 			</section>
 
-			{/* ── Coming Soon ─────────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
 					title={t('comingSoon')} 
@@ -142,7 +153,6 @@ export default function App() {
 				/>
 			</section>
 
-			{/* ── Free to Watch ────────────────────────────────────────────── */}
 			<section>
 				<HorizontalScroll 
 					title={t('freeToWatch')} 
@@ -151,8 +161,46 @@ export default function App() {
 				/>
 			</section>
 
-			{/* ── Stats / CTA ─────────────────────────────────────────────── */}
 			<HomeStats />
 		</div>
+	);
+}
+
+// Main App component - NO BrowserRouter here! (RouterProvider is in main.jsx)
+export default function App() {
+	return (
+		<TMDBAuthProvider>
+			<Toaster 
+				position="top-center" 
+				reverseOrder={false}
+				toastOptions={{
+					style: {
+						borderRadius: '12px',
+						background: '#333',
+						color: '#fff',
+					},
+				}}
+			/>
+			<Routes>
+				<Route path="/" element={<AppContent />} />
+				<Route path="/home" element={<Home />} />
+				<Route path="/login" element={<Login />} />
+				<Route path="/register" element={<Register />} />
+				<Route path="/browse" element={<Browse />} />
+				<Route path="/search" element={<Search />} />
+				<Route path="/search-page" element={<SearchPage />} />
+				<Route path="/movie/:id" element={<MediaDetail type="movie" />} />
+				<Route path="/tv/:id" element={<MediaDetail type="tv" />} />
+				<Route path="/wishlist" element={<Wishlist />} />
+				<Route path="/profile" element={<Profile />} />
+				<Route path="/settings" element={<Settings />} />
+				<Route path="/history" element={<History />} />
+				<Route path="/help" element={<HelpCenter />} />
+				<Route path="/user/:userId" element={<UserPage />} />
+				<Route path="/verify-email" element={<VerifyEmail />} />
+				<Route path="/tmdb-callback" element={<TMDBCallback />} />
+				<Route path="*" element={<NotFound404 />} />
+			</Routes>
+		</TMDBAuthProvider>
 	);
 }

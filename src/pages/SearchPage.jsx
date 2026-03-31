@@ -3,8 +3,8 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MovieCard } from '@/components/MovieCard';
-import { MovieCardSkeleton } from '@/components/MovieCardSkeleton';
+import MovieCard  from '@/components/MovieCard';
+import  MovieCardSkeleton  from '@/components/MovieCardSkeleton';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Dummy data for layout testing

@@ -17,3 +17,4 @@ export function MovieCardSkeleton() {
         </Card>
     );
 }
+export default MovieCardSkeleton;

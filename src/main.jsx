@@ -8,6 +8,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from '@/components/ui/sonner';
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from "./components/ProtectedRoute";
+import { TMDBAuthProvider } from '@/contexts/TMDBAuthContext';
 
 const App = lazy(() => import('./App'));
 const Search = lazy(() => import('./pages/Search'));
@@ -22,6 +23,7 @@ const HelpCenter = lazy(() => import('./pages/HelpCenter'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Settings = lazy(() => import('./pages/Settings'));
 const History = lazy(() => import('./pages/History'));
+const TMDBCallback = lazy(() => import('./pages/TMDBCallback'));
 
 const router = createBrowserRouter([
 	{
@@ -93,6 +95,10 @@ const router = createBrowserRouter([
 				element: <History />,
 			},
 			{
+				path: 'tmdb-callback',
+				element: <TMDBCallback />,
+			},
+			{
 				path: '*',
 				element: <NotFound404 />,
 			},
@@ -102,11 +108,13 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
-			<LanguageProvider>
-				<RouterProvider router={router} />
-				<Toaster position="top-center" richColors />
-			</LanguageProvider>
-		</ThemeProvider>
+		<TMDBAuthProvider>
+			<ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+				<LanguageProvider>
+					<RouterProvider router={router} />
+					<Toaster position="top-center" richColors />
+				</LanguageProvider>
+			</ThemeProvider>
+		</TMDBAuthProvider>
 	</StrictMode>
 );

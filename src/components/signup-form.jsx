@@ -31,6 +31,7 @@ import { auth, db } from "../lib/firebase"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGoogle } from "@fortawesome/free-brands-svg-icons"
+import { faFilm } from "@fortawesome/free-solid-svg-icons"
 
 import { Link, useNavigate } from "react-router-dom"
 
@@ -38,6 +39,7 @@ import registerImage from "../assets/registerImage.webp"
 
 import toast, { Toaster } from "react-hot-toast"
 import { useLanguage } from "@/contexts/LanguageContext"
+import { useTMDBAuth } from "@/contexts/TMDBAuthContext"
 
 const FieldStatus = ({ name, errors, dirtyFields, t }) => {
   if (!dirtyFields[name]) return null
@@ -61,6 +63,8 @@ const FieldStatus = ({ name, errors, dirtyFields, t }) => {
 
 function SignupForm(props) {
   const { t } = useLanguage()
+  const { loginWithTMDB, loading: tmdbLoading } = useTMDBAuth()
+  
   const signupSchema = useMemo(() => z
     .object({
       name: z
@@ -82,10 +86,10 @@ function SignupForm(props) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, dirtyFields }, // 👈 أضفنا dirtyFields
+    formState: { errors, isSubmitting, dirtyFields },
   } = useForm({
     resolver: zodResolver(signupSchema),
-    mode: "onChange", // 👈 live validation
+    mode: "onChange",
   })
 
   /////////////////////////////
@@ -162,6 +166,19 @@ function SignupForm(props) {
   }
 
   /////////////////////////////
+  // TMDB Signup
+  /////////////////////////////
+
+  const handleTMDBLogin = async () => {
+    try {
+      await loginWithTMDB();
+    } catch (error) {
+      console.error('TMDB login error:', error);
+      toast.error(t('tmdbLoginError'));
+    }
+  };
+
+  /////////////////////////////
   // UI
   /////////////////////////////
 
@@ -226,19 +243,45 @@ function SignupForm(props) {
                     {isSubmitting ? t('creatingAccount') : t('createAccountBtn')}
                   </Button>
 
-                  {/* Google */}
+                  {/* Divider */}
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-card text-muted-foreground">{t('orContinueWith')}</span>
+                    </div>
+                  </div>
+
+                  {/* Google Button */}
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full flex gap-2"
+                    className="w-full flex gap-2 mb-3"
                     onClick={handleGoogleSignup}
                   >
                     <FontAwesomeIcon icon={faGoogle} className="text-[#DB4437]" />
                     {t('signUpGoogle')}
                   </Button>
 
+                  {/* TMDB Button - NEW */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full flex gap-2 border-green-500 text-green-600 hover:bg-green-50"
+                    onClick={handleTMDBLogin}
+                    disabled={tmdbLoading}
+                  >
+                    {tmdbLoading ? (
+                      <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <FontAwesomeIcon icon={faFilm} className="text-green-600" />
+                    )}
+                    {t('signUpTMDB')}
+                  </Button>
+
                   {/* Login Link */}
-                  <p className="text-center text-sm text-muted-foreground">
+                  <p className="text-center text-sm text-muted-foreground mt-4">
                     {t('haveAccount')}{" "}
                     <Link to="/login" className="text-indigo-600 hover:underline">
                       {t('signIn')}
