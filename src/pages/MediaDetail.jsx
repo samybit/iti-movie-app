@@ -9,6 +9,8 @@ import { Star, Clock, Calendar, Globe, DollarSign, Play, Heart } from 'lucide-re
 import usePageTitle from '@/hooks/usePageTitle';
 import { useWishlist } from '@/hooks/useWishlist';
 import { useLanguage } from '@/contexts/LanguageContext';
+import toast from 'react-hot-toast';
+import { auth } from '../lib/firebase';
 
 const MediaDetail = ({ type }) => {
 	const { id } = useParams();
@@ -16,13 +18,66 @@ const MediaDetail = ({ type }) => {
 	const [details, setDetails] = useState(null);
 	const [credits, setCredits] = useState(null);
 	const [videos, setVideos] = useState([]);
-
 	const [similar, setSimilar] = useState([]);
-
 	const [loading, setLoading] = useState(true);
 	const { t, language } = useLanguage();
 
 	usePageTitle(details?.title || details?.name || t('loadingDetails'));
+
+	
+	const handleWishlistClick = (item, e) => {
+		e?.preventDefault();
+		e?.stopPropagation();
+		
+		
+		const currentUser = auth.currentUser;
+		
+		if (!currentUser) {
+			toast.error(t('pleaseLoginToAddToWishlist'), {
+				duration: 3000,
+				icon: '🔐',
+				position: 'top-center',
+				style: {
+					background: '#333',
+					color: '#fff',
+					borderRadius: '12px',
+				},
+			});
+			return;
+		}
+		
+		// add & remove 
+		toggleWishlist({
+			id: item.id,
+			title: item.title || item.name,
+			poster_path: item.poster_path,
+			mediaType: type,
+			vote_average: item.vote_average
+		});
+		
+		// Show remove Message.
+		if (isWishlisted(item.id)) {
+			toast.success(t('removedFromWishlist'), {
+				duration: 2000,
+				position: 'top-center',
+				style: {
+					background: '#333',
+					color: '#fff',
+					borderRadius: '12px',
+				},
+			});
+		} else {
+			toast.success(t('addedToWishlist'), {
+				duration: 2000,
+				position: 'top-center',
+				style: {
+					background: '#333',
+					color: '#fff',
+					borderRadius: '12px',
+				},
+			});
+		}
+	};
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -41,7 +96,7 @@ const MediaDetail = ({ type }) => {
 				setVideos(videosRes.data.results);
 				setSimilar(similarRes.data.results);
 
-				// 🕒 Track Visited History (for Account Sidebar)
+				//  Track Visited History (for Account Sidebar)
 				const newItem = {
 					id: data.id,
 					title: data.title || data.name,
@@ -169,13 +224,7 @@ const MediaDetail = ({ type }) => {
 								size="lg" 
 								variant={isWishlisted(details.id) ? 'default' : 'outline'}
 								className={`h-12 rounded-xl gap-2 text-sm font-bold px-6 transition-all duration-300 active:scale-95 ${isWishlisted(details.id) ? 'bg-rose-500 hover:bg-rose-600 border-rose-500 text-white shadow-xl shadow-rose-500/20' : 'bg-slate-200 border-slate-300 text-slate-900 hover:bg-slate-300 dark:bg-white/5 dark:border-white/20 dark:text-white dark:hover:bg-white/10 dark:hover:border-white/40 backdrop-blur-sm'}`}
-								onClick={() => toggleWishlist({
-									id: details.id,
-									title: details.title || details.name,
-									poster_path: details.poster_path,
-									mediaType: type,
-									vote_average: details.vote_average
-								})}
+								onClick={(e) => handleWishlistClick(details, e)}
 							>
 								{isWishlisted(details.id) ? (
 									<span className='flex items-center gap-2'>
@@ -242,7 +291,7 @@ const MediaDetail = ({ type }) => {
 						</section>
 					)}
 
-					{/* recommended movies & Similar Movies Section */}
+					{/* Similar Movies Section with Heart Icons */}
 					{similar.length > 0 && (
 						<section className='space-y-6'>
 							<h2 className='text-2xl font-bold'>
@@ -251,29 +300,41 @@ const MediaDetail = ({ type }) => {
 
 							<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6'>
 								{similar.slice(0, 10).map(item => (
-									<Link
-										key={item.id}
-										to={`/${type}/${item.id}`}
-										className='group space-y-3'
-									>
-										<div className='aspect-[2/3] rounded-xl overflow-hidden bg-slate-800'>
-											{item.poster_path ? (
-												<img
-													src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-													alt={item.title || item.name}
-													className='w-full h-full object-cover group-hover:scale-105 transition'
-												/>
-											) : (
-												<div className='w-full h-full flex items-center justify-center text-slate-500'>
-													{t('noImage')}
-												</div>
-											)}
-										</div>
-
-										<p className='text-sm font-semibold line-clamp-1'>
-											{item.title || item.name}
-										</p>
-									</Link>
+									<div key={item.id} className='group space-y-3 relative'>
+										<Link to={`/${type}/${item.id}`} className='block'>
+											<div className='aspect-[2/3] rounded-xl overflow-hidden bg-slate-800 relative'>
+												{item.poster_path ? (
+													<img
+														src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+														alt={item.title || item.name}
+														className='w-full h-full object-cover group-hover:scale-105 transition duration-300'
+													/>
+												) : (
+													<div className='w-full h-full flex items-center justify-center text-slate-500'>
+														{t('noImage')}
+													</div>
+												)}
+											</div>
+											<p className='text-sm font-semibold line-clamp-1 mt-3'>
+												{item.title || item.name}
+											</p>
+										</Link>
+										
+										{/* Heart Icon Button for Wishlist */}
+										<Button
+											variant="ghost"
+											size="icon"
+											className={`absolute top-2 right-2 rounded-full w-8 h-8 p-0 bg-black/60 backdrop-blur-sm hover:bg-black/80 transition-all duration-200 ${
+												isWishlisted(item.id) ? 'text-rose-500' : 'text-white/80 hover:text-rose-400'
+											}`}
+											onClick={(e) => handleWishlistClick(item, e)}
+										>
+											<Heart 
+												size={16} 
+												className={isWishlisted(item.id) ? 'fill-current' : ''}
+											/>
+										</Button>
+									</div>
 								))}
 							</div>
 						</section>
