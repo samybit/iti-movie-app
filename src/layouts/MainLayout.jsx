@@ -13,6 +13,19 @@ import { db } from "@/lib/firebase";
 import AccountSidebar from "@/components/AccountSidebar";
 import SearchModal from "@/components/SearchModal";
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+const LANGUAGE_OPTIONS = [
+    { code: 'en', label: 'English' },
+    { code: 'ar', label: 'Arabic' },
+    { code: 'fr', label: 'French' },
+    { code: 'zh', label: 'Chinese' },
+];
 
 const navItems = [
     { to: '/', labelKey: 'home', icon: <Film size={16} /> },
@@ -156,18 +169,26 @@ export default function MainLayout() {
                             </Link>
                         )}
 
-                        <div className='flex items-center gap-1 ml-2 pl-4 border-l border-slate-200 dark:border-border'>
-                            <Globe size={16} className='text-slate-500 dark:text-muted-foreground' />
-                            <select
-                                value={language}
-                                onChange={(e) => setLanguage(e.target.value)}
-                                className='bg-transparent text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground cursor-pointer outline-none'
-                            >
-                            <option value="en" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">EN</option>
-                            <option value="ar" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">AR</option>
-                            <option value="fr" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">FR</option>
-                            <option value="zh" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">ZH</option>
-                            </select>
+                        <div className='flex items-center ml-2 pl-4 border-l border-slate-200 dark:border-border'>
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-9 px-3 gap-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-visible:ring-blue-500 text-slate-500 dark:text-muted-foreground font-semibold">
+                                        <Globe size={16} />
+                                        <span className="uppercase">{language || 'en'}</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="min-w-[150px] p-1.5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800/60 shadow-2xl">
+                                    {LANGUAGE_OPTIONS.map((lang) => (
+                                        <DropdownMenuItem
+                                            key={lang.code}
+                                            onClick={() => setLanguage(lang.code)}
+                                            className={`flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-xl transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 ${language === lang.code ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'}`}
+                                        >
+                                            <span className="text-sm font-semibold">{lang.label} ({(lang.code).toUpperCase()})</span>
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
 
                         <div className='ml-4 pl-4 border-l border-slate-200 dark:border-border'>
@@ -247,19 +268,25 @@ export default function MainLayout() {
                                 </Link>
                             )}
 
-                            <div className='flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 dark:text-muted-foreground'>
-                                <Globe size={16} />
-                                <select
-                                    value={language}
-                                    onChange={(e) => { setLanguage(e.target.value); setMobileOpen(false); }}
-                                    className='bg-transparent cursor-pointer outline-none w-full'
-                                >
-                                <option value="en" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">English (EN)</option>
-                                <option value="ar" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">Arabic (AR)</option>
-                                <option value="fr" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">French (FR)</option>
-                                <option value="zh" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-white">Chinese (ZH)</option>
-                                </select>
-                            </div>
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <button className='flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent transition-all'>
+                                        <Globe size={16} />
+                                        <span className="text-left flex-grow text-slate-500 dark:text-muted-foreground">{LANGUAGE_OPTIONS.find(l => l.code === language)?.label || 'English'} ({(language || 'en').toUpperCase()})</span>
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="min-w-[200px] p-1.5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800/60 shadow-2xl">
+                                    {LANGUAGE_OPTIONS.map((lang) => (
+                                        <DropdownMenuItem
+                                            key={lang.code}
+                                            onClick={() => { setLanguage(lang.code); setMobileOpen(false); }}
+                                            className={`flex items-center gap-2.5 px-3 py-2 cursor-pointer rounded-xl transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/50 hover:text-blue-600 dark:hover:text-blue-400 ${language === lang.code ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'}`}
+                                        >
+                                            <span className="text-sm font-semibold">{lang.label} ({(lang.code).toUpperCase()})</span>
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </nav>
                     </div>
                 )}
