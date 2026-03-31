@@ -6,7 +6,7 @@ import usePageTitle from '@/hooks/usePageTitle';
 
 export default function History() {
   const { t } = useLanguage();
-  usePageTitle(t('history') || 'History');
+  usePageTitle(t('history'));
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
@@ -38,16 +38,16 @@ export default function History() {
 
         <div className='relative text-center space-y-4 max-w-2xl'>
           <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2'>
-            <HistoryIcon size={12} strokeWidth={3} /> {t('yourActivity') || 'Your Activity'}
+            <HistoryIcon size={12} strokeWidth={3} /> {t('yourActivity')}
           </div>
           <h1 className='text-5xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-slate-100 leading-[1.1]'>
-            {t('viewing') || 'Viewing'} <br />
+            {t('viewing')} <br />
             <span className='bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400 bg-clip-text text-transparent'>
-              {t('history') || 'History'}
+              {t('history')}
             </span>
           </h1>
           <p className='text-slate-400 dark:text-slate-300 font-medium text-lg leading-relaxed'>
-            {t('recentlyViewed') || 'Everything you have recently viewed'}
+            {t('recentlyViewed')}
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export default function History() {
               onClick={clearHistory}
               className='flex items-center gap-2 px-6 py-3 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-all font-black text-sm uppercase tracking-wider backdrop-blur-md shadow-lg shadow-red-500/10 hover:shadow-red-500/30'
             >
-              <Trash2 size={16} /> {t('clearAll') || 'Clear All'}
+              <Trash2 size={16} /> {t('clearAll')}
             </button>
           </div>
         )}
@@ -69,13 +69,13 @@ export default function History() {
             <Clock size={48} strokeWidth={1.5} />
           </div>
           <h2 className='text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight'>
-            {t('noActivity') || 'No viewing history yet'}
+            {t('noActivity')}
           </h2>
           <p className='text-slate-500 max-w-sm'>
-            {t('startExploring') || 'Start exploring movies and TV shows to see them here.'}
+            {t('startExploring')}
           </p>
           <Link to='/browse' className='mt-6 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black shadow-xl shadow-blue-500/30 transition-all hover:-translate-y-1 active:scale-95'>
-            {t('exploreNow') || 'Explore Now'}
+            {t('exploreNow')}
           </Link>
         </div>
       ) : (
@@ -100,7 +100,7 @@ export default function History() {
               <button
                 onClick={(e) => removeItem(e, item.id)}
                 className='absolute top-3 right-3 p-2.5 bg-black/60 backdrop-blur-md rounded-xl text-white/80 hover:text-white hover:bg-red-500 hover:scale-110 shadow-xl transition-all duration-300 opacity-0 group-hover:opacity-100 z-10'
-                title={t('delete') || 'Delete'}
+                title={t('delete')}
               >
                 <Trash2 size={16} />
               </button>

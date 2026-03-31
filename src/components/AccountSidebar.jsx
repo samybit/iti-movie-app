@@ -69,7 +69,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
 
           <SheetHeader className="text-left mb-6">
             <SheetTitle className="text-white/80 text-sm font-medium tracking-wide uppercase">
-              {t('myAccount') || 'My Account'}
+              {t('myAccount')}
             </SheetTitle>
           </SheetHeader>
 
@@ -110,7 +110,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                 <Mail size={14} className="text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs text-muted-foreground font-medium">{t('email')}</p>
+                <p className="text-xs text-muted-foreground font-medium">{t('emailAddress')}</p>
                 <p className="text-sm font-semibold text-foreground truncate">
                   {user?.email || "—"}
                 </p>
@@ -128,9 +128,9 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                   : <ShieldX size={14} />
                 }
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground font-medium">{t('emailVerified')}</p>
-                <p className={`text-sm font-semibold ${user?.emailVerified ? "text-emerald-500" : "text-destructive"}`}>
+                <p className={`text-sm font-semibold ${user?.emailVerified ? "text-emerald-500" : "text-destructive"} truncate`}>
                   {user?.emailVerified ? t('verified') : t('notVerified')}
                 </p>
               </div>
@@ -154,7 +154,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                     onClick={onClose}
                     className="p-1 px-2 rounded-lg text-[10px] text-primary hover:bg-primary/10 transition-colors"
                   >
-                    View All
+                    {t('viewAll')}
                   </Link>
                   <button 
                     onClick={clearHistory}
@@ -200,7 +200,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                     <button
                       onClick={(e) => removeItem(e, item.id)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 p-2 opacity-0 group-hover:opacity-100 bg-destructive/10 text-destructive rounded-lg hover:bg-destructive hover:text-white transition-all z-10"
-                      title={t('delete') || 'Delete'}
+                      title={t('delete')}
                     >
                        <Trash2 size={14} />
                     </button>
@@ -211,7 +211,7 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                    <div className="p-4 rounded-full bg-muted text-muted-foreground">
                      <Clock size={24} />
                    </div>
-                   <p className="text-xs text-muted-foreground font-medium max-w-[140px] leading-relaxed tracking-tight">{t('noActivity') || "You haven't viewed any movies yet."}</p>
+                   <p className="text-xs text-muted-foreground font-medium max-w-[140px] leading-relaxed tracking-tight">{t('noActivity')}</p>
                 </div>
               )}
             </div>

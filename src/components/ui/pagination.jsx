@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowLeft01Icon, ArrowRight01Icon, MoreHorizontalCircle01Icon } from "@hugeicons/core-free-icons"
+import { useLanguage } from "@/contexts/LanguageContext"
 
 function Pagination({
   className,
@@ -60,9 +61,10 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
-  text = "Previous",
+  text,
   ...props
 }) {
+  const { t } = useLanguage();
   return (
     <PaginationLink
       aria-label="Go to previous page"
@@ -70,23 +72,24 @@ function PaginationPrevious({
       className={cn("pl-2!", className)}
       {...props}>
       <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} data-icon="inline-start" />
-      <span className="hidden sm:block">{text}</span>
+      <span className="hidden sm:block">{text || t('previous')}</span>
     </PaginationLink>
   );
 }
 
 function PaginationNext({
   className,
-  text = "Next",
+  text,
   ...props
 }) {
+  const { t } = useLanguage();
   return (
     <PaginationLink
       aria-label="Go to next page"
       size="default"
       className={cn("pr-2!", className)}
       {...props}>
-      <span className="hidden sm:block">{text}</span>
+      <span className="hidden sm:block">{text || t('next')}</span>
       <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} data-icon="inline-end" />
     </PaginationLink>
   );
