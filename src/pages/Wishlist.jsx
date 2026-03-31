@@ -66,7 +66,7 @@ const Wishlist = () => {
 	if (!user) {
 		return (
 			<div className='flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6'>
-				<div className='w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-slate-400'>
+				<div className='w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500'>
 					<Heart size={40} />
 				</div>
 				<h2 className='text-3xl font-black tracking-tighter'>{t('signInForWishlist')}</h2>
@@ -74,7 +74,7 @@ const Wishlist = () => {
 					{t('keepTrack')}
 				</p>
 				<div className='flex gap-4 pt-2'>
-					<Button asChild size='lg' className='rounded-full px-8 font-bold bg-blue-600'>
+					<Button asChild size='lg' className='rounded-full px-8 font-bold bg-blue-600 dark:bg-blue-500'>
 						<Link to='/login'>{t('signIn')}</Link>
 					</Button>
 					<Button asChild variant='outline' size='lg' className='rounded-full px-8 font-bold'>
@@ -92,14 +92,14 @@ const Wishlist = () => {
 				<div className='space-y-1'>
 					<div className='flex items-center gap-3'>
 						<h1 className='text-4xl font-black tracking-tight uppercase'>{t('myLibrary')}</h1>
-						<Badge variant='secondary' className='bg-blue-50 text-blue-600 rounded-full border-blue-100 px-3 py-1 font-black text-sm'>
+						<Badge variant='secondary' className='bg-blue-50 text-blue-600 rounded-full border-blue-100 px-3 py-1 font-black text-sm dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-900'>
 							{wishlist.length}
 						</Badge>
 					</div>
 					<p className='text-slate-500 font-medium'>
 						{t('personalCollection')}
 					</p>
-				</div>
+				</div>	
 
 				{/* Filter Controls */}
 				<div className='flex gap-2 p-1 bg-slate-100 rounded-2xl w-fit'>
@@ -111,10 +111,9 @@ const Wishlist = () => {
 						<button
 							key={key}
 							onClick={() => setFilter(key)}
-							className={`px-6 py-2 rounded-xl text-xs font-black transition-all duration-300 ${
-								filter === key 
-									? 'bg-white shadow-lg text-blue-600 ring-1 ring-blue-500/10' 
-									: 'text-slate-400 hover:text-slate-600'
+							className={`px-6 py-2 rounded-xl text-xs font-black transition-all duration-300 ${filter === key 
+									? 'bg-white dark:bg-slate-900 shadow-lg text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/10' 
+									: 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'
 							}`}
 						>
 							{label}
@@ -125,17 +124,17 @@ const Wishlist = () => {
 
 			{/* Main Grid */}
 			{wishlist.length === 0 ? (
-				<div className='rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-20 text-center space-y-6'>
-					<div className='mx-auto w-24 h-24 rounded-full bg-white shadow-xl flex items-center justify-center text-slate-200 rotate-12 group hover:rotate-0 transition-transform duration-500'>
-						<Heart size={44} className='fill-slate-100 group-hover:fill-red-100 group-hover:text-red-300 transition-colors' />
+				<div className='rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 p-20 text-center space-y-6'>
+					<div className='mx-auto w-24 h-24 rounded-full bg-white dark:bg-slate-800 shadow-xl flex items-center justify-center text-slate-200 dark:text-slate-700 rotate-12 group hover:rotate-0 transition-transform duration-500'>
+						<Heart size={44} className='fill-slate-100 dark:fill-slate-800 group-hover:fill-red-100 group-hover:text-red-300 transition-colors' />
 					</div>
 					<div className='space-y-2'>
 						<h3 className='text-2xl font-black tracking-tight'>{t('wishlistEmpty')}</h3>
 						<p className='text-slate-400 max-w-xs mx-auto text-sm font-medium'>
-							{t('exploreThousands')}
+							{t('exploreThousands')}	
 						</p>
 					</div>
-					<Button asChild size='lg' className='rounded-2xl font-bold bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20 px-10 gap-2'>
+					<Button asChild size='lg' className='rounded-2xl font-bold bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20 dark:bg-blue-500 dark:hover:bg-blue-600 dark:shadow-blue-700/30 px-10 gap-2'>
 						<Link to='/browse'>{t('findMovies')} <ArrowRight size={18} /></Link>
 					</Button>
 				</div>
