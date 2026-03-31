@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import BackToTop from '@/components/BackToTop';
 import CommunityFooter from '@/components/CommunityFooter';
 import { Film, Compass, Search, Heart, LogIn, Menu, X, User, Globe } from 'lucide-react';
+import { useWishlist } from '@/hooks/useWishlist';
+import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
@@ -45,6 +47,7 @@ export default function MainLayout() {
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { language, setLanguage, t } = useLanguage();
+    const { wishlist } = useWishlist();
 
     // Listen to auth changes
     useEffect(() => {
@@ -142,12 +145,17 @@ export default function MainLayout() {
                                 <Link
                                     key={to}
                                     to={to}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${isActive
+                                    className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${isActive
                                             ? 'bg-blue-50 text-blue-600 shadow-sm dark:bg-blue-500/10 dark:text-blue-400'
                                             : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
                                         }`}
                                 >
                                     {icon} {t(labelKey)}
+                                    {labelKey === 'wishlist' && user && wishlist.length > 0 && (
+                                        <Badge variant="secondary" className="absolute -top-1.5 -right-1.5 h-5 w-5 p-0 flex items-center justify-center rounded-full bg-blue-600 text-white text-[10px] font-black border-2 border-white dark:border-background">
+                                            {wishlist.length}
+                                        </Badge>
+                                    )}
                                 </Link>
                             );
                         })}
@@ -237,12 +245,18 @@ export default function MainLayout() {
                                         key={to}
                                         to={to}
                                         onClick={() => setMobileOpen(false)}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive
                                                 ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
                                                 : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
                                             }`}
                                     >
-                                        {icon} {t(labelKey)}
+                                        {icon}
+                                        <span className="flex-grow">{t(labelKey)}</span>
+                                        {labelKey === 'wishlist' && user && wishlist.length > 0 && (
+                                            <Badge variant="secondary" className="h-6 w-6 p-0 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs font-black">
+                                                {wishlist.length}
+                                            </Badge>
+                                        )}
                                     </Link>
                                 );
                             })}
