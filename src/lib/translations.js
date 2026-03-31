@@ -165,7 +165,11 @@ export const translations = {
     loginGoogleSuccess: "Logged in with Google ✅",
     settingsUpdateSuccess: "Settings updated successfully!",
     lang_ar: "Arabic (العربية)", lang_fr: "French (Français)", lang_zh: "Chinese (中文)",
-    paginationPageInfo: "Page {currentPage} of {totalPages}"
+    paginationPageInfo: "Page {currentPage} of {totalPages}",
+    pageNotFound: "Page Not Found",
+    notFoundDesc: "Oops! The page you are looking for doesn't exist or has been moved.",
+    backToHome: "Back to Home",
+    contactSupport: "Contact Support"
   },
   ar: {
     home: "الرئيسية", browse: "تصفح", search: "بحث", wishlist: "المفضلة", login: "تسجيل الدخول", logout: "تسجيل الخروج",
@@ -274,7 +278,11 @@ export const translations = {
     loginGoogleSuccess: "تم تسجيل الدخول باستخدام جوجل ✅",
     settingsUpdateSuccess: "تم تحديث الإعدادات بنجاح!",
     lang_ar: "العربية (Arabic)", lang_fr: "الفرنسية (Français)", lang_zh: "الصينية (中文)",
-    paginationPageInfo: "صفحة {currentPage} من {totalPages}"
+    paginationPageInfo: "صفحة {currentPage} من {totalPages}",
+    pageNotFound: "الصفحة غير موجودة",
+    notFoundDesc: "عفواً! الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    backToHome: "العودة للرئيسية",
+    contactSupport: "اتصل بالدعم"
   },
   fr: {
     home: "Accueil", browse: "Parcourir", search: "Recherche", wishlist: "Favoris", login: "Connexion", logout: "Déconnexion",
@@ -383,7 +391,11 @@ export const translations = {
     loginGoogleSuccess: "Connecté avec Google ✅",
     settingsUpdateSuccess: "Paramètres mis à jour avec succès !",
     lang_ar: "Arabe (العربية)", lang_fr: "Français (French)", lang_zh: "Chinois (中文)",
-    paginationPageInfo: "Page {currentPage} sur {totalPages}"
+    paginationPageInfo: "Page {currentPage} sur {totalPages}",
+    pageNotFound: "Page non trouvée",
+    notFoundDesc: "Oups ! La page que vous recherchez n'existe pas ou a été déplacée.",
+    backToHome: "Retour à l'accueil",
+    contactSupport: "Contacter le support"
   },
   zh: {
     home: "首页", browse: "浏览", search: "搜索", wishlist: "心愿单", login: "登录", logout: "登出",
@@ -492,6 +504,10 @@ export const translations = {
     loginGoogleSuccess: "已使用 Google 登录 ✅",
     settingsUpdateSuccess: "设置更新成功！",
     lang_ar: "阿拉伯语 (العربية)", lang_fr: "法语 (Français)", lang_zh: "中文 (Chinese)",
-    paginationPageInfo: "第 {currentPage} 页，共 {totalPages} 页"
+    paginationPageInfo: "第 {currentPage} 页，共 {totalPages} 页",
+    pageNotFound: "页面未找到",
+    notFoundDesc: "哎呀！您正在寻找的页面不存在或已被移动。",
+    backToHome: "返回首页",
+    contactSupport: "联系支持"
   }
 };

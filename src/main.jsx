@@ -85,11 +85,11 @@ const router = createBrowserRouter([
 					</ProtectedRoute>
 				),
 			},
+			{
+				path: '*',
+				element: <NotFound404 />,
+			},
 		],
-	},
-	{
-		path: '*',
-		element: <NotFound404 />,
 	},
 ]);
 
