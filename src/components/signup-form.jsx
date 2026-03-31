@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -40,6 +40,7 @@ import registerImage from "../assets/registerImage.webp"
 import toast, { Toaster } from "react-hot-toast"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useTMDBAuth } from "@/contexts/TMDBAuthContext"
+import { Eye, EyeOff } from "lucide-react"
 
 const FieldStatus = ({ name, errors, dirtyFields, t }) => {
   if (!dirtyFields[name]) return null
@@ -64,6 +65,8 @@ const FieldStatus = ({ name, errors, dirtyFields, t }) => {
 function SignupForm(props) {
   const { t } = useLanguage()
   const { loginWithTMDB, loading: tmdbLoading } = useTMDBAuth()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   
   const signupSchema = useMemo(() => z
     .object({
@@ -227,14 +230,32 @@ function SignupForm(props) {
                   {/* Password */}
                   <Field>
                     <FieldLabel>{t('password')}</FieldLabel>
-                    <Input type="password" {...register("password")} />
+                    <div className="relative">
+                      <Input type={showPassword ? "text" : "password"} {...register("password")} />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                      >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                     <FieldStatus name="password" errors={errors} dirtyFields={dirtyFields} t={t} />
                   </Field>
 
                   {/* Confirm Password */}
                   <Field>
                     <FieldLabel>{t('confirmPass')}</FieldLabel>
-                    <Input type="password" {...register("confirm")} />
+                    <div className="relative">
+                      <Input type={showConfirm ? "text" : "password"} {...register("confirm")} />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirm(!showConfirm)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                      >
+                        {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                     <FieldStatus name="confirm" errors={errors} dirtyFields={dirtyFields} t={t} />
                   </Field>
 
