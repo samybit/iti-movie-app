@@ -96,7 +96,7 @@ const Search = () => {
 						value={query}
 						onChange={handleSearchChange}
 						placeholder={t('whatLooking')}
-						className="max-w-2xl h-20 shadow-2xl shadow-blue-500/10 dark:shadow-none"
+						className="max-w-2xl  h-20 shadow-2xl shadow-blue-500/10 dark:shadow-none "
 					/>
 
 					{/* Media Type Segmented Toggle */}

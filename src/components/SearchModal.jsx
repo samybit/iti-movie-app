@@ -85,7 +85,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t('searchMoviesTv')}
-                className="flex-1 bg-transparent border-none outline-none text-xl font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                className="pl-4 pr-4 flex-1 bg-transparent border-none outline-none text-xl font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-600"
               />
               {loading && query && (
                 <Loader2 className="w-5 h-5 text-slate-400 animate-spin mr-2" />
@@ -94,9 +94,9 @@ const SearchModal = ({ isOpen, onClose }) => {
                 <button
                   type="button"
                   onClick={() => setQuery('')}
-                  className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                  className="flex items-center justify-center w-8 h-8 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex-shrink-0 ml-2"
                 >
-                  <X size={18} className="text-slate-400" />
+                  <X size={18} className="text-slate-400 m-5" />
                 </button>
               )}
             </div>

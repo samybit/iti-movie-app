@@ -55,7 +55,7 @@ export default function SearchPage() {
                         <Input
                             type="search"
                             placeholder={`${t('search')}...`}
-                            className="pl-10"
+                            className="pl-10 "
                         />
                     </div>
                     <Button type="submit">{t('search')}</Button>

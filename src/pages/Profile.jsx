@@ -142,7 +142,7 @@ const Profile = () => {
 									</h1>
 									<button
 										onClick={handleEditStart}
-										className='p-3 rounded-xl text-slate-800 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all'
+										className='p-3 rounded-xl text-slate-800 hover:text-slate-700 dark:text-white  dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all'
 									>
 										{t('edit')}
 										<Pencil size={14} />

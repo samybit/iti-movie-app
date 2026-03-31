@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { User, Mail, ShieldCheck, ShieldX, LogOut } from "lucide-react";
 
 import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { History, Trash2, TrendingUp, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router";
@@ -45,12 +45,13 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
 
   //fetch name from Firestore
   useEffect(() => {
-    const fetchName = async () => {
-      if (!user?.uid) return;
-      const snap = await getDoc(doc(db, "users", user.uid));
+    if (!user?.uid) return;
+
+    const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
       if (snap.exists()) setUserName(snap.data()?.name);
-    };
-    fetchName();
+    });
+
+    return () => unsub();
   }, [user]);
 
   const displayName = userName || user?.displayName || user?.email?.split("@")[0] || "—";
@@ -149,14 +150,14 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
               </div>
               {visitedHistory.length > 0 && (
                 <div className="flex items-center gap-1">
-                  <Link 
+                  <Link
                     to="/history"
                     onClick={onClose}
                     className="p-1 px-2 rounded-lg text-[10px] text-primary hover:bg-primary/10 transition-colors"
                   >
                     {t('viewAll')}
                   </Link>
-                  <button 
+                  <button
                     onClick={clearHistory}
                     className="p-1 px-2 rounded-lg text-[10px] text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                   >
@@ -170,16 +171,16 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
               {visitedHistory.length > 0 ? (
                 visitedHistory.map(item => (
                   <div key={item.id} className="group relative">
-                    <Link 
+                    <Link
                       to={`/${item.mediaType}/${item.id}`}
                       onClick={onClose}
                       className="flex items-center gap-3 p-2 rounded-2xl bg-background border border-border hover:border-primary/30 hover:bg-primary/5 transition-all w-full"
                     >
                       <div className="w-12 h-16 rounded-lg overflow-hidden bg-muted shrink-0">
-                        <img 
-                          src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} 
-                          alt={item.title} 
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                        <img
+                          src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       </div>
                       <div className="min-w-0 flex-1 text-left">
@@ -202,16 +203,16 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                       className="absolute right-3 top-1/2 -translate-y-1/2 p-2 opacity-0 group-hover:opacity-100 bg-destructive/10 text-destructive rounded-lg hover:bg-destructive hover:text-white transition-all z-10"
                       title={t('delete')}
                     >
-                       <Trash2 size={14} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 ))
               ) : (
                 <div className="flex flex-col items-center justify-center h-40 text-center space-y-3 opacity-60">
-                   <div className="p-4 rounded-full bg-muted text-muted-foreground">
-                     <Clock size={24} />
-                   </div>
-                   <p className="text-xs text-muted-foreground font-medium max-w-[140px] leading-relaxed tracking-tight">{t('noActivity')}</p>
+                  <div className="p-4 rounded-full bg-muted text-muted-foreground">
+                    <Clock size={24} />
+                  </div>
+                  <p className="text-xs text-muted-foreground font-medium max-w-[140px] leading-relaxed tracking-tight">{t('noActivity')}</p>
                 </div>
               )}
             </div>

@@ -7,11 +7,10 @@ import { Film, Compass, Search, Heart, LogIn, Menu, X, User, Globe, Loader2 } fr
 import { useWishlist } from '@/hooks/useWishlist';
 import { Badge } from '@/components/ui/badge';
 import { useState, useEffect, Suspense } from 'react';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import toast from 'react-hot-toast';
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { doc, onSnapshot } from 'firebase/firestore';
 import AccountSidebar from "@/components/AccountSidebar";
 import SearchModal from "@/components/SearchModal";
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -49,34 +48,41 @@ export default function MainLayout() {
     const { language, setLanguage, t } = useLanguage();
     const { wishlist } = useWishlist();
 
-    // Listen to auth changes
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        let snapshotUnsub = null;
+
+        const authUnsub = onAuthStateChanged(auth, async (currentUser) => {
+
+            if (snapshotUnsub) snapshotUnsub();
+
             if (currentUser) {
                 setUser(currentUser);
 
-                // اسم المستخدم من Google أو Firebase
                 if (currentUser.displayName) {
                     setUserName(currentUser.displayName.split(" ")[0]);
-                } else {
-                    const docRef = doc(db, "users", currentUser.uid);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const fullName = docSnap.data().name;
-                        setUserName(fullName.split(" ")[0]);
-                    }
                 }
+
+                
+                const docRef = doc(db, "users", currentUser.uid);
+                snapshotUnsub = onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        setUserName(docSnap.data().name.split(" ")[0]);
+                    }
+                });
+
             } else {
                 setUser(null);
                 setUserName("");
             }
-            setLoadingUser(false); // loading ended
+            setLoadingUser(false);
         });
 
-        return () => unsubscribe();
+        return () => {
+            authUnsub();
+            if (snapshotUnsub) snapshotUnsub();
+        };
     }, []);
 
-    // Shortcut to open search (typical for professional apps)
     useEffect(() => {
         const down = (e) => {
             if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -84,12 +90,10 @@ export default function MainLayout() {
                 setIsSearchOpen(true);
             }
         };
-
         document.addEventListener('keydown', down);
         return () => document.removeEventListener('keydown', down);
     }, []);
 
-    // Logout function
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -101,13 +105,10 @@ export default function MainLayout() {
         }
     };
 
-    // nothing or loading spinner
     if (loadingUser) return null;
 
     return (
-        // Added dark:from-background dark:to-background
         <div className='min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white dark:from-background dark:to-background text-foreground transition-colors duration-300'>
-            {/* Added dark:border-border dark:bg-background/80 */}
             <header className='sticky top-0 z-50 w-full border-b border-slate-200/60 dark:border-border bg-white/80 dark:bg-background/80 backdrop-blur-xl shadow-sm'>
                 <div className='container mx-auto flex h-16 items-center justify-between px-4 lg:px-8'>
                     {/* Logo */}
@@ -146,8 +147,8 @@ export default function MainLayout() {
                                     key={to}
                                     to={to}
                                     className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${isActive
-                                            ? 'bg-blue-50 text-blue-600 shadow-sm dark:bg-blue-500/10 dark:text-blue-400'
-                                            : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
+                                        ? 'bg-blue-50 text-blue-600 shadow-sm dark:bg-blue-500/10 dark:text-blue-400'
+                                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
                                         }`}
                                 >
                                     {icon} {t(labelKey)}
@@ -245,9 +246,9 @@ export default function MainLayout() {
                                         key={to}
                                         to={to}
                                         onClick={() => setMobileOpen(false)}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive
-                                                ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
-                                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive
+                                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
+                                            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent'
                                             }`}
                                     >
                                         {icon}
@@ -306,7 +307,6 @@ export default function MainLayout() {
                 )}
             </header>
 
-            {/* Account Sidebar */}
             <AccountSidebar
                 isOpen={isAccountOpen}
                 onClose={() => setIsAccountOpen(false)}
