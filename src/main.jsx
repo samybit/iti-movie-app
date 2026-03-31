@@ -20,6 +20,8 @@ import VerifyEmail from './pages/VerifyEmail';
 import HelpCenter from './pages/HelpCenter';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import History from './pages/History';
+
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -84,6 +86,10 @@ const router = createBrowserRouter([
 						<Settings />
 					</ProtectedRoute>
 				),
+			},
+			{
+				path: 'history',
+				element: <History />,
 			},
 			{
 				path: '*',

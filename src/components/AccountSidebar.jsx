@@ -35,6 +35,14 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
     setVisitedHistory([]);
   };
 
+  const removeItem = (e, targetId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newHistory = visitedHistory.filter(item => item.id !== targetId);
+    localStorage.setItem('visitedHistory', JSON.stringify(newHistory));
+    setVisitedHistory(newHistory);
+  };
+
   //fetch name from Firestore
   useEffect(() => {
     const fetchName = async () => {
@@ -140,46 +148,63 @@ export default function AccountSidebar({ isOpen, onClose, user, onLogout }) {
                 <h3 className="text-[11px] font-black tracking-widest text-foreground uppercase italic">{t('yourActivity')}</h3>
               </div>
               {visitedHistory.length > 0 && (
-                <button 
-                  onClick={clearHistory}
-                  className="p-1 px-2 rounded-lg text-[10px] text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                >
-                  <Trash2 size={12} className="inline mr-1" /> {t('clearHistory')}
-                </button>
+                <div className="flex items-center gap-1">
+                  <Link 
+                    to="/history"
+                    onClick={onClose}
+                    className="p-1 px-2 rounded-lg text-[10px] text-primary hover:bg-primary/10 transition-colors"
+                  >
+                    View All
+                  </Link>
+                  <button 
+                    onClick={clearHistory}
+                    className="p-1 px-2 rounded-lg text-[10px] text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  >
+                    <Trash2 size={12} className="inline mr-1" /> {t('clearHistory')}
+                  </button>
+                </div>
               )}
             </div>
 
             <div className="flex-1 overflow-y-auto pr-2 -mr-2 space-y-2.5 custom-scrollbar transition-all">
               {visitedHistory.length > 0 ? (
                 visitedHistory.map(item => (
-                  <Link 
-                    key={item.id}
-                    to={`/${item.mediaType}/${item.id}`}
-                    onClick={onClose}
-                    className="flex items-center gap-3 p-2 rounded-2xl bg-background border border-border hover:border-primary/30 hover:bg-primary/5 transition-all group"
-                  >
-                    <div className="w-12 h-16 rounded-lg overflow-hidden bg-muted shrink-0">
-                      <img 
-                        src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} 
-                        alt={item.title} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1 text-left">
-                      <p className="text-sm font-black text-foreground line-clamp-1 group-hover:text-primary transition-colors tracking-tight leading-tight">
-                        {item.title}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="px-1.5 py-0.5 rounded-md bg-muted text-[9px] font-black text-muted-foreground uppercase tracking-widest border border-border">
-                          {item.mediaType}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground font-medium italic">
-                          {item.vote_average?.toFixed(1)} ★
-                        </span>
+                  <div key={item.id} className="group relative">
+                    <Link 
+                      to={`/${item.mediaType}/${item.id}`}
+                      onClick={onClose}
+                      className="flex items-center gap-3 p-2 rounded-2xl bg-background border border-border hover:border-primary/30 hover:bg-primary/5 transition-all w-full"
+                    >
+                      <div className="w-12 h-16 rounded-lg overflow-hidden bg-muted shrink-0">
+                        <img 
+                          src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} 
+                          alt={item.title} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                        />
                       </div>
-                    </div>
-                    <ChevronRight size={14} className="text-muted-foreground mr-1 group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
-                  </Link>
+                      <div className="min-w-0 flex-1 text-left">
+                        <p className="text-sm font-black text-foreground line-clamp-1 group-hover:text-primary transition-colors tracking-tight leading-tight">
+                          {item.title}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="px-1.5 py-0.5 rounded-md bg-muted text-[9px] font-black text-muted-foreground uppercase tracking-widest border border-border">
+                            {item.mediaType}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground font-medium italic">
+                            {item.vote_average?.toFixed(1)} ★
+                          </span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-muted-foreground mr-1 group-hover:opacity-0 transition-opacity shrink-0" />
+                    </Link>
+                    <button
+                      onClick={(e) => removeItem(e, item.id)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 opacity-0 group-hover:opacity-100 bg-destructive/10 text-destructive rounded-lg hover:bg-destructive hover:text-white transition-all z-10"
+                      title={t('delete') || 'Delete'}
+                    >
+                       <Trash2 size={14} />
+                    </button>
+                  </div>
                 ))
               ) : (
                 <div className="flex flex-col items-center justify-center h-40 text-center space-y-3 opacity-60">
