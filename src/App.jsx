@@ -84,7 +84,7 @@ export default function App() {
 					</span>
 					<h1 className='text-4xl md:text-7xl font-black tracking-tighter leading-[0.9] uppercase'>
 						{t('discoverYourNext')}<br />
-						<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic'>{t('favoriteMovie')}</span>
+						<span className='bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent italic pr-2'>{t('favoriteMovie')}</span>
 					</h1>
 					<p className='text-slate-300 text-lg md:text-xl max-w-xl leading-relaxed font-medium'>
 						{t('exploreMillionsHome')}

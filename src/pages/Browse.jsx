@@ -236,7 +236,7 @@ const Browse = () => {
 							<SortSelect 
 								value={activeFilters.sort_by} 
 								onValueChange={(v) => handleFilterChange({ sort_by: v })} 
-								className='h-9 border-0 bg-transparent text-xs font-black ring-0 focus:ring-0 w-[140px] sm:w-[180px] flex-shrink-0'
+								className='h-9 border-0 bg-transparent text-slate-700 dark:text-slate-200 text-xs font-bold ring-0 focus:ring-0 w-[140px] sm:w-[180px] flex-shrink-0'
 							/>
 						</div>
 					</div>

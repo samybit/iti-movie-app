@@ -169,7 +169,9 @@ export const translations = {
     pageNotFound: "Page Not Found",
     notFoundDesc: "Oops! The page you are looking for doesn't exist or has been moved.",
     backToHome: "Back to Home",
-    contactSupport: "Contact Support"
+    contactSupport: "Contact Support",
+    weeklySpotlight: "Weekly Spotlight",
+    exploreHighestRated: "Explore the highest-rated releases and fan favorites currently taking the world by storm."
   },
   ar: {
     home: "الرئيسية", browse: "تصفح", search: "بحث", wishlist: "المفضلة", login: "تسجيل الدخول", logout: "تسجيل الخروج",
@@ -282,7 +284,9 @@ export const translations = {
     pageNotFound: "الصفحة غير موجودة",
     notFoundDesc: "عفواً! الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
     backToHome: "العودة للرئيسية",
-    contactSupport: "اتصل بالدعم"
+    contactSupport: "اتصل بالدعم",
+    weeklySpotlight: "أبرز أعمال الأسبوع",
+    exploreHighestRated: "استكشف الإصدارات الأعلى تقييمًا والمفضلة لدى الجماهير التي تجتاح العالم حاليًا."
   },
   fr: {
     home: "Accueil", browse: "Parcourir", search: "Recherche", wishlist: "Favoris", login: "Connexion", logout: "Déconnexion",
@@ -395,7 +399,9 @@ export const translations = {
     pageNotFound: "Page non trouvée",
     notFoundDesc: "Oups ! La page que vous recherchez n'existe pas ou a été déplacée.",
     backToHome: "Retour à l'accueil",
-    contactSupport: "Contacter le support"
+    contactSupport: "Contacter le support",
+    weeklySpotlight: "À la une cette semaine",
+    exploreHighestRated: "Explorez les sorties les mieux notées et les favoris des fans qui font actuellement sensation dans le monde entier."
   },
   zh: {
     home: "首页", browse: "浏览", search: "搜索", wishlist: "心愿单", login: "登录", logout: "登出",
@@ -508,6 +514,8 @@ export const translations = {
     pageNotFound: "页面未找到",
     notFoundDesc: "哎呀！您正在寻找的页面不存在或已被移动。",
     backToHome: "返回首页",
-    contactSupport: "联系支持"
+    contactSupport: "联系支持",
+    weeklySpotlight: "每周精选",
+    exploreHighestRated: "探索目前风靡全球的最高评分版本和粉丝最爱。"
   }
 };
