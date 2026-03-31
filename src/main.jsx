@@ -1,26 +1,27 @@
 import './index.css';
 import './App.css';
-import { StrictMode } from 'react';
+import { StrictMode, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ThemeProvider } from '@/components/theme-provider';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Toaster } from '@/components/ui/sonner';
-import App from './App';
-import Search from './pages/Search';
-import Browse from './pages/Browse';
 import MainLayout from './layouts/MainLayout';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Wishlist from './pages/Wishlist';
-import MediaDetail from './pages/MediaDetail';
-import NotFound404 from './pages/NotFound404';
 import ProtectedRoute from "./components/ProtectedRoute";
-import VerifyEmail from './pages/VerifyEmail';
-import HelpCenter from './pages/HelpCenter';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
-import History from './pages/History';
+
+const App = lazy(() => import('./App'));
+const Search = lazy(() => import('./pages/Search'));
+const Browse = lazy(() => import('./pages/Browse'));
+const Register = lazy(() => import('./pages/Register'));
+const Login = lazy(() => import('./pages/Login'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const MediaDetail = lazy(() => import('./pages/MediaDetail'));
+const NotFound404 = lazy(() => import('./pages/NotFound404'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const HelpCenter = lazy(() => import('./pages/HelpCenter'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Settings = lazy(() => import('./pages/Settings'));
+const History = lazy(() => import('./pages/History'));
 
 const router = createBrowserRouter([
 	{

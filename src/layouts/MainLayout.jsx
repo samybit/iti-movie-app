@@ -3,10 +3,10 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import BackToTop from '@/components/BackToTop';
 import CommunityFooter from '@/components/CommunityFooter';
-import { Film, Compass, Search, Heart, LogIn, Menu, X, User, Globe } from 'lucide-react';
+import { Film, Compass, Search, Heart, LogIn, Menu, X, User, Globe, Loader2 } from 'lucide-react';
 import { useWishlist } from '@/hooks/useWishlist';
 import { Badge } from '@/components/ui/badge';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { auth } from '@/lib/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import toast from 'react-hot-toast';
@@ -315,7 +315,13 @@ export default function MainLayout() {
             />
 
             <main className='flex-grow container mx-auto px-4 lg:px-8 py-6'>
-                <Outlet context={{ setIsSearchOpen }} />
+                <Suspense fallback={
+                    <div className="w-full flex items-center justify-center min-h-[calc(100vh-200px)]">
+                        <Loader2 className="animate-spin text-blue-500" size={48} />
+                    </div>
+                }>
+                    <Outlet context={{ setIsSearchOpen }} />
+                </Suspense>
             </main>
 
             <BackToTop />
