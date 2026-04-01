@@ -289,7 +289,7 @@ function SignupForm(props) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full flex gap-2 border-green-500 text-green-600 hover:bg-green-50"
+                    className="w-full flex gap-2 border-green-500 text-green-600 hover:bg-green-50 hover:text-dark-200"
                     onClick={handleTMDBLogin}
                     disabled={tmdbLoading}
                   >
